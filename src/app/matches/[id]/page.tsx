@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { AppLayout } from "@/components/app-layout";
-import { Badge, Button, Card, ErrorState, SkeletonRows } from "@/components/ui";
+import { Badge, Button, Card, ErrorState, SkeletonRows, useToast } from "@/components/ui";
 import { submitPrediction, useMatch } from "@/lib/hooks";
 
 function Countdown({ target }: { target: string }) {
@@ -54,6 +54,7 @@ const statusLabels: Record<string, { label: string; variant: "gold" | "green" | 
 export default function MatchDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data, loading, error, refetch } = useMatch(id);
+  const toast = useToast();
   const [homeScore, setHomeScore] = useState("");
   const [awayScore, setAwayScore] = useState("");
   const [saved, setSaved] = useState(false);
@@ -89,10 +90,12 @@ export default function MatchDetailPage() {
         homeScore: Number(homeScore),
         awayScore: Number(awayScore),
       });
+      toast.success("Predicción guardada");
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (e) {
-      console.error("Falló guardar predicción", e);
+      const msg = e instanceof Error ? e.message : "Error desconocido";
+      toast.error(`No se pudo guardar la predicción: ${msg}`);
     } finally {
       setSaving(false);
     }

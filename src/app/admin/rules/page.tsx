@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/app-layout";
-import { Button, Card, CardHeader, CardTitle, ErrorState, Input, SkeletonRows } from "@/components/ui";
+import { Button, Card, CardHeader, CardTitle, ErrorState, Input, SkeletonRows, useToast } from "@/components/ui";
 import { saveRules, useRules } from "@/lib/hooks";
 import type { ScoringRule } from "@/types";
 
 export default function AdminRulesPage() {
   const { data, loading, error, refetch } = useRules();
+  const toast = useToast();
   const [rules, setRules] = useState<ScoringRule[]>([]);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -30,10 +31,12 @@ export default function AdminRulesPage() {
     setSaving(true);
     try {
       await saveRules(rules.map(({ key, points, enabled }) => ({ key, points, enabled })));
+      toast.success("Reglas guardadas");
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (e) {
-      console.error("Falló guardar reglas", e);
+      const msg = e instanceof Error ? e.message : "Error desconocido";
+      toast.error(`No se pudieron guardar las reglas: ${msg}`);
     } finally {
       setSaving(false);
     }

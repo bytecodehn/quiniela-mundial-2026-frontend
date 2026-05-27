@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/app-layout";
-import { Badge, Button, Card, EmptyState, ErrorState, Input, SkeletonRows } from "@/components/ui";
+import { Badge, Button, Card, EmptyState, ErrorState, Input, SkeletonRows, useToast } from "@/components/ui";
 import { updateAdminUserStatus, useAdminUsers } from "@/lib/hooks";
 import type { AdminUser } from "@/types";
 
 export default function AdminUsersPage() {
   const { data, loading, error, refetch } = useAdminUsers();
+  const toast = useToast();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [search, setSearch] = useState("");
 
@@ -26,8 +27,10 @@ export default function AdminUsersPage() {
     try {
       const res = await updateAdminUserStatus(user.id, next);
       setUsers((prev) => prev.map((u) => (u.id === user.id ? res.user : u)));
+      toast.success(`Usuario ${next === "blocked" ? "bloqueado" : "desbloqueado"}`);
     } catch (e) {
-      console.error("Falló actualizar usuario", e);
+      const msg = e instanceof Error ? e.message : "Error desconocido";
+      toast.error(`No se pudo actualizar el usuario: ${msg}`);
     }
   }
 

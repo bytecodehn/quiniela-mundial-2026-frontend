@@ -3,11 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AppLayout } from "@/components/app-layout";
-import { Badge, Button, Card, CardHeader, CardTitle, EmptyState, ErrorState, Input, Modal, SkeletonRows } from "@/components/ui";
+import { Badge, Button, Card, CardHeader, CardTitle, EmptyState, ErrorState, Input, Modal, SkeletonRows, useToast } from "@/components/ui";
 import { createGroup, joinGroup, useGroups } from "@/lib/hooks";
 
 export default function GroupsPage() {
   const { data, loading, error, refetch } = useGroups();
+  const toast = useToast();
   const [showCreate, setShowCreate] = useState(false);
   const [showJoin, setShowJoin] = useState(false);
   const [createName, setCreateName] = useState("");
@@ -20,12 +21,14 @@ export default function GroupsPage() {
     if (!createName.trim()) return;
     setSubmitting(true);
     try {
-      await createGroup({ name: createName.trim() });
+      const res = await createGroup({ name: createName.trim() });
       await refetch();
       setShowCreate(false);
       setCreateName("");
+      toast.success(`Grupo "${res.group.name}" creado`);
     } catch (e) {
-      console.error("Falló crear grupo", e);
+      const msg = e instanceof Error ? e.message : "Error desconocido";
+      toast.error(`No se pudo crear el grupo: ${msg}`);
     } finally {
       setSubmitting(false);
     }
@@ -35,12 +38,14 @@ export default function GroupsPage() {
     if (!joinCode.trim()) return;
     setSubmitting(true);
     try {
-      await joinGroup({ inviteCode: joinCode.trim() });
+      const res = await joinGroup({ inviteCode: joinCode.trim() });
       await refetch();
       setShowJoin(false);
       setJoinCode("");
+      toast.success(`Te uniste a "${res.group.name}"`);
     } catch (e) {
-      console.error("Falló unirse al grupo", e);
+      const msg = e instanceof Error ? e.message : "Error desconocido";
+      toast.error(`No se pudo unir al grupo: ${msg}`);
     } finally {
       setSubmitting(false);
     }

@@ -11,3 +11,4 @@ export { FilterBar } from "./FilterBar";
 export { Select } from "./Select";
 export { Skeleton, SkeletonRows, SkeletonStats } from "./Skeleton";
 export { ErrorState } from "./ErrorState";
+export { ToastProvider, useToast } from "./Toast";
