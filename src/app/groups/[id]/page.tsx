@@ -50,6 +50,8 @@ export default function GroupDetailPage() {
 
   const shareGroup = async () => {
     if (!group) return;
+    if (typeof navigator === "undefined") return;
+
     const url = buildInviteUrl(group.inviteCode);
     const shareData = {
       title: `Unite a "${group.name}"`,
@@ -57,21 +59,23 @@ export default function GroupDetailPage() {
       url,
     };
     track("invite_copied", { group_id: group.id });
-    try {
-      if (typeof navigator !== "undefined" && "share" in navigator) {
+
+    const canShare = typeof navigator.share === "function";
+    if (canShare) {
+      try {
         await navigator.share(shareData);
         return;
+      } catch (e) {
+        if (e instanceof Error && e.name === "AbortError") return; // usuario canceló
+        // cae al fallback de clipboard
       }
+    }
+
+    try {
       await navigator.clipboard.writeText(url);
       toast.success("Link copiado al portapapeles");
-    } catch (e) {
-      if (e instanceof Error && e.name === "AbortError") return; // usuario canceló
-      try {
-        await navigator.clipboard.writeText(url);
-        toast.success("Link copiado al portapapeles");
-      } catch {
-        toast.error("No se pudo compartir el link");
-      }
+    } catch {
+      toast.error("No se pudo compartir el link");
     }
   };
 
