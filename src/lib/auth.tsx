@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
 import { api } from "./api";
 import { mockUser } from "./fixtures";
+import { mockStore } from "./fixtures/store";
 import { USE_MOCKS } from "./hooks/useFetch";
 import type { User } from "@/types";
 
@@ -41,7 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const token = localStorage.getItem("token");
     if (!token) { setLoading(false); return; }
     if (USE_MOCKS) {
-      setUser(mockUser as User);
+      setUser(mockStore.getUser());
       setLoading(false);
       return;
     }
@@ -62,6 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (email !== DEMO_CREDENTIALS.email || password !== DEMO_CREDENTIALS.password) {
         throw new Error("Credenciales demo inválidas");
       }
+      mockStore.setUser(mockUser as User);
       localStorage.setItem("token", MOCK_TOKEN);
       setUser(mockUser as User);
       return;
@@ -95,6 +97,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         country: data.country ?? mockUser.country,
         createdAt: new Date().toISOString(),
       };
+      mockStore.setUser(fakeUser);
       localStorage.setItem("token", MOCK_TOKEN);
       setUser(fakeUser);
       return;
@@ -106,12 +109,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     localStorage.removeItem("token");
+    if (USE_MOCKS) mockStore.reset();
     setUser(null);
   };
 
   const updateUser = async (data: ProfileUpdate) => {
     if (USE_MOCKS) {
-      setUser((prev) => (prev ? { ...prev, ...data, avatar: data.avatar ?? prev.avatar } : prev));
+      const next = mockStore.patchUser(data);
+      setUser(next);
       return;
     }
     const res = await api.updateMe(data);

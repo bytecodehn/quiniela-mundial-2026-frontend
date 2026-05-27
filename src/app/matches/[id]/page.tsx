@@ -89,6 +89,16 @@ export default function MatchDetailPage() {
         matchId: match.id,
         homeScore: Number(homeScore),
         awayScore: Number(awayScore),
+        match: {
+          id: match.id,
+          homeTeam: match.homeTeam,
+          awayTeam: match.awayTeam,
+          date: match.date,
+          time: match.time,
+          status: match.status,
+          homeScore: match.homeScore,
+          awayScore: match.awayScore,
+        },
       });
       toast.success("Predicción guardada");
       setSaved(true);

@@ -5,8 +5,8 @@ import {
   mockAdminGroups,
   mockAdminStats,
   mockAdminUsers,
-  mockRules,
 } from "../fixtures";
+import { mockStore } from "../fixtures/store";
 import type {
   AdminStats,
   AdminUser,
@@ -71,7 +71,7 @@ export function useRules() {
   return useFetch<{ rules: ScoringRule[] }>(async () => {
     if (USE_MOCKS) {
       await mockDelay();
-      return { rules: mockRules as ScoringRule[] };
+      return { rules: mockStore.listRules() };
     }
     return api.getRules();
   }, "admin:rules");
@@ -80,7 +80,13 @@ export function useRules() {
 export async function saveRules(rules: Pick<ScoringRule, "key" | "points" | "enabled">[]): Promise<{ rules: ScoringRule[] }> {
   if (USE_MOCKS) {
     await mockDelay(200);
-    return { rules: rules.map((r) => ({ ...r, label: r.key })) as ScoringRule[] };
+    const current = mockStore.listRules();
+    const merged: ScoringRule[] = rules.map((r) => {
+      const existing = current.find((c) => c.key === r.key);
+      return { ...r, label: existing?.label ?? r.key };
+    });
+    mockStore.setRules(merged);
+    return { rules: merged };
   }
   return api.updateRules({ rules });
 }

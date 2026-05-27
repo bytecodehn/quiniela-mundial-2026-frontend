@@ -1,7 +1,8 @@
 "use client";
 
 import { api } from "../api";
-import { mockPredictions, mockStats } from "../fixtures";
+import { mockStats } from "../fixtures";
+import { mockStore } from "../fixtures/store";
 import type { Prediction, PredictionStats, Pagination } from "@/types";
 import { USE_MOCKS, mockDelay, useFetch } from "./useFetch";
 
@@ -16,10 +17,11 @@ export function usePredictions(params?: Record<string, string>) {
   return useFetch<PredictionsResponse>(async () => {
     if (USE_MOCKS) {
       await mockDelay();
+      const predictions = mockStore.listPredictions();
       return {
-        predictions: mockPredictions as Prediction[],
+        predictions,
         stats: mockStats as PredictionStats,
-        pagination: { page: 1, limit: 20, total: mockPredictions.length },
+        pagination: { page: 1, limit: 20, total: predictions.length },
       };
     }
     return api.getPredictions(params);
@@ -40,29 +42,30 @@ export async function submitPrediction(input: {
   matchId: string;
   homeScore: number;
   awayScore: number;
+  match?: Prediction["match"];
 }): Promise<{ prediction: Prediction }> {
   if (USE_MOCKS) {
     await mockDelay(200);
-    return {
-      prediction: {
-        id: `mock-${Date.now()}`,
-        match: {
-          id: input.matchId,
-          homeTeam: { id: "", name: "", code: "", flag: "", group: "A", rank: 0 },
-          awayTeam: { id: "", name: "", code: "", flag: "", group: "A", rank: 0 },
-          date: "",
-          time: "",
-          status: "upcoming",
-          homeScore: null,
-          awayScore: null,
-        },
-        predictedHomeScore: input.homeScore,
-        predictedAwayScore: input.awayScore,
-        points: null,
-        status: "pending",
-        createdAt: new Date().toISOString(),
+    const prediction: Prediction = {
+      id: `mock-${Date.now()}`,
+      match: input.match ?? {
+        id: input.matchId,
+        homeTeam: { id: "", name: "", code: "", flag: "", group: "A", rank: 0 },
+        awayTeam: { id: "", name: "", code: "", flag: "", group: "A", rank: 0 },
+        date: "",
+        time: "",
+        status: "upcoming",
+        homeScore: null,
+        awayScore: null,
       },
+      predictedHomeScore: input.homeScore,
+      predictedAwayScore: input.awayScore,
+      points: null,
+      status: "pending",
+      createdAt: new Date().toISOString(),
     };
+    mockStore.addPrediction(prediction);
+    return { prediction };
   }
   return api.createPrediction(input);
 }
