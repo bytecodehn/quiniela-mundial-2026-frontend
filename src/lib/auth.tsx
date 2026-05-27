@@ -2,10 +2,18 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
 import { api } from "./api";
+import { mockUser } from "./fixtures";
 import { USE_MOCKS } from "./hooks/useFetch";
 import type { User } from "@/types";
 
 type ProfileUpdate = Partial<{ name: string; favoriteTeam: string; country: string; avatar: string | null }>;
+
+const MOCK_TOKEN = "mock-token-demo";
+
+const DEMO_CREDENTIALS = {
+  email: "carlos@example.com",
+  password: "password123",
+};
 
 interface AuthContextType {
   user: User | null;
@@ -32,6 +40,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchUser = useCallback(async () => {
     const token = localStorage.getItem("token");
     if (!token) { setLoading(false); return; }
+    if (USE_MOCKS) {
+      setUser(mockUser as User);
+      setLoading(false);
+      return;
+    }
     try {
       const res = await api.me();
       setUser(res.user);
@@ -45,6 +58,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => { fetchUser(); }, [fetchUser]);
 
   const login = async (email: string, password: string) => {
+    if (USE_MOCKS) {
+      if (email !== DEMO_CREDENTIALS.email || password !== DEMO_CREDENTIALS.password) {
+        throw new Error("Credenciales demo inválidas");
+      }
+      localStorage.setItem("token", MOCK_TOKEN);
+      setUser(mockUser as User);
+      return;
+    }
     const res = await api.login({ email, password });
     localStorage.setItem("token", res.token);
     setUser(res.user);
@@ -58,6 +79,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     favoriteTeam?: string;
     country?: string;
   }) => {
+    if (USE_MOCKS) {
+      const fakeUser: User = {
+        ...(mockUser as User),
+        id: `mock-${Date.now()}`,
+        name: data.name,
+        email: data.email,
+        avatar: data.name
+          .split(" ")
+          .map((p) => p[0])
+          .join("")
+          .slice(0, 2)
+          .toUpperCase(),
+        favoriteTeam: data.favoriteTeam ?? mockUser.favoriteTeam,
+        country: data.country ?? mockUser.country,
+        createdAt: new Date().toISOString(),
+      };
+      localStorage.setItem("token", MOCK_TOKEN);
+      setUser(fakeUser);
+      return;
+    }
     const res = await api.register(data);
     localStorage.setItem("token", res.token);
     setUser(res.user);
