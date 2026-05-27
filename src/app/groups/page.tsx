@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { AppLayout } from "@/components/app-layout";
 import { Badge, Button, Card, CardHeader, CardTitle, EmptyState, ErrorState, Input, Modal, SkeletonRows, useToast } from "@/components/ui";
 import { track } from "@/lib/analytics";
 import { createGroup, joinGroup, useGroups } from "@/lib/hooks";
 
-export default function GroupsPage() {
+function GroupsPageInner() {
   const { data, loading, error, refetch } = useGroups();
   const toast = useToast();
+  const searchParams = useSearchParams();
   const [showCreate, setShowCreate] = useState(false);
   const [showJoin, setShowJoin] = useState(false);
   const [createName, setCreateName] = useState("");
@@ -17,6 +19,17 @@ export default function GroupsPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const groups = data?.groups ?? [];
+
+  // Si entran con ?code=XXX (link de invitación compartido), abrir
+  // automáticamente el modal de "Unirse" con el código prellenado.
+  useEffect(() => {
+    const code = searchParams.get("code");
+    if (code && !showJoin) {
+      setJoinCode(code.toUpperCase());
+      setShowJoin(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const handleCreate = async () => {
     if (!createName.trim()) return;
@@ -148,5 +161,14 @@ export default function GroupsPage() {
         </div>
       </Modal>
     </AppLayout>
+  );
+}
+
+export default function GroupsPage() {
+  // Suspense boundary requerido por useSearchParams() en App Router.
+  return (
+    <Suspense fallback={null}>
+      <GroupsPageInner />
+    </Suspense>
   );
 }

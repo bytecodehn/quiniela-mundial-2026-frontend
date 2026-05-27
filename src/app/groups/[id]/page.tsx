@@ -3,10 +3,20 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { AppLayout } from "@/components/app-layout";
-import { Badge, Button, Card, ErrorState, SkeletonRows } from "@/components/ui";
+import { Badge, Button, Card, ErrorState, SkeletonRows, useToast } from "@/components/ui";
 import { track } from "@/lib/analytics";
 import { useGroup } from "@/lib/hooks";
 import { useAuth } from "@/lib/auth";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+
+function buildInviteUrl(inviteCode: string): string {
+  if (SITE_URL) return `${SITE_URL}/groups?code=${encodeURIComponent(inviteCode)}`;
+  if (typeof window !== "undefined") {
+    return `${window.location.origin}/groups?code=${encodeURIComponent(inviteCode)}`;
+  }
+  return `/groups?code=${encodeURIComponent(inviteCode)}`;
+}
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("es-ES", {
@@ -20,6 +30,7 @@ export default function GroupDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data, loading, error, refetch } = useGroup(id);
   const { user } = useAuth();
+  const toast = useToast();
   const [copied, setCopied] = useState(false);
 
   const group = data?.group;
@@ -34,6 +45,33 @@ export default function GroupDetailPage() {
       setTimeout(() => setCopied(false), 2000);
     } catch {
       //
+    }
+  };
+
+  const shareGroup = async () => {
+    if (!group) return;
+    const url = buildInviteUrl(group.inviteCode);
+    const shareData = {
+      title: `Unite a "${group.name}"`,
+      text: `Te invito a competir en mi quiniela del Mundial 2026. Código: ${group.inviteCode}`,
+      url,
+    };
+    track("invite_copied", { group_id: group.id });
+    try {
+      if (typeof navigator !== "undefined" && "share" in navigator) {
+        await navigator.share(shareData);
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copiado al portapapeles");
+    } catch (e) {
+      if (e instanceof Error && e.name === "AbortError") return; // usuario canceló
+      try {
+        await navigator.clipboard.writeText(url);
+        toast.success("Link copiado al portapapeles");
+      } catch {
+        toast.error("No se pudo compartir el link");
+      }
     }
   };
 
@@ -79,8 +117,8 @@ export default function GroupDetailPage() {
                 {copied ? "✅" : "📋"}
               </button>
             </div>
-            <Button variant="secondary" onClick={copyInviteCode}>
-              {copied ? "¡Copiado!" : "Invitar amigos"}
+            <Button variant="secondary" onClick={shareGroup}>
+              Compartir link
             </Button>
           </div>
         </div>
