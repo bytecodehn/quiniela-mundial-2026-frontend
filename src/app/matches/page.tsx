@@ -1,11 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { AppLayout } from "@/components/app-layout";
-import { EmptyState, ErrorState, FilterBar, MatchCard, Select, SkeletonRows, Tabs } from "@/components/ui";
-import { useMatches } from "@/lib/hooks";
-import type { GroupName } from "@/types";
+import {
+  EmptyState,
+  ErrorState,
+  FilterBar,
+  MatchCard,
+  Select,
+  SkeletonRows,
+  Tabs,
+  useToast,
+} from "@/components/ui";
+import { submitPrediction, useMatches } from "@/lib/hooks";
+import type { GroupName, Match } from "@/types";
 
 const stageOptions: { value: string; label: string }[] = [
   { value: "all", label: "Todos" },
@@ -25,8 +33,8 @@ const groupOptions: { value: string; label: string }[] = [
 const statusTabs = ["Todos", "Próximos", "Finalizados"];
 
 export default function MatchesPage() {
-  const router = useRouter();
   const { data, loading, error, refetch } = useMatches();
+  const toast = useToast();
   const [stageFilter, setStageFilter] = useState("all");
   const [groupFilter, setGroupFilter] = useState("all");
   const [statusTab, setStatusTab] = useState("Todos");
@@ -39,6 +47,31 @@ export default function MatchesPage() {
     if (statusTab === "Finalizados" && m.status !== "finished") return false;
     return true;
   });
+
+  const handleInlineSave = async (match: Match, homeScore: number, awayScore: number) => {
+    try {
+      await submitPrediction({
+        matchId: match.id,
+        homeScore,
+        awayScore,
+        match: {
+          id: match.id,
+          homeTeam: match.homeTeam,
+          awayTeam: match.awayTeam,
+          date: match.date,
+          time: match.time,
+          status: match.status,
+          homeScore: match.homeScore,
+          awayScore: match.awayScore,
+        },
+      });
+      toast.success("Predicción guardada");
+      await refetch();
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Error desconocido";
+      toast.error(`No se pudo guardar: ${msg}`);
+    }
+  };
 
   return (
     <AppLayout>
@@ -69,7 +102,7 @@ export default function MatchesPage() {
               key={match.id}
               match={match}
               variant="dark"
-              onPredict={() => router.push(`/matches/${match.id}`)}
+              onSavePrediction={(homeScore, awayScore) => handleInlineSave(match, homeScore, awayScore)}
             />
           ))}
         </div>

@@ -17,7 +17,15 @@ test("leaderboard muestra el podio y la tabla", async ({ page }) => {
   await expect(page.locator("text=🥉").first()).toBeVisible();
 });
 
-test("no muestra el tab 'Por grupo' (removido temporalmente)", async ({ page }) => {
+test("cambiar a 'Por grupo' muestra selector y ranking del grupo", async ({ page }) => {
   await page.goto("/leaderboard");
-  await expect(page.getByRole("tab", { name: /por grupo/i })).toHaveCount(0);
+
+  await page.getByRole("tab", { name: /por grupo/i }).click();
+
+  // Debe aparecer el selector de grupo
+  const selector = page.locator("select");
+  await expect(selector).toBeVisible();
+
+  // Y el podio se vuelve a mostrar con datos del grupo
+  await expect(page.locator("text=🥇").first()).toBeVisible();
 });

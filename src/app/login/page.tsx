@@ -48,9 +48,9 @@ export default function LoginPage() {
           </p>
           <div className="mt-10 flex flex-col gap-3 text-left">
             {[
-              { stat: "50K+", label: "Usuarios activos" },
-              { stat: "890K+", label: "Predicciones realizadas" },
-              { stat: "8K+", label: "Grupos privados" },
+              { stat: "64", label: "Partidos del torneo" },
+              { stat: "8", label: "Grupos · 32 selecciones" },
+              { stat: "Live", label: "Ranking en tiempo real" },
             ].map((item) => (
               <div key={item.label} className="flex items-center gap-4 p-3 rounded-radius-lg bg-bg-white/5 border border-white/10">
                 <span className="text-[1.2rem] font-extrabold text-green font-display">{item.stat}</span>

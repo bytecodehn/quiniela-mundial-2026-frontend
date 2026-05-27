@@ -1,8 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AppLayout } from "@/components/app-layout";
-import { Button, Card, CardTitle, ErrorState, SkeletonStats, StatCard } from "@/components/ui";
+import { Badge, Button, Card, CardTitle, ErrorState, SkeletonStats, StatCard } from "@/components/ui";
 import { useAuth } from "@/lib/auth";
 import { useMatches, useStats } from "@/lib/hooks";
 
@@ -13,13 +14,46 @@ const quickActions = [
   { href: "/predictions", label: "Mis Predicciones", desc: "Revisa el historial de tus pronósticos", icon: "🎯" },
 ];
 
+const SOON_THRESHOLD_MS = 24 * 3600 * 1000;
+
+function CountdownLabel({ deadline }: { deadline: string }) {
+  const [now, setNow] = useState<number>(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 30_000);
+    return () => clearInterval(id);
+  }, []);
+  const remaining = new Date(deadline).getTime() - now;
+  if (remaining <= 0) {
+    return <span className="text-red text-[0.75rem] font-semibold">Cerrado</span>;
+  }
+  const days = Math.floor(remaining / 86_400_000);
+  const hours = Math.floor((remaining % 86_400_000) / 3_600_000);
+  const minutes = Math.floor((remaining % 3_600_000) / 60_000);
+  const text = days > 0 ? `${days}d ${hours}h` : hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+  const soon = remaining < SOON_THRESHOLD_MS;
+  return (
+    <span
+      className={`text-[0.75rem] font-semibold tabular-nums ${soon ? "text-orange" : "text-fg-muted"}`}
+      aria-label={`Tiempo restante para predecir: ${text}`}
+    >
+      ⏱ {text}
+    </span>
+  );
+}
+
 export default function DashboardPage() {
   const { user } = useAuth();
   const { data: stats, loading: statsLoading, error: statsError, refetch: refetchStats } = useStats();
   const { data: matchesData, loading: matchesLoading } = useMatches();
 
-  const upcoming =
-    matchesData?.matches.filter((m) => m.status === "upcoming").slice(0, 4) ?? [];
+  const upcoming = (matchesData?.matches ?? [])
+    .filter((m) => m.status === "upcoming" && m.isPredictionOpen)
+    .slice()
+    .sort(
+      (a, b) =>
+        new Date(a.predictionDeadline).getTime() - new Date(b.predictionDeadline).getTime(),
+    )
+    .slice(0, 4);
 
   return (
     <AppLayout>
@@ -55,26 +89,41 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
         <Card>
-          <CardTitle>Próximos partidos</CardTitle>
+          <CardTitle>Próximos por cerrar</CardTitle>
           <div className="mt-4 space-y-3">
             {matchesLoading && <p className="text-fg-muted text-[0.9rem]">Cargando...</p>}
             {!matchesLoading && upcoming.length === 0 && (
-              <p className="text-fg-muted text-[0.9rem]">No hay partidos próximos</p>
+              <p className="text-fg-muted text-[0.9rem]">No hay partidos próximos abiertos</p>
             )}
-            {upcoming.map((match) => (
-              <Link
-                key={match.id}
-                href={`/matches/${match.id}`}
-                className="flex items-center gap-3 px-4 py-3 bg-bg-primary rounded-radius-md hover:bg-bg-elevated transition-colors no-underline"
-              >
-                <span className="text-[1.3rem]">{match.homeTeam.flag}</span>
-                <span className="flex-1 text-[0.9rem] text-fg font-medium truncate">
-                  {match.homeTeam.name} vs {match.awayTeam.name}
-                </span>
-                <span className="text-fg-muted text-[0.8rem]">{match.date}</span>
-                <Button size="sm">Predecir</Button>
-              </Link>
-            ))}
+            {upcoming.map((match) => {
+              const remaining = new Date(match.predictionDeadline).getTime() - Date.now();
+              const soon = remaining > 0 && remaining < SOON_THRESHOLD_MS;
+              return (
+                <Link
+                  key={match.id}
+                  href={`/matches/${match.id}`}
+                  className="flex items-center gap-3 px-4 py-3 bg-bg-primary rounded-radius-md hover:bg-bg-elevated transition-colors no-underline"
+                >
+                  <span className="text-[1.3rem]">{match.homeTeam.flag}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[0.9rem] text-fg font-medium truncate">
+                      {match.homeTeam.name} vs {match.awayTeam.name}
+                    </div>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <CountdownLabel deadline={match.predictionDeadline} />
+                      {soon && <Badge variant="orange">Cierra pronto</Badge>}
+                    </div>
+                  </div>
+                  {match.userPrediction ? (
+                    <span className="text-[0.85rem] text-fg-secondary font-mono tabular-nums">
+                      {match.userPrediction.homeScore}–{match.userPrediction.awayScore}
+                    </span>
+                  ) : (
+                    <Button size="sm">Predecir</Button>
+                  )}
+                </Link>
+              );
+            })}
           </div>
         </Card>
 

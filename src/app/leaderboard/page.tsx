@@ -1,8 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { AppLayout } from "@/components/app-layout";
-import { Badge, Card, ErrorState, SkeletonRows } from "@/components/ui";
-import { useGlobalLeaderboard } from "@/lib/hooks";
+import { Badge, Card, EmptyState, ErrorState, Select, SkeletonRows, Tabs } from "@/components/ui";
+import { useGlobalLeaderboard, useGroupLeaderboard, useGroups } from "@/lib/hooks";
 import type { LeaderboardEntry } from "@/types";
 
 function Podium({ entries }: { entries: LeaderboardEntry[] }) {
@@ -35,26 +36,67 @@ function Podium({ entries }: { entries: LeaderboardEntry[] }) {
   );
 }
 
+const TABS = ["Ranking Global", "Por grupo"];
+
 export default function LeaderboardPage() {
-  const { data, loading, error, refetch } = useGlobalLeaderboard();
+  const [activeTab, setActiveTab] = useState(TABS[0]);
+  const { data: groupsData, loading: groupsLoading } = useGroups();
+  const [selectedGroupId, setSelectedGroupId] = useState<string | undefined>();
+
+  const groups = groupsData?.groups ?? [];
+
+  useEffect(() => {
+    if (!selectedGroupId && groups.length > 0) {
+      setSelectedGroupId(groups[0].id);
+    }
+  }, [groups, selectedGroupId]);
+
+  const isGroupTab = activeTab === TABS[1];
+  const globalRes = useGlobalLeaderboard();
+  const groupRes = useGroupLeaderboard(isGroupTab ? selectedGroupId : undefined);
+
+  const data = isGroupTab ? groupRes.data : globalRes.data;
+  const loading = isGroupTab ? groupRes.loading || groupsLoading : globalRes.loading;
+  const error = isGroupTab ? groupRes.error : globalRes.error;
+  const refetch = isGroupTab ? groupRes.refetch : globalRes.refetch;
 
   const leaderboard = data?.leaderboard ?? [];
   const currentUserId = data?.currentUser.userId;
+  const noGroupsToShow = isGroupTab && !groupsLoading && groups.length === 0;
 
   return (
     <AppLayout>
       <div className="mb-6">
         <h1 className="text-[1.8rem] font-display font-bold text-fg">Leaderboard</h1>
         <p className="text-fg-secondary text-[0.95rem] mt-1">
-          Clasificación global de todos los participantes
+          {isGroupTab ? "Ranking dentro de tus grupos privados" : "Clasificación global de todos los participantes"}
         </p>
       </div>
 
-      {loading && <SkeletonRows count={6} />}
+      <Tabs tabs={TABS} active={activeTab} onChange={setActiveTab} label="Tipo de ranking" />
 
-      {!loading && error && <ErrorState message={error} onRetry={refetch} />}
+      {isGroupTab && groups.length > 0 && (
+        <div className="mb-6 max-w-xs">
+          <Select
+            options={groups.map((g) => ({ value: g.id, label: g.name }))}
+            value={selectedGroupId ?? ""}
+            onChange={setSelectedGroupId}
+          />
+        </div>
+      )}
 
-      {!loading && !error && data && (
+      {noGroupsToShow && (
+        <EmptyState
+          icon="👥"
+          text="Todavía no estás en ningún grupo. Crea uno o únete con un código de invitación para ver el ranking grupal."
+        />
+      )}
+
+      {!noGroupsToShow && loading && <SkeletonRows count={6} />}
+
+      {!noGroupsToShow && !loading && error && <ErrorState message={error} onRetry={refetch} />}
+
+      {!noGroupsToShow && !loading && !error && data && (
         <>
           <Podium entries={leaderboard.slice(0, 3)} />
 
