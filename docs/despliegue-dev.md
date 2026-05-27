@@ -137,13 +137,26 @@ HTTP/1.1 200 OK
 
 Suite Playwright que corre contra mocks; no requiere backend.
 
-Primera vez en el servidor:
+### Primera vez en el servidor Fedora
+
+Playwright no soporta oficialmente Fedora, asi que la instalacion de libs del sistema y del navegador van por separado.
+
+1. Instalar las libs del sistema con `dnf` (una vez):
+
+```bash
+sudo dnf install -y \
+  alsa-lib atk at-spi2-atk at-spi2-core cups-libs libdrm libxkbcommon \
+  mesa-libgbm nss pango gtk3 libXcomposite libXdamage libXfixes libXrandr \
+  libXcursor cairo
+```
+
+2. Descargar el binario de Chromium de Playwright (no requiere root):
 
 ```bash
 npm run test:e2e:install
 ```
 
-Despues:
+### Correr la suite
 
 ```bash
 npm run test:e2e
@@ -154,6 +167,10 @@ Playwright auto-arranca un dev server con `NEXT_PUBLIC_USE_MOCKS=true`. Para cor
 ```bash
 PLAYWRIGHT_BASE_URL=http://192.168.74.128:3000 npm run test:e2e
 ```
+
+### Troubleshooting
+
+Si al correr los tests aparece un error como `error while loading shared libraries: libnss3.so` o similar, falta alguna lib del paso 1. Instalala con `dnf` y reintenta.
 
 Nota: la suite asume mocks. Una suite separada con tag `@backend` se agregara cuando exista backend.
 
