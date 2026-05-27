@@ -34,3 +34,30 @@ test("actualizar nombre dispara toast y queda persistido en el mock store", asyn
   // Tras el save sin cambios adicionales, el botón vuelve a estar deshabilitado.
   await expect(save).toBeDisabled();
 });
+
+test("cambiar país persiste en el store", async ({ page }) => {
+  await page.goto("/profile");
+
+  // Selects nativos: primero país, segundo equipo favorito
+  await page.locator("select").first().selectOption("BR");
+
+  const save = page.getByRole("button", { name: /guardar cambios/i });
+  await save.click();
+  await expect(page.getByText(/perfil actualizado/i)).toBeVisible();
+
+  const stored = await page.evaluate(() => localStorage.getItem("qm26-mock-store-v1"));
+  expect(stored).toContain('"country":"BR"');
+});
+
+test("cambiar equipo favorito persiste en el store", async ({ page }) => {
+  await page.goto("/profile");
+
+  await page.locator("select").nth(1).selectOption("Brasil");
+
+  const save = page.getByRole("button", { name: /guardar cambios/i });
+  await save.click();
+  await expect(page.getByText(/perfil actualizado/i)).toBeVisible();
+
+  const stored = await page.evaluate(() => localStorage.getItem("qm26-mock-store-v1"));
+  expect(stored).toContain('"favoriteTeam":"Brasil"');
+});
