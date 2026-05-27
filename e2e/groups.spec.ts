@@ -17,7 +17,9 @@ test("crear grupo lo muestra en el listado", async ({ page }) => {
   await dialog.getByRole("button", { name: /^crear$/i }).click();
 
   await expect(page.getByText(/grupo "E2E Crack Squad" creado/i)).toBeVisible();
-  await expect(page.getByText("E2E Crack Squad")).toBeVisible();
+  // El nombre también aparece en el toast como substring; usamos heading
+  // para apuntar específicamente al CardTitle del listado.
+  await expect(page.getByRole("heading", { name: "E2E Crack Squad" })).toBeVisible();
 });
 
 test("unirse a un grupo con código lo agrega al listado", async ({ page }) => {
@@ -31,7 +33,7 @@ test("unirse a un grupo con código lo agrega al listado", async ({ page }) => {
   await dialog.getByRole("button", { name: /^unirse$/i }).click();
 
   await expect(page.getByText(/te uniste a "Grupo AMIGOS26"/i)).toBeVisible();
-  await expect(page.getByText("Grupo AMIGOS26")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Grupo AMIGOS26" })).toBeVisible();
 });
 
 test("modal de crear grupo se cierra con Escape", async ({ page }) => {
