@@ -30,7 +30,7 @@ Se revisaron:
 Validacion en servidor DEV:
 
 - En el ambiente local de VS Code, `node`, `npm` y `git` no estan disponibles por PATH; ese entorno se usa solo para programacion.
-- En el servidor DEV `192.168.74.128`, `node`, `npm` y `git` si estan disponibles.
+- En el servidor DEV `192.168.74.128`, `node`, `npm` y `git` si estan disponibles: Node `v24.16.0`, npm `11.13.0`, Git `2.54.0`.
 - `npm run typecheck` paso correctamente en DEV.
 - `npm run build` paso correctamente en DEV.
 - `npm run lint` paso correctamente en DEV, sin warnings ni errores.
@@ -59,7 +59,7 @@ Validacion en servidor DEV:
 - No hay estrategia visible de i18n, SEO/OG, PWA/push ni medicion de Core Web Vitals para capturar mercado pre-Mundial.
 - El admin muestra volumen operativo, pero no embudos, cohortes, conversion, retencion ni revenue.
 
-## Hallazgos UI/UX
+## Hallazgos UX, tecnicos y estrategicos
 
 ### 1. La identidad visual es consistente, pero demasiado generica para un Mundial
 
@@ -549,4 +549,6 @@ Propiedades utiles:
 
 ## Conclusion
 
-La plataforma tiene una base prometedora y bastante completa para un MVP visual. Para que madure como producto, el foco debe pasar de "mostrar pantallas" a "cerrar ciclos": predecir mas rapido, competir con menos friccion, invitar amigos, medir conversion y habilitar pagos sobre los grupos. La monetizacion mas fuerte no deberia ser vender predicciones ni premios monetarios, sino vender organizacion, personalizacion, estadisticas, comunidad y patrocinios responsables.
+La plataforma tiene una base prometedora y bastante completa para un MVP visual. Para que madure como producto, el foco debe pasar de "mostrar pantallas" a "cerrar ciclos": predecir mas rapido, competir con menos friccion, invitar amigos y medir conversion.
+
+La monetizacion mas fuerte no deberia ser vender predicciones ni premios monetarios, sino vender organizacion, personalizacion, estadisticas, comunidad y patrocinios responsables. Antes de construir UI premium, hay que definir el contrato backend de pagos/planes/sponsors; antes de cobrar, hay que cubrir con tests los flujos criticos.
