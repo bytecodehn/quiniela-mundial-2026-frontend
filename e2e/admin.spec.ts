@@ -57,7 +57,8 @@ test.describe("admin / matches", () => {
   test("listado de partidos visible con filtro de estado", async ({ page }) => {
     await page.goto("/admin/matches");
     await expect(page.getByRole("heading", { name: /^partidos$/i })).toBeVisible();
-    // Debe haber al menos un partido finalizado en los mocks
-    await expect(page.getByText("Finalizado").first()).toBeVisible();
+    // Badge "Finalizado" en la tabla (exact: true evita matchear el
+    // <option>Finalizados</option> del filtro).
+    await expect(page.getByText("Finalizado", { exact: true }).first()).toBeVisible();
   });
 });
