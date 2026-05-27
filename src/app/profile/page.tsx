@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { AppLayout } from "@/components/app-layout";
 import { Button, Card, ErrorState, Input, SkeletonStats, StatCard, useToast } from "@/components/ui";
 import { NotificationsCard } from "@/components/NotificationsCard";
@@ -48,6 +48,8 @@ export default function ProfilePage() {
   const { user, updateUser } = useAuth();
   const { data: stats, loading: statsLoading, error: statsError, refetch } = useStats();
   const toast = useToast();
+  const countryId = useId();
+  const teamId = useId();
   const [name, setName] = useState("");
   const [favoriteTeam, setFavoriteTeam] = useState("");
   const [country, setCountry] = useState("");
@@ -125,8 +127,11 @@ export default function ProfilePage() {
               disabled
             />
             <div className="mb-5">
-              <label className="block text-[0.85rem] font-semibold text-fg-secondary mb-2">País</label>
+              <label htmlFor={countryId} className="block text-[0.85rem] font-semibold text-fg-secondary mb-2">
+                País
+              </label>
               <select
+                id={countryId}
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
                 className="w-full px-4 py-2.5 bg-bg-primary border border-border rounded-radius-md text-fg text-[0.95rem] outline-none transition-colors duration-150 focus:border-green focus:shadow-[0_0_0_3px_oklch(60%_0.18_145/0.15)]"
@@ -137,11 +142,12 @@ export default function ProfilePage() {
               </select>
             </div>
             <div className="mb-5">
-              <label className="block text-[0.85rem] font-semibold text-fg-secondary mb-2">
+              <label htmlFor={teamId} className="block text-[0.85rem] font-semibold text-fg-secondary mb-2">
                 Selección favorita
               </label>
               <div className="flex items-center gap-3">
                 <select
+                  id={teamId}
                   value={favoriteTeam}
                   onChange={(e) => setFavoriteTeam(e.target.value)}
                   className="flex-1 px-4 py-2.5 bg-bg-primary border border-border rounded-radius-md text-fg text-[0.95rem] outline-none transition-colors duration-150 focus:border-green focus:shadow-[0_0_0_3px_oklch(60%_0.18_145/0.15)]"
@@ -150,7 +156,7 @@ export default function ProfilePage() {
                     <option key={t} value={t}>{t}</option>
                   ))}
                 </select>
-                <span className="text-[2rem]">{teamFlag(favoriteTeam)}</span>
+                <span className="text-[2rem]" aria-hidden="true">{teamFlag(favoriteTeam)}</span>
               </div>
             </div>
             <div className="flex items-center gap-3">

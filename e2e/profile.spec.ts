@@ -38,8 +38,7 @@ test("actualizar nombre dispara toast y queda persistido en el mock store", asyn
 test("cambiar país persiste en el store", async ({ page }) => {
   await page.goto("/profile");
 
-  // Selects nativos: primero país, segundo equipo favorito
-  await page.locator("select").first().selectOption("BR");
+  await page.getByLabel("País", { exact: true }).selectOption("BR");
 
   const save = page.getByRole("button", { name: /guardar cambios/i });
   await save.click();
@@ -52,7 +51,7 @@ test("cambiar país persiste en el store", async ({ page }) => {
 test("cambiar equipo favorito persiste en el store", async ({ page }) => {
   await page.goto("/profile");
 
-  await page.locator("select").nth(1).selectOption("Brasil");
+  await page.getByLabel("Selección favorita", { exact: true }).selectOption("Brasil");
 
   const save = page.getByRole("button", { name: /guardar cambios/i });
   await save.click();
