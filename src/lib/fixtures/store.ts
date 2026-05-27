@@ -8,6 +8,8 @@ import {
 } from "./index";
 import type { Group, Prediction, ScoringRule, User } from "@/types";
 
+export type UserPatch = Partial<{ name: string; favoriteTeam: string; country: string; avatar: string | null }>;
+
 const STORAGE_KEY = "qm26-mock-store-v1";
 
 interface StoreState {
@@ -84,7 +86,7 @@ export const mockStore = {
     s.user = user;
     writeState(s);
   },
-  patchUser: (patch: Partial<User>) => {
+  patchUser: (patch: UserPatch) => {
     const s = readState();
     s.user = { ...s.user, ...patch, avatar: patch.avatar ?? s.user.avatar };
     writeState(s);
