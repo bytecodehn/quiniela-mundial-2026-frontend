@@ -27,7 +27,10 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      // Pin locale a es-AR para que LocaleProvider autodetect resuelva
+      // siempre a "es" en CI y los assertions de strings en español sigan
+      // funcionando. Para validar otros locales, override en cada spec.
+      use: { ...devices["Desktop Chrome"], locale: "es-AR" },
     },
   ],
   webServer: process.env.PLAYWRIGHT_BASE_URL
