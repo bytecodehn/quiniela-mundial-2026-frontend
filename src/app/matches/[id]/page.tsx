@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { AppLayout } from "@/components/app-layout";
 import { Badge, Button, Card, ErrorState, SkeletonRows, useToast } from "@/components/ui";
+import { track } from "@/lib/analytics";
 import { submitPrediction, useMatch } from "@/lib/hooks";
 
 function Countdown({ target }: { target: string }) {
@@ -99,6 +100,13 @@ export default function MatchDetailPage() {
           homeScore: match.homeScore,
           awayScore: match.awayScore,
         },
+      });
+      track("prediction_saved", {
+        match_id: match.id,
+        home_score: Number(homeScore),
+        away_score: Number(awayScore),
+        source: "match_detail",
+        is_edit: !!prediction,
       });
       toast.success("Predicción guardada");
       setSaved(true);

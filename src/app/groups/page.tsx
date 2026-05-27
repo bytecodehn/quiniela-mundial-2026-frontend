@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { AppLayout } from "@/components/app-layout";
 import { Badge, Button, Card, CardHeader, CardTitle, EmptyState, ErrorState, Input, Modal, SkeletonRows, useToast } from "@/components/ui";
+import { track } from "@/lib/analytics";
 import { createGroup, joinGroup, useGroups } from "@/lib/hooks";
 
 export default function GroupsPage() {
@@ -22,6 +23,7 @@ export default function GroupsPage() {
     setSubmitting(true);
     try {
       const res = await createGroup({ name: createName.trim() });
+      track("group_created", { group_id: res.group.id, name: res.group.name });
       await refetch();
       setShowCreate(false);
       setCreateName("");
@@ -39,6 +41,7 @@ export default function GroupsPage() {
     setSubmitting(true);
     try {
       const res = await joinGroup({ inviteCode: joinCode.trim() });
+      track("group_joined", { group_id: res.group.id, invite_code: res.group.inviteCode });
       await refetch();
       setShowJoin(false);
       setJoinCode("");

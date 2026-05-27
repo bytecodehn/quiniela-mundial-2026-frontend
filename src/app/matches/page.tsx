@@ -12,6 +12,7 @@ import {
   Tabs,
   useToast,
 } from "@/components/ui";
+import { track } from "@/lib/analytics";
 import { submitPrediction, useMatches } from "@/lib/hooks";
 import type { GroupName, Match } from "@/types";
 
@@ -64,6 +65,13 @@ export default function MatchesPage() {
           homeScore: match.homeScore,
           awayScore: match.awayScore,
         },
+      });
+      track("prediction_saved", {
+        match_id: match.id,
+        home_score: homeScore,
+        away_score: awayScore,
+        source: "matches_list",
+        is_edit: !!match.userPrediction,
       });
       toast.success("Predicción guardada");
       await refetch();

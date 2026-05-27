@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { AppLayout } from "@/components/app-layout";
 import { Badge, Button, Card, ErrorState, SkeletonRows } from "@/components/ui";
+import { track } from "@/lib/analytics";
 import { useGroup } from "@/lib/hooks";
 import { useAuth } from "@/lib/auth";
 
@@ -28,6 +29,7 @@ export default function GroupDetailPage() {
     if (!group) return;
     try {
       await navigator.clipboard.writeText(group.inviteCode);
+      track("invite_copied", { group_id: group.id });
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {

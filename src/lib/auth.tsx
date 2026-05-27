@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
 import { api } from "./api";
+import { identify, resetAnalytics, track } from "./analytics";
 import { mockUser } from "./fixtures";
 import { mockStore } from "./fixtures/store";
 import { USE_MOCKS } from "./hooks/useFetch";
@@ -59,18 +60,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => { fetchUser(); }, [fetchUser]);
 
   const login = async (email: string, password: string) => {
+    track("login_started", {});
     if (USE_MOCKS) {
       if (email !== DEMO_CREDENTIALS.email || password !== DEMO_CREDENTIALS.password) {
+        track("login_failed", { reason: "invalid_credentials" });
         throw new Error("Credenciales demo inválidas");
       }
       mockStore.setUser(mockUser as User);
       localStorage.setItem("token", MOCK_TOKEN);
       setUser(mockUser as User);
+      identify(mockUser.id, { country: mockUser.country, favorite_team: mockUser.favoriteTeam });
+      track("login_completed", { user_id: mockUser.id });
       return;
     }
-    const res = await api.login({ email, password });
-    localStorage.setItem("token", res.token);
-    setUser(res.user);
+    try {
+      const res = await api.login({ email, password });
+      localStorage.setItem("token", res.token);
+      setUser(res.user);
+      identify(res.user.id, { country: res.user.country, favorite_team: res.user.favoriteTeam });
+      track("login_completed", { user_id: res.user.id });
+    } catch (e) {
+      track("login_failed", { reason: e instanceof Error ? e.message : "unknown" });
+      throw e;
+    }
   };
 
   const register = async (data: {
@@ -100,14 +112,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       mockStore.setUser(fakeUser);
       localStorage.setItem("token", MOCK_TOKEN);
       setUser(fakeUser);
+      identify(fakeUser.id, { country: fakeUser.country, favorite_team: fakeUser.favoriteTeam });
+      track("signup_completed", {
+        user_id: fakeUser.id,
+        country: data.country,
+        favorite_team: data.favoriteTeam,
+      });
       return;
     }
     const res = await api.register(data);
     localStorage.setItem("token", res.token);
     setUser(res.user);
+    identify(res.user.id, { country: res.user.country, favorite_team: res.user.favoriteTeam });
+    track("signup_completed", {
+      user_id: res.user.id,
+      country: data.country,
+      favorite_team: data.favoriteTeam,
+    });
   };
 
   const logout = () => {
+    track("logout_completed", {});
+    resetAnalytics();
     localStorage.removeItem("token");
     if (USE_MOCKS) mockStore.reset();
     setUser(null);

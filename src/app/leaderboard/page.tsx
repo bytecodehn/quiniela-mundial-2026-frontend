@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AppLayout } from "@/components/app-layout";
 import { Badge, Card, EmptyState, ErrorState, Select, SkeletonRows, Tabs } from "@/components/ui";
+import { track } from "@/lib/analytics";
 import { useGlobalLeaderboard, useGroupLeaderboard, useGroups } from "@/lib/hooks";
 import type { LeaderboardEntry } from "@/types";
 
@@ -54,6 +55,13 @@ export default function LeaderboardPage() {
   const isGroupTab = activeTab === TABS[1];
   const globalRes = useGlobalLeaderboard();
   const groupRes = useGroupLeaderboard(isGroupTab ? selectedGroupId : undefined);
+
+  useEffect(() => {
+    track("leaderboard_viewed", {
+      scope: isGroupTab ? "group" : "global",
+      group_id: isGroupTab ? selectedGroupId : undefined,
+    });
+  }, [isGroupTab, selectedGroupId]);
 
   const data = isGroupTab ? groupRes.data : globalRes.data;
   const loading = isGroupTab ? groupRes.loading || groupsLoading : globalRes.loading;

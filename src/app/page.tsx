@@ -5,6 +5,26 @@ import Link from "next/link";
 import { Button, Card, MatchCard, SkeletonRows } from "@/components/ui";
 import { useGlobalLeaderboard, useMatches } from "@/lib/hooks";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Quiniela Mundial 2026",
+  url: SITE_URL,
+  description:
+    "Plataforma social de predicciones deportivas para la Copa Mundial 2026. Predicciones, rankings y grupos privados.",
+  sameAs: [] as string[],
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Quiniela Mundial 2026",
+  url: SITE_URL,
+  inLanguage: "es-AR",
+};
+
 const navLinks = [
   { href: "#como-funciona", label: "Cómo funciona" },
   { href: "#partidos", label: "Partidos" },
@@ -36,6 +56,14 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-bg-primary">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
       {/* Public Header */}
       <header className="sticky top-0 z-50 bg-bg-primary/80 backdrop-blur-lg border-b border-border">
         <div className="max-w-[1280px] mx-auto flex items-center justify-between px-6 h-16">
