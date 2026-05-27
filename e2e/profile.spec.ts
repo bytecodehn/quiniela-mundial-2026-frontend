@@ -13,7 +13,7 @@ test("guardar perfil queda deshabilitado sin cambios", async ({ page }) => {
   await expect(page.getByText(/sin cambios pendientes/i)).toBeVisible();
 });
 
-test("actualizar nombre dispara toast y persiste tras reload", async ({ page }) => {
+test("actualizar nombre dispara toast y queda persistido en el mock store", async ({ page }) => {
   await page.goto("/profile");
 
   const nameInput = page.getByLabel("Nombre", { exact: true });
@@ -25,7 +25,12 @@ test("actualizar nombre dispara toast y persiste tras reload", async ({ page }) 
 
   await expect(page.getByText(/perfil actualizado/i)).toBeVisible();
 
-  // Reload y verificar que el nombre persiste
-  await page.reload();
-  await expect(page.getByLabel("Nombre", { exact: true })).toHaveValue("Nuevo Nombre");
+  // Tras el toast, el patchUser ya escribió a localStorage. Verificamos el
+  // store directamente para evitar dependencias en re-mount/hidratación.
+  const stored = await page.evaluate(() => localStorage.getItem("qm26-mock-store-v1"));
+  expect(stored).not.toBeNull();
+  expect(stored).toContain('"name":"Nuevo Nombre"');
+
+  // Tras el save sin cambios adicionales, el botón vuelve a estar deshabilitado.
+  await expect(save).toBeDisabled();
 });

@@ -27,7 +27,7 @@ test("register crea usuario y aterriza en dashboard", async ({ page }) => {
     country: "AR",
   });
   await expect(page).toHaveURL(/\/dashboard$/);
-  await expect(page.getByText(/usuaria/i)).toBeVisible();
+  await expect(page.getByRole("heading", { name: /bienvenido.*usuaria/i })).toBeVisible();
 });
 
 test("logout limpia sesión y redirige al login", async ({ page }) => {
