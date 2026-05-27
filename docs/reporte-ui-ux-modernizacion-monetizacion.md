@@ -270,6 +270,56 @@ Mejora:
 - Auditar bundle, LCP, CLS e INP antes de campanas de adquisicion.
 - Introducir `next/image` cuando se incorporen activos reales de producto/landing.
 
+### 15. Identidad del torneo: banderas de paises como assets reales
+
+Hoy la app depende fuertemente de emojis para banderas (`match.homeTeam.flag`, perfil, ranking, filtros). El emoji se ve distinto entre Android, iOS, Windows y Linux, y rara vez transmite la solemnidad de un torneo Mundial. Para una quiniela mundialista esto es central: el producto vive de afiliacion ("mi seleccion", "contra quien juego").
+
+Propuesta de comercial / producto:
+
+- Reemplazar emojis por assets de bandera reales (SVG preferido por nitidez, PNG si hace falta cobertura).
+- Mostrar `bandera + codigo FIFA` consistentemente: ARG, BRA, HON, USA, etc.
+- Usar las banderas en partidos, ranking por seleccion favorita, perfil, filtros y share cards.
+- Persistir en backend el `country` y `favoriteTeam` del usuario (el campo ya existe en el contrato pero hay que aprovecharlo).
+- Fallback robusto si una bandera no carga: iniciales o codigo FIFA dentro de un placeholder visual.
+
+Notas operativas:
+
+- Mundial 2026 tiene 48 selecciones (no 32). El sistema debe estar preparado para 48 desde el inicio.
+- Los fixtures actuales son mock con equipos no definitivos; la lista oficial se cierra mas adelante. Diseno del catalogo de selecciones debe permitir cargar/actualizar la lista cuando FIFA confirme.
+- Conviene una tabla `teams` en backend con codigo FIFA, nombre localizado por locale (es/en/pt-BR) y URL de la bandera servida desde CDN propio (no dependencias externas que puedan caerse durante el torneo).
+
+### 16. Personalizacion social: avatares de usuario y branding de grupos
+
+Iniciales sobre gradiente cumplen para MVP, pero una app social rinde mas cuando los usuarios y grupos tienen identidad visual propia. Esto refuerza pertenencia, hace que el grupo se sienta "del usuario" y abre superficies de monetizacion (Grupo Pro, ver Modelo 2).
+
+Niveles propuestos para usuario:
+
+- Iniciales automaticas (default actual).
+- Avatar generado por color/seleccion favorita (sin subir nada).
+- Bandera del equipo favorito como avatar.
+- Foto subida por el usuario.
+
+Niveles propuestos para grupo:
+
+- Logo con iniciales del nombre del grupo (default).
+- Color/tema configurable.
+- Escudo generado (estilo fubol club).
+- Imagen subida por el creador.
+
+Consideraciones tecnicas:
+
+- Limites de tamano (recomendado 2 MB), formatos (JPEG/PNG/WebP) y dimensiones minimas.
+- Compresion server-side antes de servir.
+- Moderacion basica: bloqueo por hash de imagenes denunciadas + revision manual desde admin.
+- Endpoints backend: `POST /me/avatar`, `POST /groups/:id/logo`, ambos retornan URL del asset servido por CDN.
+- Frontend: `<Avatar>` y `<GroupLogo>` componentes con fallback en cascada (foto → bandera → iniciales).
+
+Encaje con monetizacion (Grupo Pro):
+
+- Personalizacion basica gratuita (iniciales, color, bandera).
+- Personalizacion avanzada en Grupo Pro: logo subido, escudo generado, tema/color del grupo, share cards con branding, badges premium, ranking visual personalizado.
+- El pitch comercial: "cada usuario representa a su seleccion y cada grupo tiene identidad propia" vende mas que una tabla generica de puntos.
+
 ## Modernizacion tecnica recomendada
 
 ### Alta prioridad
@@ -347,7 +397,7 @@ Gratis:
 Grupo Pro:
 
 - Mas miembros.
-- Branding del grupo.
+- Branding del grupo: logo personalizado subido, escudo generado, tema/color del grupo, share cards con marca del grupo, ranking visual personalizado, badges premium para miembros (ver hallazgo #16).
 - Ranking por jornadas.
 - Estadisticas de participacion.
 - Export CSV.
@@ -452,6 +502,8 @@ Metricas:
 - Recordatorios de deadlines por email y evaluacion PWA/Web Push.
 - Panel admin de crecimiento.
 - Preparar i18n si el mercado objetivo incluye ingles/portugues.
+- **Identidad del torneo**: banderas reales (SVG/CDN propio) en partidos, ranking y perfil + codigo FIFA + fallback a iniciales. Sistema preparado para 48 selecciones.
+- **Avatar de usuario basico**: iniciales auto, generado por color de seleccion y bandera del equipo favorito (sin subida todavia).
 
 Metricas:
 
@@ -467,6 +519,7 @@ Metricas:
 - Checkout y billing.
 - Premium individual para estadisticas.
 - Admin de planes, pagos, cupones y sponsors.
+- **Subida de foto de usuario** y **logo/escudo/tema de grupo** (gratis: basico; Grupo Pro: avanzado con branding visual completo).
 
 Metricas:
 
@@ -530,16 +583,20 @@ Propiedades utiles:
 - Panel admin de conversion y activacion.
 - SEO/Open Graph/canonical y share cards.
 - Evaluacion i18n para `es`, `en`, `pt-BR`.
+- **Banderas reales (SVG/CDN) + codigo FIFA** en partidos, ranking, perfil, filtros y share cards, con fallback. Preparado para 48 selecciones del Mundial 2026.
+- **Avatar de usuario basico**: iniciales / color generado / bandera del equipo favorito (sin subida).
 
 ### P2
 
 - Premium individual.
-- Grupo Pro.
+- Grupo Pro (incluye branding avanzado del grupo: logo subido, escudo, tema, share cards con marca, badges premium).
 - Sponsorship placements.
 - Share cards visuales.
 - Notificaciones por email/push.
 - PWA/Web Push si las metricas de retorno diario lo justifican.
 - Auditoria Core Web Vitals antes de adquisicion pagada.
+- **Subida de foto de avatar** del usuario (con compresion, limites de tamano y moderacion basica).
+- **Personalizacion basica de grupo**: color/tema y escudo generado (la version avanzada queda en Grupo Pro).
 
 ### P3
 
