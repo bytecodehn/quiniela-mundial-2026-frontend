@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Partidos — Quiniela Mundial 2026</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    .matches-list { display: flex; flex-direction: column; gap: var(--space-4); }
+    .match-day-group { margin-bottom: var(--space-6); }
+    .match-day-header {
+      font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--fg-muted); font-weight: 600; margin-bottom: var(--space-3);
+      padding-bottom: var(--space-2); border-bottom: 1px solid var(--border);
+    }
+    .match-card-detailed {
+      display: grid; grid-template-columns: 1fr auto auto;
+      gap: var(--space-4); align-items: center;
+      padding: var(--space-5); background: var(--bg-surface);
+      border: 1px solid var(--border); border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+    }
+    .match-card-detailed:hover {
+      background: var(--bg-elevated); border-color: oklch(32% 0.02 260);
+    }
+    .match-teams-col {
+      display: flex; flex-direction: column; gap: var(--space-3);
+    }
+    .match-team-row {
+      display: flex; align-items: center; gap: var(--space-3);
+    }
+    .match-team-row .flag { width: 24px; height: 18px; border-radius: 3px; background: oklch(30% 0.01 260); }
+    .match-team-row .name { font-weight: 600; font-size: 0.95rem; }
+    .match-team-row .score {
+      margin-left: auto; font-family: var(--font-display);
+      font-weight: 700; font-size: 1.1rem; letter-spacing: 0.05em;
+    }
+    .match-meta-col {
+      display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-1);
+      min-width: 100px;
+    }
+    .match-meta-col .date { font-size: 0.8rem; color: var(--fg-muted); }
+    .match-meta-col .time { font-family: var(--font-mono); font-size: 0.85rem; color: var(--fg-secondary); }
+    .match-meta-col .stadium { font-size: 0.75rem; color: var(--fg-muted); }
+    .match-action-col { display: flex; align-items: center; }
+    .group-label {
+      font-size: 0.7rem; padding: 2px 8px; border-radius: var(--radius-full);
+      background: var(--border); color: var(--fg-muted); font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    @media (max-width: 768px) {
+      .match-card-detailed { grid-template-columns: 1fr; gap: var(--space-3); }
+      .match-meta-col { flex-direction: row; align-items: center; justify-content: space-between; width: 100%; }
+      .match-action-col { justify-content: flex-end; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <span class="sidebar-logo-icon">QM</span>
+        <span>Quiniela 2026</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="matches.html" class="sidebar-nav-item active"><span class="nav-icon">⚽</span> Partidos</a>
+        <a href="my-predictions.html" class="sidebar-nav-item"><span class="nav-icon">📋</span> Mis predicciones</a>
+        <a href="leaderboard.html" class="sidebar-nav-item"><span class="nav-icon">🏆</span> Ranking</a>
+        <a href="groups.html" class="sidebar-nav-item"><span class="nav-icon">👥</span> Grupos</a>
+        <a href="profile.html" class="sidebar-nav-item"><span class="nav-icon">👤</span> Perfil</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">CA</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Carlos Andrés</div>
+            <div class="sidebar-user-role">📍 Argentina</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <h2 style="font-size:1.2rem">Calendario de partidos</h2>
+        </div>
+        <div class="header-right">
+          <div class="header-search">
+            <span>🔍</span>
+            <input type="text" placeholder="Buscar equipos..." />
+          </div>
+          <div class="header-badge">🔔<span class="header-badge-dot"></span></div>
+        </div>
+      </header>
+
+      <div class="app-content">
+        <p class="page-subtitle">Todos los partidos del Mundial 2026. Pronostica antes de que comience cada partido.</p>
+
+        <!-- Filters -->
+        <div class="filter-bar">
+          <select class="filter-select">
+            <option value="all">Todos los grupos</option>
+            <option value="A">Grupo A</option>
+            <option value="B">Grupo B</option>
+            <option value="C">Grupo C</option>
+            <option value="D">Grupo D</option>
+            <option value="E">Grupo E</option>
+            <option value="F">Grupo F</option>
+            <option value="G">Grupo G</option>
+            <option value="H">Grupo H</option>
+            <option value="R16">Octavos</option>
+            <option value="QF">Cuartos</option>
+            <option value="SF">Semifinales</option>
+            <option value="F">Final</option>
+          </select>
+          <select class="filter-select">
+            <option value="all">Todas las fechas</option>
+            <option value="2026-06-11">11 Jun</option>
+            <option value="2026-06-12">12 Jun</option>
+            <option value="2026-06-13">13 Jun</option>
+            <option value="2026-06-14">14 Jun</option>
+            <option value="2026-06-15">15 Jun</option>
+            <option value="2026-06-16">16 Jun</option>
+          </select>
+          <div class="tabs" style="margin-bottom:0">
+            <button class="tab active">Todos</button>
+            <button class="tab">Próximos</button>
+            <button class="tab">Finalizados</button>
+            <button class="tab">Con mi predicción</button>
+          </div>
+        </div>
+
+        <!-- Match Day: 14 Jun -->
+        <div class="match-day-group">
+          <div class="match-day-header">Jueves 14 de junio — Fase de grupos</div>
+          <div class="matches-list">
+            <div class="match-card-detailed">
+              <div class="match-teams-col">
+                <div class="match-team-row">
+                  <span class="flag" style="background:linear-gradient(135deg,#75aadb,#003f5c)">🇦🇷</span>
+                  <span class="name">Argentina</span>
+                  <span class="score" style="color:var(--fg-muted)">—</span>
+                </div>
+                <div class="match-team-row">
+                  <span class="flag" style="background:linear-gradient(135deg,#db3a34,#00247d)">🇪🇸</span>
+                  <span class="name">España</span>
+                  <span class="score" style="color:var(--fg-muted)">—</span>
+                </div>
+              </div>
+              <div class="match-meta-col">
+                <span class="group-label">Grupo C</span>
+                <span class="date">14 Jun</span>
+                <span class="time">16:00</span>
+                <span class="stadium">Estadio Azteca</span>
+                <span class="match-status upcoming" style="margin-top:4px">Pronostica</span>
+              </div>
+              <div class="match-action-col">
+                <a href="prediction.html" class="btn btn-primary btn-sm">Predecir</a>
+              </div>
+            </div>
+
+            <div class="match-card-detailed">
+              <div class="match-teams-col">
+                <div class="match-team-row">
+                  <span class="flag" style="background:linear-gradient(135deg,#002395,#ED2939)">🇫🇷</span>
+                  <span class="name">Francia</span>
+                  <span class="score" style="color:var(--fg-muted)">—</span>
+                </div>
+                <div class="match-team-row">
+                  <span class="flag" style="background:linear-gradient(135deg,#009b3a,#fedf00)">🇧🇷</span>
+                  <span class="name">Brasil</span>
+                  <span class="score" style="color:var(--fg-muted)">—</span>
+                </div>
+              </div>
+              <div class="match-meta-col">
+                <span class="group-label">Grupo E</span>
+                <span class="date">14 Jun</span>
+                <span class="time">21:00</span>
+                <span class="stadium">Estadio Monumental</span>
+                <span class="match-status upcoming" style="margin-top:4px">Pronostica</span>
+              </div>
+              <div class="match-action-col">
+                <a href="prediction.html" class="btn btn-primary btn-sm">Predecir</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Match Day: 15 Jun -->
+        <div class="match-day-group">
+          <div class="match-day-header">Viernes 15 de junio — Fase de grupos</div>
+          <div class="matches-list">
+            <div class="match-card-detailed">
+              <div class="match-teams-col">
+                <div class="match-team-row">
+                  <span class="flag" style="background:linear-gradient(135deg,#1d1d1b,#00a650)">🇲🇽</span>
+                  <span class="name">México</span>
+                  <span class="score" style="color:var(--fg-muted)">—</span>
+                </div>
+                <div class="match-team-row">
+                  <span class="flag" style="background:linear-gradient(135deg,#c60c30,#00843d)">🇺🇾</span>
+                  <span class="name">Uruguay</span>
+                  <span class="score" style="color:var(--fg-muted)">—</span>
+                </div>
+              </div>
+              <div class="match-meta-col">
+                <span class="group-label">Grupo A</span>
+                <span class="date">15 Jun</span>
+                <span class="time">19:00</span>
+                <span class="stadium">Estadio BBVA</span>
+                <span class="match-status upcoming" style="margin-top:4px">Pronostica</span>
+              </div>
+              <div class="match-action-col">
+                <a href="prediction.html" class="btn btn-primary btn-sm">Predecir</a>
+              </div>
+            </div>
+
+            <div class="match-card-detailed">
+              <div class="match-teams-col">
+                <div class="match-team-row">
+                  <span class="flag" style="background:linear-gradient(135deg,#000,#ff0000)">🇩🇪</span>
+                  <span class="name">Alemania</span>
+                  <span class="score" style="color:var(--fg-muted)">—</span>
+                </div>
+                <div class="match-team-row">
+                  <span class="flag" style="background:linear-gradient(135deg,#009b3a,#ffcc00)">🇵🇹</span>
+                  <span class="name">Portugal</span>
+                  <span class="score" style="color:var(--fg-muted)">—</span>
+                </div>
+              </div>
+              <div class="match-meta-col">
+                <span class="group-label">Grupo F</span>
+                <span class="date">15 Jun</span>
+                <span class="time">21:00</span>
+                <span class="stadium">Estadio Centenario</span>
+                <span class="match-status upcoming" style="margin-top:4px">Pronostica</span>
+              </div>
+              <div class="match-action-col">
+                <a href="prediction.html" class="btn btn-primary btn-sm">Predecir</a>
+              </div>
+            </div>
+
+            <div class="match-card-detailed" style="background:var(--bg-elevated);border-color:oklch(32% 0.02 260)">
+              <div class="match-teams-col">
+                <div class="match-team-row">
+                  <span class="flag" style="background:linear-gradient(135deg,#00247d,#cf142b)">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
+                  <span class="name">Inglaterra</span>
+                  <span class="score" style="color:var(--fg-muted)">—</span>
+                </div>
+                <div class="match-team-row">
+                  <span class="flag" style="background:linear-gradient(135deg,#1d4289,#ff6600)">🇳🇱</span>
+                  <span class="name">Países Bajos</span>
+                  <span class="score" style="color:var(--fg-muted)">—</span>
+                </div>
+              </div>
+              <div class="match-meta-col">
+                <span class="group-label">Grupo B</span>
+                <span class="date">15 Jun</span>
+                <span class="time">16:00</span>
+                <span class="stadium">Estadio Maracaná</span>
+                <span class="match-status live" style="margin-top:4px">En vivo</span>
+              </div>
+              <div class="match-action-col">
+                <span class="badge badge-blue">Mi pronóstico: 2-1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Finished matches -->
+        <div class="match-day-group">
+          <div class="match-day-header">Finalizados — Fase de grupos</div>
+          <div class="matches-list">
+            <div class="match-card-detailed">
+              <div class="match-teams-col">
+                <div class="match-team-row">
+                  <span class="flag" style="background:linear-gradient(135deg,#1d1d1b,#00a650)">🇲🇽</span>
+                  <span class="name">México</span>
+                  <span class="score">1</span>
+                </div>
+                <div class="match-team-row">
+                  <span class="flag" style="background:linear-gradient(135deg,#c60c30,#00843d)">🇺🇾</span>
+                  <span class="name">Uruguay</span>
+                  <span class="score">2</span>
+                </div>
+              </div>
+              <div class="match-meta-col">
+                <span class="group-label">Grupo A</span>
+                <span class="date">11 Jun</span>
+                <span class="time">21:00</span>
+                <span class="match-status finished">Finalizado</span>
+              </div>
+              <div class="match-action-col">
+                <span class="badge badge-green">Exacta +5 pts</span>
+              </div>
+            </div>
+
+            <div class="match-card-detailed">
+              <div class="match-teams-col">
+                <div class="match-team-row">
+                  <span class="flag" style="background:linear-gradient(135deg,#00247d,#cf142b)">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
+                  <span class="name">Inglaterra</span>
+                  <span class="score">2</span>
+                </div>
+                <div class="match-team-row">
+                  <span class="flag" style="background:linear-gradient(135deg,#ce1126,#007b3d)">🇨🇲</span>
+                  <span class="name">Camerún</span>
+                  <span class="score">0</span>
+                </div>
+              </div>
+              <div class="match-meta-col">
+                <span class="group-label">Grupo B</span>
+                <span class="date">11 Jun</span>
+                <span class="time">19:00</span>
+                <span class="match-status finished">Finalizado</span>
+              </div>
+              <div class="match-action-col">
+                <span class="badge badge-blue">Acertada +3 pts</span>
+              </div>
+            </div>
+
+            <div class="match-card-detailed">
+              <div class="match-teams-col">
+                <div class="match-team-row">
+                  <span class="flag" style="background:linear-gradient(135deg,#009b3a,#fedf00)">🇧🇷</span>
+                  <span class="name">Brasil</span>
+                  <span class="score">4</span>
+                </div>
+                <div class="match-team-row">
+                  <span class="flag" style="background:linear-gradient(135deg,#fff,#ff0000)">🇯🇵</span>
+                  <span class="name">Japón</span>
+                  <span class="score">1</span>
+                </div>
+              </div>
+              <div class="match-meta-col">
+                <span class="group-label">Grupo E</span>
+                <span class="date">10 Jun</span>
+                <span class="time">19:00</span>
+                <span class="match-status finished">Finalizado</span>
+              </div>
+              <div class="match-action-col">
+                <span class="badge badge-red">Fallida</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="mobile-nav">
+    <a href="dashboard.html" class="mobile-nav-item"><span class="mn-icon">📊</span> Dashboard</a>
+    <a href="matches.html" class="mobile-nav-item active"><span class="mn-icon">⚽</span> Partidos</a>
+    <a href="my-predictions.html" class="mobile-nav-item"><span class="mn-icon">📋</span> Predicciones</a>
+    <a href="leaderboard.html" class="mobile-nav-item"><span class="mn-icon">🏆</span> Ranking</a>
+    <a href="groups.html" class="mobile-nav-item"><span class="mn-icon">👥</span> Grupos</a>
+  </nav>
+</body>
+</html>

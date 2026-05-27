@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Crear cuenta — Quiniela Mundial 2026</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-visual">
+      <div class="auth-visual-content">
+        <div class="auth-visual-icon">🏆</div>
+        <h2>Únete a la quiniela</h2>
+        <p>Crea tu cuenta gratis y empieza a pronosticar los partidos del Mundial 2026. Compite, gana puntos y lidera el ranking.</p>
+        <div style="display:flex;gap:var(--space-6);margin-top:var(--space-8);justify-content:center">
+          <div class="hero-stat">
+            <div class="hero-stat-value">104</div>
+            <div class="hero-stat-label">Partidos</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">32</div>
+            <div class="hero-stat-label">Selecciones</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">1</div>
+            <div class="hero-stat-label">Campeón</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="auth-form">
+      <div class="auth-form-wrap">
+        <div class="auth-logo">
+          <span class="auth-logo-icon">QM</span>
+          <span>Quiniela 2026</span>
+        </div>
+        <h1 class="auth-title">Crear cuenta</h1>
+        <p class="auth-subtitle">Completa tus datos para registrarte. Es gratis y rápido.</p>
+
+        <form onsubmit="event.preventDefault(); this.querySelector('.btn-primary').textContent='Creando cuenta...'; setTimeout(()=>window.location.href='dashboard.html',1200)">
+          <div class="form-group">
+            <label class="form-label">Nombre completo</label>
+            <input type="text" class="form-input form-input-white" placeholder="Tu nombre" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Correo electrónico</label>
+            <input type="email" class="form-input form-input-white" placeholder="tu@correo.com" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">País o selección favorita</label>
+            <select class="form-input form-input-white" style="cursor:pointer">
+              <option value="">Selecciona tu país</option>
+              <option value="AR">Argentina</option>
+              <option value="BR">Brasil</option>
+              <option value="FR">Francia</option>
+              <option value="ES">España</option>
+              <option value="DE">Alemania</option>
+              <option value="IT">Italia</option>
+              <option value="ENG">Inglaterra</option>
+              <option value="MX">México</option>
+              <option value="UY">Uruguay</option>
+              <option value="US">Estados Unidos</option>
+              <option value="CO">Colombia</option>
+              <option value="PT">Portugal</option>
+              <option value="NL">Países Bajos</option>
+              <option value="JP">Japón</option>
+              <option value="OT">Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contraseña</label>
+            <input type="password" class="form-input form-input-white" placeholder="Mínimo 8 caracteres" required minlength="8" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirmar contraseña</label>
+            <input type="password" class="form-input form-input-white" placeholder="Repite la contraseña" required minlength="8" />
+          </div>
+          <div class="form-group">
+            <label class="form-checkbox">
+              <input type="checkbox" required /> Acepto los <a href="#" style="color:var(--green)">términos y condiciones</a>
+            </label>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg" style="width:100%">Crear cuenta</button>
+        </form>
+
+        <div class="auth-divider">o continúa con</div>
+
+        <button class="btn btn-secondary" style="width:100%">
+          <span>🌐</span> Google
+        </button>
+
+        <div class="auth-footer">
+          ¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

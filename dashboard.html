@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard — Quiniela Mundial 2026</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    .dashboard-greeting { font-size: 1.1rem; color: var(--fg-secondary); margin-bottom: var(--space-6); }
+    .dashboard-greeting strong { color: var(--fg); font-weight: 700; }
+    .dashboard-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); margin-bottom: var(--space-8); }
+    .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-6); }
+    .quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+    .quick-action-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: var(--space-2); padding: var(--space-4); background: var(--bg-surface);
+      border: 1px solid var(--border); border-radius: var(--radius-lg);
+      color: var(--fg); font-weight: 600; font-size: 0.85rem;
+      transition: all var(--transition-fast); cursor: pointer; text-decoration: none;
+    }
+    .quick-action-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--green); }
+    .quick-action-icon { font-size: 1.5rem; }
+    @media (max-width: 1024px) {
+      .dashboard-stats { grid-template-columns: repeat(2, 1fr); }
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .dashboard-stats { grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+      .quick-actions { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <span class="sidebar-logo-icon">QM</span>
+        <span>Quiniela 2026</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-nav-item active">
+          <span class="nav-icon">📊</span> Dashboard
+        </a>
+        <a href="matches.html" class="sidebar-nav-item">
+          <span class="nav-icon">⚽</span> Partidos
+        </a>
+        <a href="my-predictions.html" class="sidebar-nav-item">
+          <span class="nav-icon">📋</span> Mis predicciones
+        </a>
+        <a href="leaderboard.html" class="sidebar-nav-item">
+          <span class="nav-icon">🏆</span> Ranking
+        </a>
+        <a href="groups.html" class="sidebar-nav-item">
+          <span class="nav-icon">👥</span> Grupos
+        </a>
+        <a href="profile.html" class="sidebar-nav-item">
+          <span class="nav-icon">👤</span> Perfil
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">CA</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Carlos Andrés</div>
+            <div class="sidebar-user-role">📍 Argentina</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <h2 style="font-size:1.2rem">Dashboard</h2>
+        </div>
+        <div class="header-right">
+          <div class="header-search">
+            <span>🔍</span>
+            <input type="text" placeholder="Buscar partidos, grupos..." />
+          </div>
+          <div class="header-badge">
+            🔔
+            <span class="header-badge-dot"></span>
+          </div>
+          <div class="header-badge">
+            ⚙️
+          </div>
+        </div>
+      </header>
+
+      <div class="app-content">
+        <div class="dashboard-greeting">
+          ¡Buenos días, <strong>Carlos</strong>! Tienes <strong>3 predicciones</strong> pendientes para hoy.
+        </div>
+
+        <!-- Stat cards -->
+        <div class="dashboard-stats">
+          <div class="card">
+            <div class="stat-card">
+              <span class="stat-label">Puntos totales</span>
+              <span class="stat-value text-green">1,247</span>
+              <span class="stat-change up">↑ 84 pts este mes</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="stat-card">
+              <span class="stat-label">Ranking global</span>
+              <span class="stat-value">#42</span>
+              <span class="stat-change up">↑ 8 posiciones</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="stat-card">
+              <span class="stat-label">Ranking en tu grupo</span>
+              <span class="stat-value">#3</span>
+              <span class="badge badge-gold" style="margin-top:4px;align-self:flex-start">Top 3</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="stat-card">
+              <span class="stat-label">Predicciones</span>
+              <span class="stat-value">38</span>
+              <span style="display:flex;gap:var(--space-2);margin-top:4px;flex-wrap:wrap">
+                <span class="badge badge-green">12 exactas</span>
+                <span class="badge badge-blue">18 acertadas</span>
+                <span class="badge badge-red">8 fallidas</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main grid -->
+        <div class="dashboard-grid">
+
+          <!-- Left column: matches + quick actions -->
+          <div>
+            <div class="card" style="margin-bottom:var(--space-6)">
+              <div class="card-header">
+                <span class="card-title">Próximos partidos</span>
+                <a href="matches.html" class="btn btn-ghost btn-sm">Ver todos</a>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+                <div class="match-card">
+                  <div class="match-teams">
+                    <div class="match-team"><span class="match-team-flag" style="background:linear-gradient(135deg,#75aadb,#003f5c)">🇦🇷</span> Argentina</div>
+                    <span class="match-vs">vs</span>
+                    <div class="match-team"><span class="match-team-flag" style="background:linear-gradient(135deg,#db3a34,#00247d)">🇪🇸</span> España</div>
+                  </div>
+                  <div class="match-info">
+                    <span class="match-date">14 Jun</span>
+                    <span class="match-time">16:00</span>
+                    <span class="match-status upcoming">Pronostica</span>
+                  </div>
+                  <a href="prediction.html" class="btn btn-primary btn-sm match-predict-btn">Predecir</a>
+                </div>
+                <div class="match-card">
+                  <div class="match-teams">
+                    <div class="match-team"><span class="match-team-flag" style="background:linear-gradient(135deg,#002395,#ED2939)">🇫🇷</span> Francia</div>
+                    <span class="match-vs">vs</span>
+                    <div class="match-team"><span class="match-team-flag" style="background:linear-gradient(135deg,#009b3a,#fedf00)">🇧🇷</span> Brasil</div>
+                  </div>
+                  <div class="match-info">
+                    <span class="match-date">15 Jun</span>
+                    <span class="match-time">21:00</span>
+                    <span class="match-status upcoming">Pronostica</span>
+                  </div>
+                  <a href="prediction.html" class="btn btn-primary btn-sm match-predict-btn">Predecir</a>
+                </div>
+                <div class="match-card">
+                  <div class="match-teams">
+                    <div class="match-team"><span class="match-team-flag" style="background:linear-gradient(135deg,#1d1d1b,#00a650)">🇲🇽</span> México</div>
+                    <span class="match-vs">vs</span>
+                    <div class="match-team"><span class="match-team-flag" style="background:linear-gradient(135deg,#c60c30,#00843d)">🇺🇾</span> Uruguay</div>
+                  </div>
+                  <div class="match-info">
+                    <span class="match-date">16 Jun</span>
+                    <span class="match-time">19:00</span>
+                    <span class="match-status upcoming">Pronostica</span>
+                  </div>
+                  <a href="prediction.html" class="btn btn-primary btn-sm match-predict-btn">Predecir</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Predicciones recientes</span>
+                <a href="my-predictions.html" class="btn btn-ghost btn-sm">Ver todas</a>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+                <div class="prediction-card">
+                  <div class="prediction-teams">
+                    <div class="team"><span>🇦🇷</span> Argentina 2 – 1 Nigeria</div>
+                  </div>
+                  <span class="prediction-score">2-1</span>
+                  <div class="prediction-result">
+                    <span class="badge badge-green">Exacta</span>
+                    <span class="prediction-points text-green">+5 pts</span>
+                  </div>
+                </div>
+                <div class="prediction-card">
+                  <div class="prediction-teams">
+                    <div class="team"><span>🇫🇷</span> Francia 3 – 0 Polonia</div>
+                  </div>
+                  <span class="prediction-score">2-0</span>
+                  <div class="prediction-result">
+                    <span class="badge badge-blue">Acertada</span>
+                    <span class="prediction-points text-cyan">+3 pts</span>
+                  </div>
+                </div>
+                <div class="prediction-card">
+                  <div class="prediction-teams">
+                    <div class="team"><span>🇧🇷</span> Brasil 1 – 1 Suiza</div>
+                  </div>
+                  <span class="prediction-score">2-0</span>
+                  <div class="prediction-result">
+                    <span class="badge badge-red">Fallida</span>
+                    <span class="prediction-points text-red">0 pts</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right column: quick actions + group ranking -->
+          <div>
+            <div class="card" style="margin-bottom:var(--space-6)">
+              <div class="card-header">
+                <span class="card-title">Acceso rápido</span>
+              </div>
+              <div class="quick-actions">
+                <a href="matches.html" class="quick-action-btn">
+                  <span class="quick-action-icon">⚽</span>
+                  Hacer predicciones
+                </a>
+                <a href="leaderboard.html" class="quick-action-btn">
+                  <span class="quick-action-icon">🏆</span>
+                  Ver leaderboard
+                </a>
+                <a href="groups.html" class="quick-action-btn">
+                  <span class="quick-action-icon">👥</span>
+                  Mis grupos
+                </a>
+                <a href="matches.html" class="quick-action-btn">
+                  <span class="quick-action-icon">📅</span>
+                  Calendario
+                </a>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Ranking — Mi grupo</span>
+                <span class="badge badge-green">#3</span>
+              </div>
+              <table class="leaderboard">
+                <thead>
+                  <tr><th>#</th><th>Usuario</th><th>Pts</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td class="rank-pos rank-1">🥇</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--gold)">JM</div><span class="rank-name">JuanMa_10</span></div></td><td>312</td></tr>
+                  <tr><td class="rank-pos rank-2">🥈</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--fg-muted)">LP</div><span class="rank-name">LaPelotaNoSeMancha</span></div></td><td>298</td></tr>
+                  <tr class="rank-highlight"><td class="rank-pos rank-3">🥉</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--green)">CA</div><span class="rank-name">Carlos Andrés</span></div></td><td>284</td></tr>
+                  <tr><td class="rank-pos">4</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--blue)">MG</div><span class="rank-name">MessiGol_2026</span></div></td><td>271</td></tr>
+                  <tr><td class="rank-pos">5</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--red)">RF</div><span class="rank-name">Rulo_Futbol</span></div></td><td>265</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile bottom nav -->
+  <nav class="mobile-nav">
+    <a href="dashboard.html" class="mobile-nav-item active">
+      <span class="mn-icon">📊</span>
+      Dashboard
+    </a>
+    <a href="matches.html" class="mobile-nav-item">
+      <span class="mn-icon">⚽</span>
+      Partidos
+    </a>
+    <a href="my-predictions.html" class="mobile-nav-item">
+      <span class="mn-icon">📋</span>
+      Predicciones
+    </a>
+    <a href="leaderboard.html" class="mobile-nav-item">
+      <span class="mn-icon">🏆</span>
+      Ranking
+    </a>
+    <a href="groups.html" class="mobile-nav-item">
+      <span class="mn-icon">👥</span>
+      Grupos
+    </a>
+  </nav>
+</body>
+</html>

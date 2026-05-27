@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Perfil — Quiniela Mundial 2026</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    .profile-header {
+      display: flex; align-items: center; gap: var(--space-6);
+      padding: var(--space-8); background: var(--bg-surface);
+      border: 1px solid var(--border); border-radius: var(--radius-xl);
+      margin-bottom: var(--space-8);
+    }
+    .profile-avatar-large {
+      width: 80px; height: 80px; border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--green), var(--cyan));
+      display: grid; place-items: center;
+      font-size: 2rem; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .profile-info h2 { font-size: 1.5rem; }
+    .profile-info .meta { color: var(--fg-secondary); font-size: 0.9rem; }
+    .profile-stats { display: flex; gap: var(--space-8); margin-top: var(--space-3); }
+    @media (max-width: 768px) {
+      .profile-header { flex-direction: column; text-align: center; }
+      .profile-stats { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar">
+      <div class="sidebar-logo"><span class="sidebar-logo-icon">QM</span><span>Quiniela 2026</span></div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="matches.html" class="sidebar-nav-item"><span class="nav-icon">⚽</span> Partidos</a>
+        <a href="my-predictions.html" class="sidebar-nav-item"><span class="nav-icon">📋</span> Mis predicciones</a>
+        <a href="leaderboard.html" class="sidebar-nav-item"><span class="nav-icon">🏆</span> Ranking</a>
+        <a href="groups.html" class="sidebar-nav-item"><span class="nav-icon">👥</span> Grupos</a>
+        <a href="profile.html" class="sidebar-nav-item active"><span class="nav-icon">👤</span> Perfil</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">CA</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Carlos Andrés</div>
+            <div class="sidebar-user-role">📍 Argentina</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left"><h2 style="font-size:1.2rem">Mi perfil</h2></div>
+        <div class="header-right"><div class="header-badge">🔔<span class="header-badge-dot"></span></div></div>
+      </header>
+
+      <div class="app-content">
+        <!-- Profile Hero -->
+        <div class="profile-header">
+          <div class="profile-avatar-large">CA</div>
+          <div class="profile-info">
+            <h2>Carlos Andrés</h2>
+            <div class="meta">carlos.andres@email.com</div>
+            <div class="meta">📍 Argentina · 🇦🇷 Selección favorita: Argentina</div>
+            <div class="profile-stats">
+              <div class="stat-card"><span class="stat-label">Puntos</span><span class="stat-value" style="font-size:1.3rem">1,247</span></div>
+              <div class="stat-card"><span class="stat-label">Ranking global</span><span class="stat-value" style="font-size:1.3rem">#42</span></div>
+              <div class="stat-card"><span class="stat-label">Grupos</span><span class="stat-value" style="font-size:1.3rem">3</span></div>
+              <div class="stat-card"><span class="stat-label">Miembro desde</span><span class="stat-value" style="font-size:1rem;font-weight:600">Ene 2026</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit profile form -->
+        <div class="card" style="max-width:600px">
+          <div class="card-header">
+            <span class="card-title">Editar perfil</span>
+          </div>
+          <form onsubmit="event.preventDefault();this.querySelector('.btn-primary').textContent='Guardado ✓'">
+            <div class="form-group">
+              <label class="form-label">Nombre completo</label>
+              <input type="text" class="form-input" value="Carlos Andrés" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Correo electrónico</label>
+              <input type="email" class="form-input" value="carlos.andres@email.com" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">País</label>
+              <select class="form-input">
+                <option value="AR" selected>Argentina</option>
+                <option value="BR">Brasil</option>
+                <option value="MX">México</option>
+                <option value="ES">España</option>
+                <option value="US">Estados Unidos</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Selección favorita</label>
+              <select class="form-input">
+                <option value="AR" selected>Argentina 🇦🇷</option>
+                <option value="BR">Brasil 🇧🇷</option>
+                <option value="FR">Francia 🇫🇷</option>
+                <option value="ES">España 🇪🇸</option>
+                <option value="DE">Alemania 🇩🇪</option>
+                <option value="MX">México 🇲🇽</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-checkbox">
+                <input type="checkbox" checked /> Recibir notificaciones de resultados
+              </label>
+            </div>
+            <div class="form-group">
+              <label class="form-checkbox">
+                <input type="checkbox" checked /> Mostrar mi posición en rankings públicos
+              </label>
+            </div>
+            <div style="display:flex;gap:var(--space-3);margin-top:var(--space-6)">
+              <button type="submit" class="btn btn-primary">Guardar cambios</button>
+              <button type="button" class="btn btn-secondary">Cambiar contraseña</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="mobile-nav">
+    <a href="dashboard.html" class="mobile-nav-item"><span class="mn-icon">📊</span> Dashboard</a>
+    <a href="matches.html" class="mobile-nav-item"><span class="mn-icon">⚽</span> Partidos</a>
+    <a href="my-predictions.html" class="mobile-nav-item"><span class="mn-icon">📋</span> Predicciones</a>
+    <a href="leaderboard.html" class="mobile-nav-item"><span class="mn-icon">🏆</span> Ranking</a>
+    <a href="groups.html" class="mobile-nav-item"><span class="mn-icon">👥</span> Grupos</a>
+  </nav>
+</body>
+</html>

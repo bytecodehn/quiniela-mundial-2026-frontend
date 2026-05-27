@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiniela Mundial 2026 — Pronostica, compite y gana</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    .landing-preview { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
+    .landing-benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
+    @media (max-width: 768px) {
+      .landing-preview { grid-template-columns: 1fr; }
+      .landing-benefits { grid-template-columns: 1fr; }
+    }
+    .benefit-item { 
+      display: flex; align-items: flex-start; gap: var(--space-4);
+      padding: var(--space-5);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+    .benefit-icon {
+      width: 44px; height: 44px;
+      background: oklch(25% 0.04 260);
+      border-radius: var(--radius-md);
+      display: grid; place-items: center;
+      font-size: 1.3rem; flex-shrink: 0;
+    }
+    .benefit-text h5 { margin-bottom: var(--space-1); }
+    .benefit-text p { color: var(--fg-secondary); font-size: 0.85rem; line-height: 1.5; }
+    .landing-cta {
+      text-align: center;
+      padding: var(--space-16) var(--space-8);
+      background: linear-gradient(180deg, var(--bg-primary), oklch(10% 0.02 260));
+    }
+    .landing-cta h2 { margin-bottom: var(--space-4); }
+    .landing-cta p { color: var(--fg-secondary); margin-bottom: var(--space-8); }
+  </style>
+</head>
+<body>
+  <header class="public-header">
+    <a href="landing.html" class="public-header-logo">
+      <span class="public-header-logo-icon">QM</span>
+      Quiniela 2026
+    </a>
+    <nav class="public-header-nav">
+      <a href="#">Inicio</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#ranking">Ranking</a>
+      <a href="login.html">Iniciar sesión</a>
+      <a href="register.html" class="btn btn-primary btn-sm">Registrarse</a>
+    </nav>
+    <div class="public-header-actions">
+      <a href="login.html" class="btn btn-ghost btn-sm">Iniciar sesión</a>
+      <a href="register.html" class="btn btn-primary btn-sm">Registrarse</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span>🏆 Mundial 2026</span>
+      </div>
+      <h1>Pronostica el <span class="text-gradient">Mundial 2026</span></h1>
+      <p>Compite con tus amigos, suma puntos por tus aciertos y demuestra quién sabe más de fútbol. Crea grupos privados y lidera el ranking.</p>
+      <div class="hero-actions">
+        <a href="register.html" class="btn btn-primary btn-lg">Comenzar ahora</a>
+        <a href="#como-funciona" class="btn btn-secondary btn-lg">Cómo funciona</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-value">+50K</div>
+          <div class="hero-stat-label">Jugadores registrados</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">104</div>
+          <div class="hero-stat-label">Partidos para pronosticar</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">+8K</div>
+          <div class="hero-stat-label">Grupos creados</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="como-funciona">
+    <h2 class="section-title">Cómo funciona</h2>
+    <p class="section-subtitle">En tres pasos simples. Sin apuestas, sin dinero real — solo diversión y competencia.</p>
+    <div class="grid-3">
+      <div class="how-step">
+        <div class="how-step-number">1</div>
+        <h4>Crea tu cuenta</h4>
+        <p>Regístrate gratis en segundos. Solo necesitas tu nombre y correo para empezar a pronosticar.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-number">2</div>
+        <h4>Pronostica los partidos</h4>
+        <p>Elige el marcador de cada partido antes de que comience. Cada acierto suma puntos.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-number">3</div>
+        <h4>Compite y lidera</h4>
+        <p>Gana puntos, sube en el ranking global y desafía a tus amigos en grupos privados.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="beneficios">
+    <h2 class="section-title">¿Por qué participar?</h2>
+    <p class="section-subtitle">La experiencia más completa para vivir el Mundial 2026 con tus amigos.</p>
+    <div class="landing-benefits">
+      <div class="benefit-item">
+        <div class="benefit-icon">⚽</div>
+        <div class="benefit-text">
+          <h5>Pronostica todos los partidos</h5>
+          <p>Desde la fase de grupos hasta la gran final. Cada partido es una oportunidad para sumar puntos.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">👥</div>
+        <div class="benefit-text">
+          <h5>Grupos privados</h5>
+          <p>Crea grupos con amigos, familia o compañeros de trabajo. Cada grupo tiene su propio ranking.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">🏅</div>
+        <div class="benefit-text">
+          <h5>Sistema de puntuación justo</h5>
+          <p>Puntos por marcador exacto, por acertar el ganador y por empates. Tú decides tu estrategia.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">📊</div>
+        <div class="benefit-text">
+          <h5>Rankings en tiempo real</h5>
+          <p>Sigue tu posición en el ranking global y en tus grupos. Cada acierto te acerca al primer lugar.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">📱</div>
+        <div class="benefit-text">
+          <h5>Diseño responsive</h5>
+          <p>Accede desde cualquier dispositivo. Escritorio, tablet o móvil — la experiencia siempre es óptima.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">🔒</div>
+        <div class="benefit-text">
+          <h5>100% gratuito y seguro</h5>
+          <p>Sin apuestas, sin dinero real, sin sorpresas. Solo diversión y competencia deportiva.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="preview">
+    <h2 class="section-title">Así se ve la competencia</h2>
+    <p class="section-subtitle">Vista previa del ranking global y los próximos partidos para pronosticar.</p>
+    <div class="landing-preview">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Ranking global — Top 5</span>
+          <span class="badge badge-green">En vivo</span>
+        </div>
+        <table class="leaderboard">
+          <thead>
+            <tr><th>#</th><th>Usuario</th><th>Pts</th><th>Aciertos</th></tr>
+          </thead>
+          <tbody>
+            <tr class="rank-highlight"><td class="rank-pos rank-1">🥇</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--gold)">MG</div><span class="rank-name">MessiFan_10</span></div></td><td>284</td><td>42</td></tr>
+            <tr><td class="rank-pos rank-2">🥈</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--fg-muted)">RC</div><span class="rank-name">Rocket_CF</span></div></td><td>271</td><td>39</td></tr>
+            <tr><td class="rank-pos rank-3">🥉</td><td><div class="rank-user"><div class="rank-avatar" style="background:#cd7f32">GP</div><span class="rank-name">Gol_Predactor</span></div></td><td>265</td><td>38</td></tr>
+            <tr><td class="rank-pos">4</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--blue)">AL</div><span class="rank-name">AguanteLaScaloneta</span></div></td><td>258</td><td>37</td></tr>
+            <tr><td class="rank-pos">5</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--green)">FC</div><span class="rank-name">Futbolero_CR7</span></div></td><td>252</td><td>36</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Próximos partidos</span>
+          <a href="register.html" class="btn btn-primary btn-sm">Pronosticar</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+          <div class="match-card">
+            <div class="match-teams">
+              <div class="match-team"><span class="match-team-flag" style="background:linear-gradient(135deg,#75aadb,#003f5c)">🇦🇷</span> Argentina</div>
+              <span class="match-vs">vs</span>
+              <div class="match-team"><span class="match-team-flag" style="background:linear-gradient(135deg,#db3a34,#00247d)">🇪🇸</span> España</div>
+            </div>
+            <div class="match-info">
+              <span class="match-date">14 Jun</span>
+              <span class="match-time">16:00</span>
+              <span class="match-status upcoming">Próximo</span>
+            </div>
+          </div>
+          <div class="match-card">
+            <div class="match-teams">
+              <div class="match-team"><span class="match-team-flag" style="background:linear-gradient(135deg,#002395,#ED2939)">🇫🇷</span> Francia</div>
+              <span class="match-vs">vs</span>
+              <div class="match-team"><span class="match-team-flag" style="background:linear-gradient(135deg,#009b3a,#fedf00)">🇧🇷</span> Brasil</div>
+            </div>
+            <div class="match-info">
+              <span class="match-date">15 Jun</span>
+              <span class="match-time">21:00</span>
+              <span class="match-status upcoming">Próximo</span>
+            </div>
+          </div>
+          <div class="match-card">
+            <div class="match-teams">
+              <div class="match-team"><span class="match-team-flag" style="background:linear-gradient(135deg,#1d1d1b,#00a650)">🇲🇽</span> México</div>
+              <span class="match-vs">vs</span>
+              <div class="match-team"><span class="match-team-flag" style="background:linear-gradient(135deg,#c60c30,#00843d)">🇺🇾</span> Uruguay</div>
+            </div>
+            <div class="match-info">
+              <span class="match-date">16 Jun</span>
+              <span class="match-time">19:00</span>
+              <span class="match-status upcoming">Próximo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-cta">
+    <h2>¿Listo para vivir el Mundial 2026?</h2>
+    <p>Únete a miles de aficionados y demuestra que eres el que más sabe de fútbol.</p>
+    <a href="register.html" class="btn btn-primary btn-lg">Crear cuenta gratis</a>
+  </section>
+
+  <footer class="public-footer">
+    <div class="public-footer-grid">
+      <div>
+        <div class="public-footer-brand">Quiniela Mundial 2026</div>
+        <p class="public-footer-desc">La plataforma de predicciones deportivas para vivir el Mundial 2026 con tus amigos. Sin apuestas, solo diversión.</p>
+      </div>
+      <div>
+        <div class="public-footer-heading">Plataforma</div>
+        <div class="public-footer-links">
+          <a href="#">Inicio</a>
+          <a href="#como-funciona">Cómo funciona</a>
+          <a href="#beneficios">Beneficios</a>
+          <a href="#preview">Ranking</a>
+        </div>
+      </div>
+      <div>
+        <div class="public-footer-heading">Cuenta</div>
+        <div class="public-footer-links">
+          <a href="login.html">Iniciar sesión</a>
+          <a href="register.html">Registrarse</a>
+          <a href="#">Recuperar contraseña</a>
+        </div>
+      </div>
+      <div>
+        <div class="public-footer-heading">Legal</div>
+        <div class="public-footer-links">
+          <a href="#">Términos de uso</a>
+          <a href="#">Privacidad</a>
+          <a href="#">Contacto</a>
+        </div>
+      </div>
+    </div>
+    <div class="public-footer-bottom">
+      <span>&copy; 2026 Quiniela Mundial. Todos los derechos reservados.</span>
+      <span>Hecho para aficionados al fútbol</span>
+    </div>
+  </footer>
+</body>
+</html>

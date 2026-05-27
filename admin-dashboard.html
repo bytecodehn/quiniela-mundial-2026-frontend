@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin — Quiniela Mundial 2026</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    .admin-layout { display: flex; min-height: 100vh; }
+    .admin-sidebar {
+      width: 220px; background: oklch(10% 0.015 260);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; bottom: 0; z-index: 100;
+    }
+    .admin-main { flex: 1; margin-left: 220px; }
+    .admin-nav-item {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-3) var(--space-5);
+      color: var(--fg-secondary); font-size: 0.9rem; font-weight: 500;
+      transition: all var(--transition-fast); cursor: pointer;
+      border: none; background: none; width: 100%; text-align: left;
+    }
+    .admin-nav-item:hover { background: var(--bg-surface); color: var(--fg); }
+    .admin-nav-item.active { background: var(--green); color: #fff; }
+    .admin-panel { display: none; }
+    .admin-panel.active { display: block; }
+    .admin-badge { font-size: 0.6rem; padding: 1px 6px; border-radius: var(--radius-full); background: var(--red-bg); color: var(--red); font-weight: 600; margin-left: auto; }
+    @media (max-width: 768px) {
+      .admin-sidebar { display: none; }
+      .admin-main { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-logo">
+        <span class="sidebar-logo-icon">QM</span>
+        <span>Admin</span>
+      </div>
+      <nav class="sidebar-nav" style="flex:1;padding:var(--space-3)">
+        <button class="admin-nav-item active" onclick="switchPanel(event,'dashboard')">
+          <span>📊</span> Dashboard
+        </button>
+        <button class="admin-nav-item" onclick="switchPanel(event,'matches')">
+          <span>⚽</span> Partidos <span class="admin-badge">32</span>
+        </button>
+        <button class="admin-nav-item" onclick="switchPanel(event,'users')">
+          <span>👥</span> Usuarios <span class="admin-badge">50K</span>
+        </button>
+        <button class="admin-nav-item" onclick="switchPanel(event,'rules')">
+          <span>⚙️</span> Reglas
+        </button>
+        <button class="admin-nav-item" onclick="switchPanel(event,'groups')">
+          <span>🏟️</span> Grupos <span class="admin-badge">8K</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar" style="background:var(--gold)">AD</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Admin</div>
+            <div class="sidebar-user-role" style="color:var(--gold)">Administrador</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="admin-main">
+      <header class="app-header">
+        <div class="header-left"><h2 style="font-size:1.2rem">Panel de administración</h2></div>
+        <div class="header-right">
+          <div class="header-search"><span>🔍</span><input type="text" placeholder="Buscar..." /></div>
+          <a href="dashboard.html" class="btn btn-ghost btn-sm">← Volver al sitio</a>
+        </div>
+      </header>
+
+      <div class="app-content">
+
+        <!-- Panel: Dashboard -->
+        <div class="admin-panel active" id="panel-dashboard">
+          <h3 class="page-title">Resumen general</h3>
+          <p class="page-subtitle">Estadísticas clave de la plataforma Quiniela Mundial 2026.</p>
+
+          <div class="admin-stats">
+            <div class="card"><div class="stat-card"><span class="stat-label">Usuarios registrados</span><span class="stat-value">50,124</span><span class="stat-change up">↑ 12% este mes</span></div></div>
+            <div class="card"><div class="stat-card"><span class="stat-label">Grupos creados</span><span class="stat-value">8,342</span><span class="stat-change up">↑ 8% este mes</span></div></div>
+            <div class="card"><div class="stat-card"><span class="stat-label">Partidos programados</span><span class="stat-value">104</span><span class="stat-change" style="color:var(--fg-secondary)">64 finalizados</span></div></div>
+            <div class="card"><div class="stat-card"><span class="stat-label">Predicciones</span><span class="stat-value">847,291</span><span class="stat-change up">↑ 15% esta semana</span></div></div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><span class="card-title">Actividad reciente</span></div>
+              <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+                <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-2) 0;border-bottom:1px solid var(--border);font-size:0.85rem">
+                  <span class="badge badge-blue">Nuevo</span>
+                  <span>Usuario "MessiFan_10" se registró</span>
+                  <span style="margin-left:auto;color:var(--fg-muted)">2 min</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-2) 0;border-bottom:1px solid var(--border);font-size:0.85rem">
+                  <span class="badge badge-green">Grupo</span>
+                  <span>"Los Crack del 26" alcanzó 12 miembros</span>
+                  <span style="margin-left:auto;color:var(--fg-muted)">15 min</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-2) 0;border-bottom:1px solid var(--border);font-size:0.85rem">
+                  <span class="badge badge-orange">Partido</span>
+                  <span>Resultado Argentina vs Nigeria actualizado</span>
+                  <span style="margin-left:auto;color:var(--fg-muted)">1h</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-2) 0;font-size:0.85rem">
+                  <span class="badge badge-red">Reporte</span>
+                  <span>3 usuarios marcados para revisión</span>
+                  <span style="margin-left:auto;color:var(--fg-muted)">3h</span>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><span class="card-title">Distribución de predicciones</span></div>
+              <div style="display:flex;flex-direction:column;gap:var(--space-4);padding:var(--space-4)">
+                <div><div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:var(--space-1)"><span>Exactas</span><span class="text-green">12.4%</span></div><div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden"><div style="width:12.4%;height:100%;background:var(--green);border-radius:4px"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:var(--space-1)"><span>Acertadas</span><span class="text-cyan">38.2%</span></div><div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden"><div style="width:38.2%;height:100%;background:var(--cyan);border-radius:4px"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:var(--space-1)"><span>Fallidas</span><span class="text-red">49.4%</span></div><div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden"><div style="width:49.4%;height:100%;background:var(--red);border-radius:4px"></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel: Match Management -->
+        <div class="admin-panel" id="panel-matches">
+          <div class="flex-between flex-wrap" style="margin-bottom:var(--space-6)">
+            <div>
+              <h3 class="page-title" style="margin-bottom:var(--space-1)">Gestión de partidos</h3>
+              <p class="page-subtitle" style="margin-bottom:0">Administra los 104 partidos del Mundial 2026.</p>
+            </div>
+            <button class="btn btn-primary" onclick="alert('Formulario para crear partido')">+ Nuevo partido</button>
+          </div>
+
+          <div class="filter-bar">
+            <select class="filter-select"><option>Todos los grupos</option><option>Grupo A</option><option>Grupo B</option></select>
+            <select class="filter-select"><option>Todos los estados</option><option>Próximo</option><option>En vivo</option><option>Finalizado</option></select>
+          </div>
+
+          <div class="card">
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr><th>Local</th><th>Visitante</th><th>Grupo</th><th>Fecha</th><th>Estado</th><th>Resultado</th><th>Acciones</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>🇦🇷 Argentina</td><td>🇪🇸 España</td><td>C</td><td>14 Jun 16:00</td><td><span class="match-status upcoming">Próximo</span></td><td>—</td><td class="actions"><button class="btn btn-secondary btn-sm">Editar</button><button class="btn btn-ghost btn-sm">Resultado</button></td></tr>
+                  <tr><td>🇫🇷 Francia</td><td>🇧🇷 Brasil</td><td>E</td><td>15 Jun 21:00</td><td><span class="match-status upcoming">Próximo</span></td><td>—</td><td class="actions"><button class="btn btn-secondary btn-sm">Editar</button><button class="btn btn-ghost btn-sm">Resultado</button></td></tr>
+                  <tr><td>🇲🇽 México</td><td>🇺🇾 Uruguay</td><td>A</td><td>11 Jun 19:00</td><td><span class="match-status finished">Finalizado</span></td><td>1-2</td><td class="actions"><button class="btn btn-secondary btn-sm">Editar</button><button class="btn btn-ghost btn-sm">Resultado</button></td></tr>
+                  <tr><td>🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra</td><td>🇨🇲 Camerún</td><td>B</td><td>11 Jun 19:00</td><td><span class="match-status finished">Finalizado</span></td><td>2-0</td><td class="actions"><button class="btn btn-secondary btn-sm">Editar</button><button class="btn btn-ghost btn-sm">Resultado</button></td></tr>
+                  <tr><td>🇩🇪 Alemania</td><td>🇵🇹 Portugal</td><td>F</td><td>15 Jun 21:00</td><td><span class="match-status upcoming">Próximo</span></td><td>—</td><td class="actions"><button class="btn btn-secondary btn-sm">Editar</button><button class="btn btn-ghost btn-sm">Resultado</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel: Users -->
+        <div class="admin-panel" id="panel-users">
+          <div class="flex-between flex-wrap" style="margin-bottom:var(--space-6)">
+            <div>
+              <h3 class="page-title" style="margin-bottom:var(--space-1)">Gestión de usuarios</h3>
+              <p class="page-subtitle" style="margin-bottom:0">50,124 usuarios registrados en la plataforma.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="filter-bar" style="margin-bottom:var(--space-4)">
+              <div class="header-search" style="min-width:300px"><span>🔍</span><input type="text" placeholder="Buscar por nombre o email..." /></div>
+              <select class="filter-select"><option>Todos los estados</option><option>Activo</option><option>Bloqueado</option></select>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead><tr><th>Usuario</th><th>Email</th><th>País</th><th>Puntos</th><th>Estado</th><th>Registro</th><th>Acciones</th></tr></thead>
+                <tbody>
+                  <tr><td><div class="rank-user"><div class="rank-avatar" style="width:28px;height:28px;font-size:0.65rem;background:var(--gold)">MG</div>MessiFan_10</div></td><td>messi.fan@email.com</td><td>🇦🇷 Argentina</td><td>284</td><td><span class="badge badge-green">Activo</span></td><td>1 Jun 2026</td><td class="actions"><button class="btn btn-ghost btn-sm">🔍</button><button class="btn btn-ghost btn-sm" style="color:var(--red)">🚫</button></td></tr>
+                  <tr><td><div class="rank-user"><div class="rank-avatar" style="width:28px;height:28px;font-size:0.65rem;background:var(--fg-muted)">RC</div>Rocket_CF</div></td><td>rocket.cf@email.com</td><td>🇧🇷 Brasil</td><td>271</td><td><span class="badge badge-green">Activo</span></td><td>28 May 2026</td><td class="actions"><button class="btn btn-ghost btn-sm">🔍</button><button class="btn btn-ghost btn-sm" style="color:var(--red)">🚫</button></td></tr>
+                  <tr><td><div class="rank-user"><div class="rank-avatar" style="width:28px;height:28px;font-size:0.65rem;background:var(--green)">CA</div>Carlos Andrés</div></td><td>carlos@email.com</td><td>🇦🇷 Argentina</td><td>247</td><td><span class="badge badge-green">Activo</span></td><td>15 Ene 2026</td><td class="actions"><button class="btn btn-ghost btn-sm">🔍</button><button class="btn btn-ghost btn-sm" style="color:var(--red)">🚫</button></td></tr>
+                  <tr><td><div class="rank-user"><div class="rank-avatar" style="width:28px;height:28px;font-size:0.65rem;background:var(--red)">XX</div>User_Sospechoso</div></td><td>spam@email.com</td><td>🇲🇽 México</td><td>12</td><td><span class="badge badge-red">Bloqueado</span></td><td>10 Jun 2026</td><td class="actions"><button class="btn btn-ghost btn-sm">🔍</button><button class="btn btn-ghost btn-sm" style="color:var(--green)">✓</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel: Rules -->
+        <div class="admin-panel" id="panel-rules">
+          <h3 class="page-title">Reglas de puntuación</h3>
+          <p class="page-subtitle">Configura el sistema de puntuación de la quiniela.</p>
+
+          <div class="card" style="max-width:600px">
+            <form onsubmit="event.preventDefault();this.querySelector('.btn-primary').textContent='Guardado ✓'">
+              <div class="form-group">
+                <label class="form-label">Puntos por marcador exacto</label>
+                <input type="number" class="form-input" value="5" min="0" max="20" style="width:100px" />
+                <div style="font-size:0.8rem;color:var(--fg-muted);margin-top:var(--space-1)">Cuando aciertas el resultado exacto del partido.</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Puntos por acertar ganador o empate</label>
+                <input type="number" class="form-input" value="3" min="0" max="20" style="width:100px" />
+                <div style="font-size:0.8rem;color:var(--fg-muted);margin-top:var(--space-1)">Cuando aciertas qué equipo gana (o que hay empate) pero no el marcador exacto.</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Puntos por acertar empate</label>
+                <input type="number" class="form-input" value="2" min="0" max="20" style="width:100px" />
+                <div style="font-size:0.8rem;color:var(--fg-muted);margin-top:var(--space-1)">Puntos adicionales cuando se acierta que el partido termina empatado.</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Puntos bonus por fase eliminatoria</label>
+                <input type="number" class="form-input" value="2" min="0" max="20" style="width:100px" />
+                <div style="font-size:0.8rem;color:var(--fg-muted);margin-top:var(--space-1)">Puntos extra por cada acierto en octavos, cuartos, semifinales y final.</div>
+              </div>
+              <div class="form-group">
+                <label class="form-checkbox">
+                  <input type="checkbox" checked /> Permitir editar predicciones hasta 1 hora antes del partido
+                </label>
+              </div>
+              <button type="submit" class="btn btn-primary">Guardar reglas</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Panel: Admin Groups -->
+        <div class="admin-panel" id="panel-groups">
+          <h3 class="page-title">Gestión de grupos</h3>
+          <p class="page-subtitle">8,342 grupos privados creados en la plataforma.</p>
+          <div class="card">
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead><tr><th>Grupo</th><th>Creador</th><th>Miembros</th><th>Creado</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>Los Crack del 26</strong></td><td>JuanMa_10</td><td>12</td><td>1 Jun 2026</td><td><span class="badge badge-green">Activo</span></td><td class="actions"><button class="btn btn-ghost btn-sm">🔍</button></td></tr>
+                  <tr><td><strong>Oficina FC</strong></td><td>Carlos Andrés</td><td>8</td><td>28 May 2026</td><td><span class="badge badge-green">Activo</span></td><td class="actions"><button class="btn btn-ghost btn-sm">🔍</button></td></tr>
+                  <tr><td><strong>La Liga de los Winners</strong></td><td>Rocket_CF</td><td>24</td><td>20 May 2026</td><td><span class="badge badge-green">Activo</span></td><td class="actions"><button class="btn btn-ghost btn-sm">🔍</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchPanel(e, id) {
+      document.querySelectorAll('.admin-panel').forEach(function(p){p.classList.remove('active')});
+      document.querySelectorAll('.admin-nav-item').forEach(function(i){i.classList.remove('active')});
+      document.getElementById('panel-' + id).classList.add('active');
+      if (e.currentTarget) e.currentTarget.classList.add('active');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ranking — Quiniela Mundial 2026</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    .leaderboard-tabs { display: flex; gap: var(--space-4); margin-bottom: var(--space-8); }
+    .leaderboard-tab {
+      padding: var(--space-3) var(--space-6); border-radius: var(--radius-md);
+      font-weight: 600; font-size: 0.95rem; cursor: pointer;
+      background: var(--bg-surface); border: 1px solid var(--border);
+      color: var(--fg-secondary); transition: all var(--transition-fast);
+    }
+    .leaderboard-tab.active { background: var(--green); color: #fff; border-color: var(--green); }
+    .leaderboard-tab:hover:not(.active) { border-color: var(--fg-secondary); }
+    @media (max-width: 768px) {
+      .leaderboard-tabs { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar">
+      <div class="sidebar-logo"><span class="sidebar-logo-icon">QM</span><span>Quiniela 2026</span></div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="matches.html" class="sidebar-nav-item"><span class="nav-icon">⚽</span> Partidos</a>
+        <a href="my-predictions.html" class="sidebar-nav-item"><span class="nav-icon">📋</span> Mis predicciones</a>
+        <a href="leaderboard.html" class="sidebar-nav-item active"><span class="nav-icon">🏆</span> Ranking</a>
+        <a href="groups.html" class="sidebar-nav-item"><span class="nav-icon">👥</span> Grupos</a>
+        <a href="profile.html" class="sidebar-nav-item"><span class="nav-icon">👤</span> Perfil</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">CA</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Carlos Andrés</div>
+            <div class="sidebar-user-role">📍 Argentina</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left"><h2 style="font-size:1.2rem">Leaderboard</h2></div>
+        <div class="header-right">
+          <div class="header-search"><span>🔍</span><input type="text" placeholder="Buscar usuarios..." /></div>
+          <div class="header-badge">🔔<span class="header-badge-dot"></span></div>
+        </div>
+      </header>
+
+      <div class="app-content">
+        <!-- Switch: Global / Group -->
+        <div class="leaderboard-tabs">
+          <button class="leaderboard-tab active" onclick="tabClick(this,'global')">🌍 Ranking Global</button>
+          <button class="leaderboard-tab" onclick="tabClick(this,'group')">👥 Mi grupo — Los Crack del 26</button>
+        </div>
+
+        <!-- Podium -->
+        <div class="podium" id="global-podium">
+          <div class="podium-item second">
+            <div class="podium-rank">2</div>
+            <div class="podium-avatar" style="background:linear-gradient(135deg,var(--fg-muted),var(--fg-secondary))">RC</div>
+            <div class="podium-name">Rocket_CF</div>
+            <div class="podium-score">271 pts</div>
+            <div class="podium-stats">39 aciertos · 10 exactas</div>
+          </div>
+          <div class="podium-item first">
+            <div class="podium-rank">1</div>
+            <div class="podium-avatar" style="background:linear-gradient(135deg,var(--gold),#ffd700)">MG</div>
+            <div class="podium-name">MessiFan_10</div>
+            <div class="podium-score">284 pts</div>
+            <div class="podium-stats">42 aciertos · 14 exactas</div>
+          </div>
+          <div class="podium-item third">
+            <div class="podium-rank">3</div>
+            <div class="podium-avatar" style="background:linear-gradient(135deg,#cd7f32,#a0522d)">GP</div>
+            <div class="podium-name">Gol_Predactor</div>
+            <div class="podium-score">265 pts</div>
+            <div class="podium-stats">38 aciertos · 11 exactas</div>
+          </div>
+        </div>
+
+        <!-- Full table -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Clasificación completa</span>
+            <span style="font-size:0.85rem;color:var(--fg-secondary)">Mostrando 42 de 50,124 jugadores</span>
+          </div>
+          <table class="leaderboard">
+            <thead>
+              <tr><th>Pos</th><th>Jugador</th><th>Puntos</th><th>Aciertos</th><th>Exactas</th><th>Fallidas</th><th>Precisión</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="rank-pos rank-1">🥇</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--gold)">MG</div><span class="rank-name">MessiFan_10</span></div></td><td>284</td><td>42</td><td>14</td><td>8</td><td><span class="badge badge-gold">84%</span></td></tr>
+              <tr><td class="rank-pos rank-2">🥈</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--fg-muted)">RC</div><span class="rank-name">Rocket_CF</span></div></td><td>271</td><td>39</td><td>10</td><td>11</td><td><span class="badge badge-blue">78%</span></td></tr>
+              <tr><td class="rank-pos rank-3">🥉</td><td><div class="rank-user"><div class="rank-avatar" style="background:#cd7f32">GP</div><span class="rank-name">Gol_Predactor</span></div></td><td>265</td><td>38</td><td>11</td><td>12</td><td><span class="badge badge-blue">76%</span></td></tr>
+              <tr><td class="rank-pos">4</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--blue)">AL</div><span class="rank-name">AguanteLaScaloneta</span></div></td><td>258</td><td>37</td><td>9</td><td>13</td><td><span class="badge badge-blue">74%</span></td></tr>
+              <tr><td class="rank-pos">5</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--green)">FC</div><span class="rank-name">Futbolero_CR7</span></div></td><td>252</td><td>36</td><td>8</td><td>14</td><td><span class="badge badge-blue">72%</span></td></tr>
+              <tr><td class="rank-pos">6</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--red)">JM</div><span class="rank-name">JugadorMaestro</span></div></td><td>248</td><td>35</td><td>10</td><td>15</td><td><span class="badge badge-blue">70%</span></td></tr>
+              <tr><td class="rank-pos">7</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--orange)">LM</div><span class="rank-name">LaMia_10</span></div></td><td>241</td><td>34</td><td>9</td><td>16</td><td><span class="badge badge-blue">68%</span></td></tr>
+              <tr><td class="rank-pos">8</td><td><div class="rank-user"><div class="rank-avatar" style="background:oklch(50% 0.05 280)">SR</div><span class="rank-name">ScalonetaRules</span></div></td><td>237</td><td>33</td><td>7</td><td>17</td><td><span class="badge badge-blue">66%</span></td></tr>
+              <tr><td class="rank-pos">9</td><td><div class="rank-user"><div class="rank-avatar" style="background:oklch(50% 0.05 30)">DV</div><span class="rank-name">DibuVolve</span></div></td><td>232</td><td>32</td><td>8</td><td>18</td><td><span class="badge badge-blue">64%</span></td></tr>
+              <tr class="rank-highlight"><td class="rank-pos">42</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--green)">CA</div><span class="rank-name">Carlos Andrés</span><span class="badge badge-green" style="margin-left:var(--space-2)">Tú</span></div></td><td>247</td><td>30</td><td>12</td><td>8</td><td><span class="badge badge-blue">79%</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="mobile-nav">
+    <a href="dashboard.html" class="mobile-nav-item"><span class="mn-icon">📊</span> Dashboard</a>
+    <a href="matches.html" class="mobile-nav-item"><span class="mn-icon">⚽</span> Partidos</a>
+    <a href="my-predictions.html" class="mobile-nav-item"><span class="mn-icon">📋</span> Predicciones</a>
+    <a href="leaderboard.html" class="mobile-nav-item active"><span class="mn-icon">🏆</span> Ranking</a>
+    <a href="groups.html" class="mobile-nav-item"><span class="mn-icon">👥</span> Grupos</a>
+  </nav>
+
+  <script>
+    function tabClick(el, target) {
+      document.querySelectorAll('.leaderboard-tab').forEach(function(t){t.classList.remove('active')});
+      el.classList.add('active');
+    }
+  </script>
+</body>
+</html>

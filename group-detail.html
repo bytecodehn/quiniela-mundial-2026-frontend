@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Los Crack del 26 — Quiniela Mundial 2026</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    .group-hero {
+      display: grid; grid-template-columns: 1fr auto;
+      gap: var(--space-6); align-items: center;
+      padding: var(--space-8); background: var(--bg-surface);
+      border: 1px solid var(--border); border-radius: var(--radius-xl);
+      margin-bottom: var(--space-8);
+    }
+    .group-hero-info h2 { font-size: 1.8rem; margin-bottom: var(--space-2); }
+    .group-hero-info p { color: var(--fg-secondary); }
+    .group-invite-code {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-3) var(--space-5);
+      background: oklch(22% 0.04 260);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-md);
+    }
+    .group-invite-code .code {
+      font-family: var(--font-mono); font-size: 1.1rem;
+      font-weight: 700; letter-spacing: 0.12em;
+      color: var(--green);
+    }
+    .member-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-3); }
+    .member-card {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-3) var(--space-4); background: var(--bg-surface);
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+    }
+    .member-card .rank { font-weight: 700; font-family: var(--font-display); width: 28px; color: var(--fg-muted); }
+    .member-card .rank.gold { color: var(--gold); }
+    .member-card .name { flex: 1; font-weight: 600; font-size: 0.9rem; }
+    .member-card .score { font-family: var(--font-mono); font-weight: 700; color: var(--green); }
+    @media (max-width: 768px) {
+      .group-hero { grid-template-columns: 1fr; }
+      .group-invite-code { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar">
+      <div class="sidebar-logo"><span class="sidebar-logo-icon">QM</span><span>Quiniela 2026</span></div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="matches.html" class="sidebar-nav-item"><span class="nav-icon">⚽</span> Partidos</a>
+        <a href="my-predictions.html" class="sidebar-nav-item"><span class="nav-icon">📋</span> Mis predicciones</a>
+        <a href="leaderboard.html" class="sidebar-nav-item"><span class="nav-icon">🏆</span> Ranking</a>
+        <a href="groups.html" class="sidebar-nav-item active"><span class="nav-icon">👥</span> Grupos</a>
+        <a href="profile.html" class="sidebar-nav-item"><span class="nav-icon">👤</span> Perfil</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">CA</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Carlos Andrés</div>
+            <div class="sidebar-user-role">📍 Argentina</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <a href="groups.html" class="btn btn-ghost btn-sm" style="padding:0;gap:4px">← Todos los grupos</a>
+          <h2 style="font-size:1.2rem;margin-left:var(--space-2)">Detalle del grupo</h2>
+        </div>
+        <div class="header-right">
+          <div class="header-badge">🔔<span class="header-badge-dot"></span></div>
+        </div>
+      </header>
+
+      <div class="app-content">
+        <!-- Group Hero -->
+        <div class="group-hero">
+          <div class="group-hero-info">
+            <h2>Los Crack del 26</h2>
+            <p>👥 12 miembros · Creado el 1 Jun 2026</p>
+            <div style="display:flex;gap:var(--space-4);margin-top:var(--space-4);flex-wrap:wrap">
+              <div class="stat-card">
+                <span class="stat-label">Tu posición</span>
+                <span class="stat-value" style="font-size:1.5rem">#3</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-label">Puntos en grupo</span>
+                <span class="stat-value" style="font-size:1.5rem;color:var(--green)">284</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-label">Promedio grupo</span>
+                <span class="stat-value" style="font-size:1.5rem">247</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--space-3);align-items:flex-end">
+            <div class="group-invite-code">
+              <span style="font-size:0.8rem;color:var(--fg-muted);font-weight:600">Código de invitación</span>
+              <span class="code">QM-2026-ABCD</span>
+              <button class="btn btn-primary btn-sm" onclick="this.textContent='Copiado ✓'">Copiar</button>
+            </div>
+            <button class="btn btn-secondary btn-sm">📤 Compartir grupo</button>
+          </div>
+        </div>
+
+        <!-- Group Leaderboard -->
+        <div class="card" style="margin-bottom:var(--space-8)">
+          <div class="card-header">
+            <span class="card-title">Ranking del grupo</span>
+          </div>
+          <table class="leaderboard">
+            <thead>
+              <tr><th>#</th><th>Jugador</th><th>Puntos</th><th>Aciertos</th><th>Exactas</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="rank-pos rank-1">🥇</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--gold)">JM</div><span class="rank-name">JuanMa_10</span></div></td><td>312</td><td>44</td><td>13</td></tr>
+              <tr><td class="rank-pos rank-2">🥈</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--fg-muted)">LP</div><span class="rank-name">LaPelotaNoSeMancha</span></div></td><td>298</td><td>41</td><td>11</td></tr>
+              <tr class="rank-highlight"><td class="rank-pos rank-3">🥉</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--green)">CA</div><span class="rank-name">Carlos Andrés</span><span class="badge badge-green" style="margin-left:var(--space-2)">Tú</span></div></td><td>284</td><td>42</td><td>14</td></tr>
+              <tr><td class="rank-pos">4</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--blue)">MG</div><span class="rank-name">MessiGol_2026</span></div></td><td>271</td><td>39</td><td>10</td></tr>
+              <tr><td class="rank-pos">5</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--red)">RF</div><span class="rank-name">Rulo_Futbol</span></div></td><td>265</td><td>38</td><td>9</td></tr>
+              <tr><td class="rank-pos">6</td><td><div class="rank-user"><div class="rank-avatar" style="background:var(--orange)">NC</div><span class="rank-name">Nico_Crack</span></div></td><td>258</td><td>37</td><td>8</td></tr>
+              <tr><td class="rank-pos">7</td><td><div class="rank-user"><div class="rank-avatar" style="background:oklch(50% 0.05 280)">SA</div><span class="rank-name">Santi_Arg</span></div></td><td>252</td><td>36</td><td>10</td></tr>
+              <tr><td class="rank-pos">8</td><td><div class="rank-user"><div class="rank-avatar" style="background:oklch(50% 0.05 30)">FL</div><span class="rank-name">Fran_Loco</span></div></td><td>248</td><td>35</td><td>8</td></tr>
+              <tr><td class="rank-pos">9</td><td><div class="rank-user"><div class="rank-avatar" style="background:oklch(50% 0.05 200)">MP</div><span class="rank-name">Mati_Prode</span></div></td><td>241</td><td>34</td><td>7</td></tr>
+              <tr><td class="rank-pos">10</td><td><div class="rank-user"><div class="rank-avatar" style="background:oklch(50% 0.05 100)">LJ</div><span class="rank-name">Lucho_Japon</span></div></td><td>237</td><td>33</td><td>9</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Members -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Miembros (12)</span>
+          </div>
+          <div class="member-grid">
+            <div class="member-card">
+              <span class="rank gold">🥇</span>
+              <div class="rank-avatar" style="width:32px;height:32px;font-size:0.7rem;background:var(--gold)">JM</div>
+              <span class="name">JuanMa_10</span>
+              <span class="score">312</span>
+            </div>
+            <div class="member-card">
+              <span class="rank">2</span>
+              <div class="rank-avatar" style="width:32px;height:32px;font-size:0.7rem;background:var(--fg-muted)">LP</div>
+              <span class="name">LaPelotaNoSeMancha</span>
+              <span class="score">298</span>
+            </div>
+            <div class="member-card" style="background:oklch(22% 0.04 260);border-color:var(--green)">
+              <span class="rank">3</span>
+              <div class="rank-avatar" style="width:32px;height:32px;font-size:0.7rem;background:var(--green)">CA</div>
+              <span class="name">Carlos Andrés</span>
+              <span class="score">284</span>
+            </div>
+            <div class="member-card">
+              <span class="rank">4</span>
+              <div class="rank-avatar" style="width:32px;height:32px;font-size:0.7rem;background:var(--blue)">MG</div>
+              <span class="name">MessiGol_2026</span>
+              <span class="score">271</span>
+            </div>
+            <div class="member-card">
+              <span class="rank">5</span>
+              <div class="rank-avatar" style="width:32px;height:32px;font-size:0.7rem;background:var(--red)">RF</div>
+              <span class="name">Rulo_Futbol</span>
+              <span class="score">265</span>
+            </div>
+            <div class="member-card">
+              <span class="rank">6</span>
+              <div class="rank-avatar" style="width:32px;height:32px;font-size:0.7rem;background:var(--orange)">NC</div>
+              <span class="name">Nico_Crack</span>
+              <span class="score">258</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="mobile-nav">
+    <a href="dashboard.html" class="mobile-nav-item"><span class="mn-icon">📊</span> Dashboard</a>
+    <a href="matches.html" class="mobile-nav-item"><span class="mn-icon">⚽</span> Partidos</a>
+    <a href="my-predictions.html" class="mobile-nav-item"><span class="mn-icon">📋</span> Predicciones</a>
+    <a href="leaderboard.html" class="mobile-nav-item"><span class="mn-icon">🏆</span> Ranking</a>
+    <a href="groups.html" class="mobile-nav-item active"><span class="mn-icon">👥</span> Grupos</a>
+  </nav>
+</body>
+</html>

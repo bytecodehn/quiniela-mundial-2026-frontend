@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "Quiniela Mundial 2026 — Prototipo completo",
+  "entry": "quiniela-mundial-2026.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-05-27T04:40:47.465Z",
+  "updatedAt": "2026-05-27T04:40:47.478Z",
+  "metadata": {
+    "identifier": "quiniela-mundial-2026",
+    "artifactType": "text/html",
+    "inferred": false
+  }
+}

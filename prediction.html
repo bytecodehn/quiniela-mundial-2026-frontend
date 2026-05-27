@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Predecir partido — Quiniela Mundial 2026</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    .countdown-bar {
+      display: flex; align-items: center; justify-content: center; gap: var(--space-6);
+      padding: var(--space-4) var(--space-6);
+      background: oklch(22% 0.04 260);
+      border: 1px solid oklch(28% 0.04 260);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-8);
+    }
+    .countdown-block { text-align: center; }
+    .countdown-value {
+      font-family: var(--font-mono); font-size: 1.5rem; font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .countdown-block.green .countdown-value { color: var(--green); }
+    .countdown-block.orange .countdown-value { color: var(--orange); }
+    .countdown-block.red .countdown-value { color: var(--red); }
+    .countdown-label {
+      font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--fg-muted); font-weight: 600; margin-top: 2px;
+    }
+    .prediction-status-banner {
+      padding: var(--space-4) var(--space-6);
+      border-radius: var(--radius-lg);
+      text-align: center;
+      margin-bottom: var(--space-8);
+      font-weight: 600;
+    }
+    .prediction-status-banner.submitted {
+      background: var(--green-bg);
+      border: 1px solid oklch(32% 0.08 145);
+      color: var(--green);
+    }
+    .prediction-status-banner.closed {
+      background: var(--red-bg);
+      border: 1px solid oklch(34% 0.10 30);
+      color: var(--red);
+    }
+    @media (max-width: 768px) {
+      .countdown-bar { gap: var(--space-4); padding: var(--space-3) var(--space-4); flex-wrap: wrap; }
+      .countdown-value { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <span class="sidebar-logo-icon">QM</span>
+        <span>Quiniela 2026</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="matches.html" class="sidebar-nav-item"><span class="nav-icon">⚽</span> Partidos</a>
+        <a href="my-predictions.html" class="sidebar-nav-item"><span class="nav-icon">📋</span> Mis predicciones</a>
+        <a href="leaderboard.html" class="sidebar-nav-item"><span class="nav-icon">🏆</span> Ranking</a>
+        <a href="groups.html" class="sidebar-nav-item"><span class="nav-icon">👥</span> Grupos</a>
+        <a href="profile.html" class="sidebar-nav-item"><span class="nav-icon">👤</span> Perfil</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">CA</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Carlos Andrés</div>
+            <div class="sidebar-user-role">📍 Argentina</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <a href="matches.html" class="btn btn-ghost btn-sm" style="padding:0;gap:4px">← Volver</a>
+          <h2 style="font-size:1.2rem;margin-left:var(--space-2)">Pronosticar partido</h2>
+        </div>
+        <div class="header-right">
+          <div class="header-badge">🔔<span class="header-badge-dot"></span></div>
+        </div>
+      </header>
+
+      <div class="app-content">
+        <div class="prediction-detail">
+
+          <!-- Countdown -->
+          <div class="countdown-bar">
+            <div class="countdown-block orange">
+              <div class="countdown-value" id="countdown-hours">18</div>
+              <div class="countdown-label">Horas</div>
+            </div>
+            <span style="color:var(--fg-muted);font-size:1.5rem">:</span>
+            <div class="countdown-block orange">
+              <div class="countdown-value" id="countdown-minutes">42</div>
+              <div class="countdown-label">Minutos</div>
+            </div>
+            <span style="color:var(--fg-muted);font-size:1.5rem">:</span>
+            <div class="countdown-block orange">
+              <div class="countdown-value" id="countdown-seconds">15</div>
+              <div class="countdown-label">Segundos</div>
+            </div>
+            <span style="width:1px;height:32px;background:var(--border)"></span>
+            <div style="text-align:left">
+              <div style="font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.05em;font-weight:600">Cierre de pronóstico</div>
+              <div style="font-size:0.9rem;color:var(--fg);font-weight:500">15 Jun 2026 · 21:00</div>
+            </div>
+          </div>
+
+          <!-- Matchup -->
+          <div class="matchup">
+            <div class="matchup-team">
+              <div class="matchup-flag" style="background:linear-gradient(135deg,#002395,#ED2939)">🇫🇷</div>
+              <div class="matchup-name">Francia</div>
+            </div>
+            <div class="matchup-vs">VS</div>
+            <div class="matchup-team">
+              <div class="matchup-flag" style="background:linear-gradient(135deg,#009b3a,#fedf00)">🇧🇷</div>
+              <div class="matchup-name">Brasil</div>
+            </div>
+          </div>
+
+          <div class="match-info" style="margin-bottom:var(--space-8)">
+            Viernes 15 de junio · 21:00 · Estadio Monumental · Grupo E
+          </div>
+
+          <!-- Score prediction inputs -->
+          <div style="display:flex;align-items:center;justify-content:center;gap:var(--space-6);margin-bottom:var(--space-8)">
+            <div style="text-align:center">
+              <div style="font-size:0.8rem;color:var(--fg-muted);margin-bottom:var(--space-2);font-weight:600">Francia</div>
+              <input type="number" class="prediction-input" value="2" min="0" max="20" />
+            </div>
+            <span class="prediction-divider">—</span>
+            <div style="text-align:center">
+              <div style="font-size:0.8rem;color:var(--fg-muted);margin-bottom:var(--space-2);font-weight:600">Brasil</div>
+              <input type="number" class="prediction-input" value="1" min="0" max="20" />
+            </div>
+          </div>
+
+          <!-- Prediction rules -->
+          <div style="display:flex;gap:var(--space-6);justify-content:center;margin-bottom:var(--space-8);flex-wrap:wrap">
+            <div style="text-align:center">
+              <div class="badge badge-green" style="font-size:0.75rem;padding:4px 12px">Exacto: +5 pts</div>
+            </div>
+            <div style="text-align:center">
+              <div class="badge badge-blue" style="font-size:0.75rem;padding:4px 12px">Marcador correcto: +3 pts</div>
+            </div>
+            <div style="text-align:center">
+              <div class="badge badge-orange" style="font-size:0.75rem;padding:4px 12px">Empate: +2 pts</div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div style="display:flex;gap:var(--space-4);justify-content:center">
+            <button class="btn btn-primary btn-lg" onclick="this.textContent='Guardado ✓';this.style.background='var(--green)'">
+              Guardar pronóstico
+            </button>
+            <a href="matches.html" class="btn btn-secondary btn-lg">Cancelar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="mobile-nav">
+    <a href="dashboard.html" class="mobile-nav-item"><span class="mn-icon">📊</span> Dashboard</a>
+    <a href="matches.html" class="mobile-nav-item active"><span class="mn-icon">⚽</span> Partidos</a>
+    <a href="my-predictions.html" class="mobile-nav-item"><span class="mn-icon">📋</span> Predicciones</a>
+    <a href="leaderboard.html" class="mobile-nav-item"><span class="mn-icon">🏆</span> Ranking</a>
+    <a href="groups.html" class="mobile-nav-item"><span class="mn-icon">👥</span> Grupos</a>
+  </nav>
+
+  <script>
+    // Simple countdown simulation
+    (function() {
+      var h = 18, m = 42, s = 15;
+      setInterval(function() {
+        s--;
+        if (s < 0) { s = 59; m--; }
+        if (m < 0) { m = 59; h--; }
+        if (h < 0) { h = 0; m = 0; s = 0; }
+        var hEl = document.getElementById('countdown-hours');
+        var mEl = document.getElementById('countdown-minutes');
+        var sEl = document.getElementById('countdown-seconds');
+        if (hEl) hEl.textContent = String(h).padStart(2, '0');
+        if (mEl) mEl.textContent = String(m).padStart(2, '0');
+        if (sEl) sEl.textContent = String(s).padStart(2, '0');
+      }, 1000);
+    })();
+  </script>
+</body>
+</html>
