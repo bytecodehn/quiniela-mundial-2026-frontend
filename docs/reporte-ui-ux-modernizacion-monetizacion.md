@@ -11,11 +11,11 @@ La mayor oportunidad no esta en "hacer mas pantallas", sino en cerrar la experie
 
 Prioridades recomendadas:
 
-1. Corregir fricciones de confianza y consistencia: textos, encoding, accesibilidad, datos no persistidos, botones simulados.
+1. Corregir fricciones de confianza y consistencia: accesibilidad, datos no persistidos, botones simulados y mutaciones con errores silenciosos.
 2. Optimizar el flujo principal: descubrir partido, predecir, guardar, compartir, volver a competir.
 3. Convertir grupos privados en motor de crecimiento y monetizacion.
-4. Agregar telemetria, CRM y experimentacion antes de invertir fuerte en adquisicion.
-5. Modernizar el panel admin para operar usuarios, partidos, reglas, grupos y futuras compras/promociones.
+4. Definir contrato backend de pagos, planes, sponsors y cupones antes de construir pantallas de monetizacion.
+5. Agregar telemetria, testing, SEO/i18n/PWA y experimentacion antes de invertir fuerte en adquisicion.
 
 ## Alcance revisado
 
@@ -44,6 +44,7 @@ Validacion en servidor DEV:
 - Landing con propuesta directa y CTAs visibles en `src/app/page.tsx:102`, `src/app/page.tsx:107` y `src/app/page.tsx:117`.
 - Sistema visual consistente con tokens de color, spacing, radius y componentes base en `src/app/globals.css` y `css/tokens.css`.
 - Arquitectura funcional para crecer: rutas por dominio, hooks de datos y contrato API documentado.
+- Foundation de data fetching ya encaminado con hooks en `src/lib/hooks`, cliente HTTP tipado y `NEXT_PUBLIC_USE_MOCKS` para alternar fixtures/backend.
 - Panel admin ya contempla usuarios, partidos, reglas de puntuacion y grupos en `src/lib/api.ts:81` a `src/lib/api.ts:115`.
 - Mecanica social fuerte: grupos privados, codigos de invitacion, rankings de grupo y ranking global.
 
@@ -53,6 +54,9 @@ Validacion en servidor DEV:
 - Hay dependencia fuerte de emojis para iconos y banderas, lo que afecta consistencia visual entre plataformas.
 - Faltan patrones de accesibilidad en botones icon-only, modales, tabs y labels de inputs.
 - La monetizacion no existe en el producto ni en el contrato API.
+- No hay contrato backend para pagos, suscripciones, planes, cupones o sponsors; monetizacion no es solo trabajo frontend.
+- Varias mutaciones fallan silenciosamente o solo hacen `console.error`, lo que rompe confianza en flujos criticos.
+- No hay estrategia visible de i18n, SEO/OG, PWA/push ni medicion de Core Web Vitals para capturar mercado pre-Mundial.
 - El admin muestra volumen operativo, pero no embudos, cohortes, conversion, retencion ni revenue.
 
 ## Hallazgos UI/UX
@@ -96,7 +100,7 @@ El dashboard muestra puntos, ranking y pendientes, pero la accion mas importante
 Evidencia:
 
 - Stat de predicciones pendientes en `src/app/dashboard/page.tsx:51`.
-- Proximos partidos se muestran como lista simple en `src/app/dashboard/page.tsx:61` a `src/app/dashboard/page.tsx:80`.
+- Proximos partidos se muestran como lista dentro de `src/app/dashboard/page.tsx`; tras el refactor, las lineas exactas pueden variar, pero el patron sigue siendo lista/resumen y no una cola priorizada por deadline.
 
 Mejora:
 
@@ -219,32 +223,94 @@ Mejora:
 - Agregar monetizacion: revenue, conversion premium, ARPU, compras por grupo, sponsors activos.
 - Agregar moderacion de grupos y reportes.
 
+### 11. Monetizacion requiere contrato backend antes de UI
+
+La estrategia de planes premium, checkout, billing, sponsors y cupones es viable, pero el contrato actual no expone endpoints para pagos ni suscripciones. Sin esa definicion, cualquier pantalla premium seria prototipo sin capacidad operativa.
+
+Evidencia:
+
+- `API.md` cubre auth, partidos, predicciones, leaderboard, grupos, admin y reglas, pero no pagos, planes, suscripciones, invoices, webhooks, sponsors ni cupones.
+- `src/lib/api.ts` no contiene metodos de billing, checkout, plan management ni sponsor placements.
+
+Mejora:
+
+- Definir primero el contrato backend de monetizacion.
+- Elegir proveedor de pagos segun pais objetivo: Stripe, Mercado Pago, Wompi u otro.
+- Incluir webhooks, estados de pago, cancelacion, upgrades/downgrades, facturacion, cupones y auditoria admin.
+
+### 12. Internacionalizacion pendiente
+
+La aplicacion esta escrita en espanol rioplatense. Eso puede ser correcto para un primer mercado, pero limita alcance para un Mundial en Estados Unidos, Canada y Mexico, y tambien deja fuera oportunidades en Brasil.
+
+Mejora:
+
+- Definir estrategia i18n desde ahora: `es`, `en`, `pt-BR` como minimo si el objetivo es regional/global.
+- Separar copy de componentes antes de que crezca el producto.
+- Evitar hardcodear variantes locales en mensajes criticos si la app apunta a multiples paises.
+
+### 13. SEO, Open Graph y shareability faltan como palanca de adquisicion
+
+La landing puede captar trafico organico pre-Mundial, pero necesita metadata social, canonicidad y contenido compartible. El producto tambien deberia producir share cards para rankings, grupos y predicciones.
+
+Mejora:
+
+- Agregar `og:title`, `og:description`, `og:image`, Twitter Cards y `canonical`.
+- Evaluar JSON-LD donde aplique para eventos/calendario y contenido deportivo.
+- Crear imagenes sociales para grupos y rankings.
+- Medir conversion desde shares e invitaciones.
+
+### 14. PWA, notificaciones y performance no estan cubiertas
+
+El reporte recomienda recordatorios antes de deadlines, pero email por si solo puede ser debil. Para una quiniela, Web Push y PWA pueden aumentar retorno diario durante el torneo. Tambien falta analisis de Core Web Vitals, LCP, CLS y peso de bundle.
+
+Mejora:
+
+- Evaluar PWA con service worker, manifest y Web Push para deadlines.
+- Usar email como respaldo, no como unico canal.
+- Auditar bundle, LCP, CLS e INP antes de campanas de adquisicion.
+- Introducir `next/image` cuando se incorporen activos reales de producto/landing.
+
 ## Modernizacion tecnica recomendada
 
 ### Alta prioridad
 
-- Ejecutar y estabilizar `npm run typecheck`, `npm run build` y `npm run lint` en CI.
-- Corregir encoding/mojibake detectado en salidas de PowerShell y asegurar UTF-8 en repo/editor/terminal.
+- Mantener `npm run typecheck`, `npm run build` y `npm run lint` en CI; en DEV ya pasaron correctamente.
 - Reemplazar acciones simuladas por endpoints reales o estados explicitamente demo.
-- Agregar errores de mutaciones en formularios y modales. Hoy varios `catch` solo hacen `console.error`.
-- Evitar guardar JWT en `localStorage` para produccion si se puede mover a cookies HTTP-only. El README documenta `localStorage` en `README.md:61` y el codigo lo usa en `src/lib/auth.tsx:29`, `src/lib/auth.tsx:45`, `src/lib/auth.tsx:57`.
+- Agregar manejo visible de errores en mutaciones. Hoy `submitPrediction`, `createGroup`, `joinGroup`, `updateAdminUserStatus` y `saveRules` pueden fallar con feedback insuficiente o solo `console.error`.
+- Corregir persistencia real de registro/perfil: enviar `country` y usar `api.updateMe`.
+- Definir contrato backend de monetizacion antes de construir checkout, planes o sponsors en frontend.
+- Agregar pruebas E2E del flujo critico: registro/login, crear prediccion, crear grupo, unirse a grupo y ranking.
+- Evaluar migracion de JWT a cookies HTTP-only como cambio coordinado con backend. Requiere `Set-Cookie`, `SameSite`, estrategia CSRF y manejo de expiracion; no es un cambio frontend aislado.
 
 ### Media prioridad
 
 - Unificar componentes `Select` y selects nativos duplicados en registro/perfil.
 - Agregar libreria de iconos consistente.
 - Crear componentes especificos de dominio: `PredictionInline`, `DeadlineBadge`, `GroupInviteCard`, `LeaderboardTable`, `AdminDataTable`.
-- Agregar paginacion real en listados que ya la contemplan desde API.
-- Agregar tests de flujo principal: registro, login, crear prediccion, crear grupo, unirse a grupo, ranking.
+- Extender paginacion desde la capa existente de hooks/API, por ejemplo `useMatches({ page })`, en lugar de construir un sistema nuevo.
+- Implementar i18n para `es`, `en` y `pt-BR` si el mercado objetivo excede LATAM hispanohablante.
+- Agregar SEO/Open Graph/canonical y estrategia de share cards.
 
 ### Baja prioridad
 
 - Revisar radius y densidad visual para interfaces operativas. Hay mucho uso de cards y gradientes; para admin conviene una UI mas densa.
 - Separar tokens del prototipo legacy y tokens reales de app si ambos se mantendran.
+- Evaluar PWA/Web Push y auditoria Core Web Vitals antes de campanas grandes.
 
 ## Estrategia de monetizacion
 
 Principio: monetizar competicion social, organizacion de grupos y experiencia premium, sin apuestas ni dinero real ligado al resultado deportivo.
+
+Prerequisito P0.5: antes de implementar paywalls o checkout en frontend, definir el contrato backend de monetizacion. El alcance minimo deberia incluir:
+
+- Planes y precios: `GET /billing/plans`.
+- Checkout: `POST /billing/checkout`.
+- Estado de suscripcion: `GET /billing/subscription`.
+- Cancelacion/cambio de plan: `PATCH /billing/subscription`.
+- Webhooks del proveedor de pagos.
+- Cupones/promociones.
+- Sponsors y placements.
+- Vistas admin de revenue, conversion, refunds, churn y auditoria.
 
 ### Modelo 1: Freemium para jugadores
 
@@ -340,19 +406,39 @@ Evitar:
 
 ## Roadmap sugerido
 
-### Fase 1 - 2 a 3 semanas: confianza y activacion
+### Fase 0 - Semana 1 a 2: confianza inmediata
 
 - Corregir registro: enviar `country`.
 - Implementar guardado real de perfil.
 - Cambiar boton Google demo por "Cuenta demo" o OAuth real.
+- Mostrar toasts/banners de error en mutaciones criticas, no solo `console.error`.
+- Quitar temporalmente el tab "Por grupo" o conectarlo en el mismo sprint.
 - Mejorar accesibilidad de modales, tabs, inputs y botones icon-only.
-- Agregar "Cierra pronto" en dashboard.
-- Mostrar estado "Ya predicho" en tarjetas.
-- Agregar eventos analytics basicos.
+- Agregar pruebas E2E del flujo critico minimo.
 
 Metricas:
 
 - Registro completado.
+- Perfil actualizado correctamente.
+- Prediccion guardada correctamente.
+- Errores de mutaciones visibles y medidos.
+
+### Fase 0.5 - Paralelo: foundation de monetizacion
+
+- Definir contrato API de planes, pagos, suscripciones, cupones y sponsors.
+- Elegir proveedor de pagos segun pais objetivo.
+- Definir implicaciones legales y fiscales.
+- Definir eventos analytics de paywall, checkout y conversion.
+
+### Fase 1 - 2 a 3 semanas: activacion y loop diario
+
+- Agregar "Cierra pronto" en dashboard.
+- Mostrar estado "Ya predicho" en tarjetas.
+- Agregar eventos analytics basicos.
+- Mejorar SEO/Open Graph de la landing.
+
+Metricas:
+
 - Primera prediccion creada.
 - Porcentaje de usuarios con 3+ predicciones.
 - Usuarios que crean o se unen a un grupo.
@@ -363,8 +449,9 @@ Metricas:
 - Share cards de prediccion y ranking.
 - Invitacion de grupo con link compartible.
 - Ranking por grupo funcional.
-- Recordatorios de deadlines.
+- Recordatorios de deadlines por email y evaluacion PWA/Web Push.
 - Panel admin de crecimiento.
+- Preparar i18n si el mercado objetivo incluye ingles/portugues.
 
 Metricas:
 
@@ -420,11 +507,19 @@ Propiedades utiles:
 
 ### P0
 
-- Corregir acciones simuladas o etiquetarlas como demo.
 - Enviar `country` en registro y guardar perfil via API.
-- Accesibilidad basica en inputs, tabs y modales.
+- Renombrar boton "Google" a "Cuenta demo" o implementar OAuth real.
+- Mostrar feedback visible de errores en `submitPrediction`, `createGroup`, `joinGroup`, `updateAdminUserStatus` y `saveRules`.
 - Ranking por grupo real o remover tab temporalmente.
-- Verificacion tecnica con `typecheck`, `build` y `lint`.
+- Accesibilidad minima: `aria-label` en icon-only buttons, `htmlFor/id` en inputs, roles basicos en tabs y modales.
+- Mantener validacion DEV/CI con `typecheck`, `build` y `lint`.
+
+### P0.5
+
+- Definir contrato API de pagos, planes, suscripciones, cupones y sponsors.
+- Decidir proveedor de pagos: Stripe, Mercado Pago, Wompi u otro segun pais objetivo.
+- Definir estrategia legal/fiscal para pagos y patrocinadores.
+- Agregar tests E2E del flujo critico: register/login, predict, create group, join group.
 
 ### P1
 
@@ -433,6 +528,8 @@ Propiedades utiles:
 - Link de invitacion compartible.
 - Eventos analytics.
 - Panel admin de conversion y activacion.
+- SEO/Open Graph/canonical y share cards.
+- Evaluacion i18n para `es`, `en`, `pt-BR`.
 
 ### P2
 
@@ -441,6 +538,8 @@ Propiedades utiles:
 - Sponsorship placements.
 - Share cards visuales.
 - Notificaciones por email/push.
+- PWA/Web Push si las metricas de retorno diario lo justifican.
+- Auditoria Core Web Vitals antes de adquisicion pagada.
 
 ### P3
 
