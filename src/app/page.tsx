@@ -66,6 +66,9 @@ export default function LandingPage() {
               <Button size="sm">Registrarse</Button>
             </Link>
             <button
+              type="button"
+              aria-label="Abrir menú"
+              aria-expanded={mobileMenuOpen}
               className="hidden max-md:flex w-8 h-8 items-center justify-center text-fg-secondary text-[1.4rem] border-none cursor-pointer bg-none"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >

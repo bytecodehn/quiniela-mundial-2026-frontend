@@ -110,6 +110,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <header className="h-16 bg-bg-surface border-b border-border flex items-center justify-between px-8 sticky top-0 z-50 max-md:px-4">
           <div className="flex items-center gap-4">
             <button
+              type="button"
+              aria-label="Abrir menú"
+              aria-expanded={mobileMenuOpen}
               className="hidden max-md:flex w-8 h-8 items-center justify-center text-fg-secondary text-[1.2rem] border-none cursor-pointer bg-none"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
@@ -123,19 +126,29 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </div>
           <div className="flex items-center gap-3 max-md:hidden">
             <div className="flex items-center gap-2 bg-bg-primary border border-border rounded-radius-md px-4 py-2 min-w-[240px]">
-              <span className="text-fg-muted text-[0.85rem]">🔍</span>
+              <span className="text-fg-muted text-[0.85rem]" aria-hidden="true">🔍</span>
               <input
+                type="search"
+                aria-label="Buscar partidos o grupos"
                 placeholder="Buscar partidos, grupos..."
                 className="bg-none border-none text-fg outline-none w-full text-[0.9rem] placeholder:text-fg-muted"
               />
             </div>
-            <button className="w-8 h-8 bg-bg-primary border border-border rounded-radius-md grid place-items-center text-fg-secondary text-[1.1rem] border-none transition-all duration-150 cursor-pointer relative">
-              🔔
+            <button
+              type="button"
+              aria-label="Notificaciones (1 nueva)"
+              className="w-8 h-8 bg-bg-primary border border-border rounded-radius-md grid place-items-center text-fg-secondary text-[1.1rem] border-none transition-all duration-150 cursor-pointer relative"
+            >
+              <span aria-hidden="true">🔔</span>
               <span className="absolute top-1 right-1 w-2 h-2 bg-red rounded-full border-2 border-bg-surface" />
             </button>
             {user?.role === "admin" && (
-              <Link href="/admin" className="w-8 h-8 bg-bg-primary border border-border rounded-radius-md grid place-items-center text-fg-secondary text-[0.9rem] transition-all duration-150 hover:bg-bg-surface hover:text-fg no-underline">
-                ⚙️
+              <Link
+                href="/admin"
+                aria-label="Panel de administración"
+                className="w-8 h-8 bg-bg-primary border border-border rounded-radius-md grid place-items-center text-fg-secondary text-[0.9rem] transition-all duration-150 hover:bg-bg-surface hover:text-fg no-underline"
+              >
+                <span aria-hidden="true">⚙️</span>
               </Link>
             )}
           </div>

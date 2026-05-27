@@ -2,7 +2,10 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
 import { api } from "./api";
+import { USE_MOCKS } from "./hooks/useFetch";
 import type { User } from "@/types";
+
+type ProfileUpdate = Partial<{ name: string; favoriteTeam: string; country: string; avatar: string | null }>;
 
 interface AuthContextType {
   user: User | null;
@@ -17,7 +20,7 @@ interface AuthContextType {
     country?: string;
   }) => Promise<void>;
   logout: () => void;
-  updateUser: (data: Partial<User>) => void;
+  updateUser: (data: ProfileUpdate) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -65,8 +68,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
-  const updateUser = (data: Partial<User>) => {
-    setUser((prev) => (prev ? { ...prev, ...data } : prev));
+  const updateUser = async (data: ProfileUpdate) => {
+    if (USE_MOCKS) {
+      setUser((prev) => (prev ? { ...prev, ...data } : prev));
+      return;
+    }
+    const res = await api.updateMe(data);
+    setUser(res.user);
   };
 
   return (

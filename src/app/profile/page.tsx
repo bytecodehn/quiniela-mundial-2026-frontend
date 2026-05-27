@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AppLayout } from "@/components/app-layout";
-import { Button, Card, ErrorState, Input, SkeletonStats, StatCard } from "@/components/ui";
+import { Button, Card, ErrorState, Input, SkeletonStats, StatCard, useToast } from "@/components/ui";
 import { useAuth } from "@/lib/auth";
 import { useStats } from "@/lib/hooks";
 
@@ -44,12 +44,13 @@ function formatDate(dateStr: string) {
 }
 
 export default function ProfilePage() {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const { data: stats, loading: statsLoading, error: statsError, refetch } = useStats();
+  const toast = useToast();
   const [name, setName] = useState("");
   const [favoriteTeam, setFavoriteTeam] = useState("");
   const [country, setCountry] = useState("");
-  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -67,9 +68,21 @@ export default function ProfilePage() {
     );
   }
 
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+  const isDirty =
+    name !== user.name || favoriteTeam !== user.favoriteTeam || country !== user.country;
+
+  const handleSave = async () => {
+    if (!isDirty || saving) return;
+    setSaving(true);
+    try {
+      await updateUser({ name, favoriteTeam, country });
+      toast.success("Perfil actualizado");
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Error desconocido";
+      toast.error(`No se pudo actualizar el perfil: ${msg}`);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -140,13 +153,11 @@ export default function ProfilePage() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Button onClick={handleSave}>
-                {saved ? "✓ Guardado" : "Guardar cambios"}
+              <Button onClick={handleSave} disabled={!isDirty || saving}>
+                {saving ? "Guardando..." : "Guardar cambios"}
               </Button>
-              {saved && (
-                <span className="text-[0.85rem] text-green font-semibold">
-                  Cambios guardados correctamente
-                </span>
+              {!isDirty && !saving && (
+                <span className="text-[0.85rem] text-fg-muted">Sin cambios pendientes</span>
               )}
             </div>
           </Card>
