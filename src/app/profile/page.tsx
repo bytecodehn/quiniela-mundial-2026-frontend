@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AppLayout } from "@/components/app-layout";
 import { Button, Card, ErrorState, Input, SkeletonStats, StatCard, useToast } from "@/components/ui";
+import { NotificationsCard } from "@/components/NotificationsCard";
 import { useAuth } from "@/lib/auth";
 import { useStats } from "@/lib/hooks";
 
@@ -190,6 +191,8 @@ export default function ProfilePage() {
               </div>
             </div>
           </Card>
+
+          <NotificationsCard />
         </div>
       </div>
     </AppLayout>
