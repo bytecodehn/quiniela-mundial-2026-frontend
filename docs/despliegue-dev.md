@@ -174,6 +174,30 @@ Si al correr los tests aparece un error como `error while loading shared librari
 
 Nota: la suite asume mocks. Una suite separada con tag `@backend` se agregara cuando exista backend.
 
+## 14. Auditoria Lighthouse (opcional, pre-adquisicion)
+
+Antes de campanas de adquisicion o de cualquier publico amplio, conviene correr Lighthouse contra el deploy DEV y registrar baseline de Core Web Vitals.
+
+Desde una maquina con Chrome / Chromium:
+
+```bash
+npx lighthouse http://192.168.74.128:3000/ \
+  --only-categories=performance,accessibility,best-practices,seo,pwa \
+  --output=html \
+  --output-path=./lighthouse-dev.html
+```
+
+Que vigilar:
+
+- **LCP** (Largest Contentful Paint) < 2.5s.
+- **CLS** (Cumulative Layout Shift) < 0.1.
+- **INP** (Interaction to Next Paint) < 200ms.
+- **PWA**: con la app instalada via manifest, el badge de "Instalar" deberia aparecer en Chrome.
+
+Si Lighthouse marca rojo en imagenes, el siguiente paso es introducir `next/image` cuando haya assets reales (banderas, logos de selecciones, etc.). Hoy la app usa emojis y no tiene activos pesados.
+
+El Service Worker (`public/sw.js`) solo se registra en `NODE_ENV=production`, asi que para validar PWA hay que correr contra el build de produccion (`npm run build && npm run start`).
+
 ## Checklist rapido
 
 - SSH exitoso.
