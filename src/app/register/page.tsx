@@ -61,6 +61,7 @@ export default function RegisterPage() {
         password,
         passwordConfirm: confirmPassword,
         favoriteTeam: favoriteTeam || undefined,
+        country: country || undefined,
       });
       router.push("/dashboard");
     } catch {

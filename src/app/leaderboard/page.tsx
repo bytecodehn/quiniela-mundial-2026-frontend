@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { AppLayout } from "@/components/app-layout";
-import { Badge, Card, ErrorState, SkeletonRows, Tabs } from "@/components/ui";
+import { Badge, Card, ErrorState, SkeletonRows } from "@/components/ui";
 import { useGlobalLeaderboard } from "@/lib/hooks";
 import type { LeaderboardEntry } from "@/types";
 
@@ -37,7 +36,6 @@ function Podium({ entries }: { entries: LeaderboardEntry[] }) {
 }
 
 export default function LeaderboardPage() {
-  const [activeTab, setActiveTab] = useState("Ranking Global");
   const { data, loading, error, refetch } = useGlobalLeaderboard();
 
   const leaderboard = data?.leaderboard ?? [];
@@ -51,8 +49,6 @@ export default function LeaderboardPage() {
           Clasificación global de todos los participantes
         </p>
       </div>
-
-      <Tabs tabs={["Ranking Global", "Por grupo"]} active={activeTab} onChange={setActiveTab} />
 
       {loading && <SkeletonRows count={6} />}
 

@@ -14,6 +14,7 @@ interface AuthContextType {
     password: string;
     passwordConfirm: string;
     favoriteTeam?: string;
+    country?: string;
   }) => Promise<void>;
   logout: () => void;
   updateUser: (data: Partial<User>) => void;
@@ -52,6 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string;
     passwordConfirm: string;
     favoriteTeam?: string;
+    country?: string;
   }) => {
     const res = await api.register(data);
     localStorage.setItem("token", res.token);

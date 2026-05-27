@@ -117,7 +117,7 @@ export default function LoginPage() {
 
           <div className="flex items-center gap-4 my-8">
             <div className="flex-1 h-px bg-border" />
-            <span className="text-[0.8rem] text-fg-muted">o continúa con</span>
+            <span className="text-[0.8rem] text-fg-muted">o probá rápido</span>
             <div className="flex-1 h-px bg-border" />
           </div>
 
@@ -130,8 +130,8 @@ export default function LoginPage() {
               setPassword("password123");
             }}
           >
-            <span className="text-[1.2rem]">G</span>
-            Google
+            <span className="text-[1.2rem]">👤</span>
+            Usar cuenta demo
           </Button>
 
           <p className="text-center mt-8 text-[0.9rem] text-fg-secondary">
