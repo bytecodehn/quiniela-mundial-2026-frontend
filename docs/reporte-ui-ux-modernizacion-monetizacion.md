@@ -27,10 +27,14 @@ Se revisaron:
 - Tipos, hooks, fixtures y cliente HTTP en `src/lib` y `src/types`.
 - Tokens y prototipos en `css/tokens.css` y `docs/prototypes`.
 
-Limitaciones:
+Validacion en servidor DEV:
 
-- `npm` no esta disponible en el PATH del entorno, por lo que no pude ejecutar `npm run typecheck`, `npm run build` ni `npm run lint`.
-- `git` tampoco esta disponible, por lo que no pude comparar historial ni cambios no commiteados.
+- En el ambiente local de VS Code, `node`, `npm` y `git` no estan disponibles por PATH; ese entorno se usa solo para programacion.
+- En el servidor DEV `192.168.74.128`, `node`, `npm` y `git` si estan disponibles.
+- `npm run typecheck` paso correctamente en DEV.
+- `npm run build` paso correctamente en DEV.
+- `npm run lint` paso correctamente en DEV, sin warnings ni errores.
+- `git status --short` en DEV solo reporto `.env.production` como archivo no trackeado.
 
 ## Estado actual del producto
 
