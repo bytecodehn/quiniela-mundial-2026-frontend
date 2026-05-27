@@ -83,7 +83,7 @@ npm run test:e2e           # headless, reporte en la terminal
 npm run test:e2e:ui        # UI interactiva para debug
 ```
 
-Playwright auto-arranca el dev server (`next dev` con `NEXT_PUBLIC_USE_MOCKS=true`). Si querés correr contra un server externo:
+Playwright arranca su propio `next dev` en el **puerto 3030** con `NEXT_PUBLIC_USE_MOCKS=true` (queda fuera del 3000 donde corre el build de producción / systemd). Si querés correr contra un server externo:
 
 ```bash
 PLAYWRIGHT_BASE_URL=https://staging.example.com npm run test:e2e

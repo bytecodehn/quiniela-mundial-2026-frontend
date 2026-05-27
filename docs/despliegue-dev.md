@@ -162,10 +162,14 @@ npm run test:e2e:install
 npm run test:e2e
 ```
 
-Playwright auto-arranca un dev server con `NEXT_PUBLIC_USE_MOCKS=true`. Para correr contra un server ya levantado en otra URL:
+Playwright arranca su propio `next dev` en el **puerto 3030** con `NEXT_PUBLIC_USE_MOCKS=true`. No choca con la build de producción del `quiniela-frontend.service` (puerto 3000). Override:
 
 ```bash
+# Apuntar a otro server (staging, build de prod local, etc.)
 PLAYWRIGHT_BASE_URL=http://192.168.74.128:3000 npm run test:e2e
+
+# Cambiar el puerto del dev server gestionado por Playwright
+PORT=3050 npm run test:e2e
 ```
 
 ### Troubleshooting
