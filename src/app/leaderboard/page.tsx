@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { AppLayout } from "@/components/app-layout";
-import { Button, Card, Tabs, Badge } from "@/components/ui";
-import { mockLeaderboard, mockUser } from "@/components/mock-data";
+import { Badge, Card, ErrorState, SkeletonRows, Tabs } from "@/components/ui";
+import { useGlobalLeaderboard } from "@/lib/hooks";
+import type { LeaderboardEntry } from "@/types";
 
-function Podium({ entries }: { entries: typeof mockLeaderboard }) {
+function Podium({ entries }: { entries: LeaderboardEntry[] }) {
   const medals = ["🥇", "🥈", "🥉"];
   const styles = [
     "border-gold bg-gold-bg/20 shadow-[0_0_30px_oklch(75%_0.15_85/0.2)] scale-105",
@@ -37,7 +38,10 @@ function Podium({ entries }: { entries: typeof mockLeaderboard }) {
 
 export default function LeaderboardPage() {
   const [activeTab, setActiveTab] = useState("Ranking Global");
-  const currentUserId = mockUser.id;
+  const { data, loading, error, refetch } = useGlobalLeaderboard();
+
+  const leaderboard = data?.leaderboard ?? [];
+  const currentUserId = data?.currentUser.userId;
 
   return (
     <AppLayout>
@@ -50,59 +54,67 @@ export default function LeaderboardPage() {
 
       <Tabs tabs={["Ranking Global", "Por grupo"]} active={activeTab} onChange={setActiveTab} />
 
-      <Podium entries={mockLeaderboard.slice(0, 3)} />
+      {loading && <SkeletonRows count={6} />}
 
-      <Card className="overflow-hidden !p-0">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="text-[0.75rem] text-fg-muted uppercase tracking-wider font-semibold border-b border-border">
-                <th className="p-4 w-16">#</th>
-                <th className="p-4">Participante</th>
-                <th className="p-4 text-right">Puntos</th>
-                <th className="p-4 text-right hidden md:table-cell">Aciertos</th>
-                <th className="p-4 text-right hidden md:table-cell">Exactas</th>
-                <th className="p-4 text-right hidden sm:table-cell">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {mockLeaderboard.map((entry, idx) => {
-                const isMe = entry.userId === currentUserId;
-                const isPodium = idx < 3;
-                return (
-                  <tr
-                    key={entry.rank}
-                    className={`border-b border-border transition-colors duration-150 ${
-                      isMe ? "bg-green-bg/20 border-l-2 border-l-green" : "hover:bg-bg-elevated"
-                    }`}
-                  >
-                    <td className="p-4">
-                      <span className="font-bold text-[0.95rem] tabular-nums">
-                        {isPodium ? ["🥇", "🥈", "🥉"][idx] : entry.rank}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green to-cyan grid place-items-center text-white font-bold text-[0.75rem] shrink-0">
-                          {entry.avatar}
-                        </div>
-                        <div>
-                          <span className="font-semibold text-[0.9rem]">{entry.name}</span>
-                          {isMe && <Badge variant="green" className="ml-2">Tú</Badge>}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-4 text-right font-bold text-[1rem] tabular-nums">{entry.points}</td>
-                    <td className="p-4 text-right text-fg-secondary text-[0.9rem] hidden md:table-cell tabular-nums">{entry.correctPredictions}</td>
-                    <td className="p-4 text-right text-fg-secondary text-[0.9rem] hidden md:table-cell tabular-nums">{entry.exactPredictions}</td>
-                    <td className="p-4 text-right text-fg-muted text-[0.85rem] hidden sm:table-cell tabular-nums">{entry.totalPredictions}</td>
+      {!loading && error && <ErrorState message={error} onRetry={refetch} />}
+
+      {!loading && !error && data && (
+        <>
+          <Podium entries={leaderboard.slice(0, 3)} />
+
+          <Card className="overflow-hidden !p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="text-[0.75rem] text-fg-muted uppercase tracking-wider font-semibold border-b border-border">
+                    <th className="p-4 w-16">#</th>
+                    <th className="p-4">Participante</th>
+                    <th className="p-4 text-right">Puntos</th>
+                    <th className="p-4 text-right hidden md:table-cell">Aciertos</th>
+                    <th className="p-4 text-right hidden md:table-cell">Exactas</th>
+                    <th className="p-4 text-right hidden sm:table-cell">Total</th>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </Card>
+                </thead>
+                <tbody>
+                  {leaderboard.map((entry, idx) => {
+                    const isMe = entry.userId === currentUserId;
+                    const isPodium = idx < 3;
+                    return (
+                      <tr
+                        key={entry.rank}
+                        className={`border-b border-border transition-colors duration-150 ${
+                          isMe ? "bg-green-bg/20 border-l-2 border-l-green" : "hover:bg-bg-elevated"
+                        }`}
+                      >
+                        <td className="p-4">
+                          <span className="font-bold text-[0.95rem] tabular-nums">
+                            {isPodium ? ["🥇", "🥈", "🥉"][idx] : entry.rank}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green to-cyan grid place-items-center text-white font-bold text-[0.75rem] shrink-0">
+                              {entry.avatar}
+                            </div>
+                            <div>
+                              <span className="font-semibold text-[0.9rem]">{entry.name}</span>
+                              {isMe && <Badge variant="green" className="ml-2">Tú</Badge>}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-4 text-right font-bold text-[1rem] tabular-nums">{entry.points}</td>
+                        <td className="p-4 text-right text-fg-secondary text-[0.9rem] hidden md:table-cell tabular-nums">{entry.correctPredictions}</td>
+                        <td className="p-4 text-right text-fg-secondary text-[0.9rem] hidden md:table-cell tabular-nums">{entry.exactPredictions}</td>
+                        <td className="p-4 text-right text-fg-muted text-[0.85rem] hidden sm:table-cell tabular-nums">{entry.totalPredictions}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </>
+      )}
     </AppLayout>
   );
 }

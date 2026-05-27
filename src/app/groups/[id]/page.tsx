@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useParams } from "next/navigation";
 import { AppLayout } from "@/components/app-layout";
-import { Button, Card, Badge } from "@/components/ui";
-import { mockGroupDetail, mockUser } from "@/components/mock-data";
+import { Badge, Button, Card, ErrorState, SkeletonRows } from "@/components/ui";
+import { useGroup } from "@/lib/hooks";
+import { useAuth } from "@/lib/auth";
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("es-ES", {
@@ -14,11 +16,16 @@ function formatDate(dateStr: string) {
 }
 
 export default function GroupDetailPage() {
-  const group = mockGroupDetail;
-  const currentUserId = mockUser.id;
+  const { id } = useParams<{ id: string }>();
+  const { data, loading, error, refetch } = useGroup(id);
+  const { user } = useAuth();
   const [copied, setCopied] = useState(false);
 
+  const group = data?.group;
+  const currentUserId = user?.id;
+
   const copyInviteCode = async () => {
+    if (!group) return;
     try {
       await navigator.clipboard.writeText(group.inviteCode);
       setCopied(true);
@@ -27,6 +34,22 @@ export default function GroupDetailPage() {
       //
     }
   };
+
+  if (loading) {
+    return (
+      <AppLayout>
+        <SkeletonRows count={6} />
+      </AppLayout>
+    );
+  }
+
+  if (error || !group) {
+    return (
+      <AppLayout>
+        <ErrorState message={error ?? "Grupo no encontrado"} onRetry={refetch} />
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppLayout } from "@/components/app-layout";
-import { Button, Card, Input, StatCard } from "@/components/ui";
-import { mockUser, mockStats } from "@/components/mock-data";
+import { Button, Card, ErrorState, Input, SkeletonStats, StatCard } from "@/components/ui";
+import { useAuth } from "@/lib/auth";
+import { useStats } from "@/lib/hooks";
 
 const countries = [
   { value: "AR", label: "🇦🇷 Argentina" },
@@ -43,10 +44,28 @@ function formatDate(dateStr: string) {
 }
 
 export default function ProfilePage() {
-  const [name, setName] = useState(mockUser.name);
-  const [favoriteTeam, setFavoriteTeam] = useState(mockUser.favoriteTeam);
-  const [country, setCountry] = useState(mockUser.country);
+  const { user } = useAuth();
+  const { data: stats, loading: statsLoading, error: statsError, refetch } = useStats();
+  const [name, setName] = useState("");
+  const [favoriteTeam, setFavoriteTeam] = useState("");
+  const [country, setCountry] = useState("");
   const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name);
+      setFavoriteTeam(user.favoriteTeam);
+      setCountry(user.country);
+    }
+  }, [user]);
+
+  if (!user) {
+    return (
+      <AppLayout>
+        <SkeletonStats count={6} />
+      </AppLayout>
+    );
+  }
 
   const handleSave = () => {
     setSaved(true);
@@ -67,13 +86,13 @@ export default function ProfilePage() {
           <Card>
             <div className="flex items-center gap-5 mb-6">
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green to-cyan grid place-items-center text-white font-bold text-[1.5rem] shrink-0">
-                {mockUser.avatar}
+                {user.avatar}
               </div>
               <div>
-                <h2 className="text-[1.2rem] font-bold text-fg">{mockUser.name}</h2>
-                <p className="text-[0.85rem] text-fg-secondary">{mockUser.email}</p>
+                <h2 className="text-[1.2rem] font-bold text-fg">{user.name}</h2>
+                <p className="text-[0.85rem] text-fg-secondary">{user.email}</p>
                 <p className="text-[0.75rem] text-fg-muted mt-1">
-                  Miembro desde {formatDate(mockUser.createdAt)}
+                  Miembro desde {formatDate(user.createdAt)}
                 </p>
               </div>
             </div>
@@ -88,7 +107,7 @@ export default function ProfilePage() {
             />
             <Input
               label="Email"
-              value={mockUser.email}
+              value={user.email}
               disabled
             />
             <div className="mb-5">
@@ -136,14 +155,18 @@ export default function ProfilePage() {
         <div className="space-y-6">
           <Card>
             <h3 className="text-[1.05rem] font-bold text-fg mb-5">Estadísticas</h3>
-            <div className="grid grid-cols-2 gap-5">
-              <StatCard label="Puntos" value={mockStats.totalPoints} />
-              <StatCard label="Ranking Global" value={`#${mockStats.globalRank}`} />
-              <StatCard label="Predicciones" value={mockStats.predictionsTotal} />
-              <StatCard label="Exactas" value={mockStats.exactCount} />
-              <StatCard label="Aciertos" value={mockStats.correctCount} />
-              <StatCard label="Grupo" value={mockStats.groupName || "—"} />
-            </div>
+            {statsLoading && <SkeletonStats count={6} />}
+            {!statsLoading && statsError && <ErrorState message={statsError} onRetry={refetch} />}
+            {!statsLoading && !statsError && stats && (
+              <div className="grid grid-cols-2 gap-5">
+                <StatCard label="Puntos" value={stats.totalPoints} />
+                <StatCard label="Ranking Global" value={`#${stats.globalRank}`} />
+                <StatCard label="Predicciones" value={stats.predictionsTotal} />
+                <StatCard label="Exactas" value={stats.exactCount} />
+                <StatCard label="Aciertos" value={stats.correctCount} />
+                <StatCard label="Grupo" value={stats.groupName || "—"} />
+              </div>
+            )}
           </Card>
 
           <Card>

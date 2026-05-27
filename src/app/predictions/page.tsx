@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { AppLayout } from "@/components/app-layout";
-import { Card, FilterBar, Select, Badge, EmptyState } from "@/components/ui";
-import { mockPredictions, mockStats, allMatches } from "@/components/mock-data";
+import { Badge, Card, EmptyState, ErrorState, FilterBar, Select, SkeletonRows, SkeletonStats } from "@/components/ui";
+import { useMatches, usePredictions } from "@/lib/hooks";
 
 const statusOptions: { value: string; label: string }[] = [
   { value: "all", label: "Todas" },
@@ -31,13 +31,19 @@ const statusConfig: Record<string, { label: string; variant: "gold" | "green" | 
 };
 
 export default function PredictionsPage() {
+  const { data, loading, error, refetch } = usePredictions();
+  const { data: matchesData } = useMatches();
   const [statusFilter, setStatusFilter] = useState("all");
   const [stageFilter, setStageFilter] = useState("all");
 
-  const filtered = mockPredictions.filter((p) => {
+  const predictions = data?.predictions ?? [];
+  const stats = data?.stats;
+  const matches = matchesData?.matches ?? [];
+
+  const filtered = predictions.filter((p) => {
     if (statusFilter !== "all" && p.status !== statusFilter) return false;
     if (stageFilter !== "all") {
-      const match = allMatches.find((m) => m.id === p.match.id);
+      const match = matches.find((m) => m.id === p.match.id);
       if (!match || match.stage !== stageFilter) return false;
     }
     return true;
@@ -50,35 +56,45 @@ export default function PredictionsPage() {
         <p className="text-fg-secondary mt-1">Historial de todos tus pronósticos</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-8">
-        <Card>
-          <div className="text-center">
-            <div className="text-[0.75rem] text-fg-muted uppercase tracking-wider font-semibold mb-1">Exactas</div>
-            <div className="text-[2rem] font-bold font-display text-gold">{mockStats.exactCount}</div>
-          </div>
-        </Card>
-        <Card>
-          <div className="text-center">
-            <div className="text-[0.75rem] text-fg-muted uppercase tracking-wider font-semibold mb-1">Acertadas</div>
-            <div className="text-[2rem] font-bold font-display text-green">{mockStats.correctCount}</div>
-          </div>
-        </Card>
-        <Card>
-          <div className="text-center">
-            <div className="text-[0.75rem] text-fg-muted uppercase tracking-wider font-semibold mb-1">Pendientes</div>
-            <div className="text-[2rem] font-bold font-display text-fg">{mockStats.predictionsPending}</div>
-          </div>
-        </Card>
-      </div>
+      {loading && <SkeletonStats count={3} />}
+
+      {!loading && error && <ErrorState message={error} onRetry={refetch} />}
+
+      {!loading && !error && stats && (
+        <div className="grid grid-cols-3 gap-4 mb-8">
+          <Card>
+            <div className="text-center">
+              <div className="text-[0.75rem] text-fg-muted uppercase tracking-wider font-semibold mb-1">Exactas</div>
+              <div className="text-[2rem] font-bold font-display text-gold">{stats.exactCount}</div>
+            </div>
+          </Card>
+          <Card>
+            <div className="text-center">
+              <div className="text-[0.75rem] text-fg-muted uppercase tracking-wider font-semibold mb-1">Acertadas</div>
+              <div className="text-[2rem] font-bold font-display text-green">{stats.correctCount}</div>
+            </div>
+          </Card>
+          <Card>
+            <div className="text-center">
+              <div className="text-[0.75rem] text-fg-muted uppercase tracking-wider font-semibold mb-1">Pendientes</div>
+              <div className="text-[2rem] font-bold font-display text-fg">{stats.predictionsPending}</div>
+            </div>
+          </Card>
+        </div>
+      )}
 
       <FilterBar>
         <Select options={statusOptions} value={statusFilter} onChange={setStatusFilter} />
         <Select options={stageOptions} value={stageFilter} onChange={setStageFilter} />
       </FilterBar>
 
-      {filtered.length === 0 ? (
+      {loading && <SkeletonRows count={4} />}
+
+      {!loading && !error && filtered.length === 0 && (
         <EmptyState icon="🎯" text="No hay predicciones que coincidan con los filtros." />
-      ) : (
+      )}
+
+      {!loading && !error && filtered.length > 0 && (
         <div className="space-y-3">
           {filtered.map((prediction) => {
             const cfg = statusConfig[prediction.status];

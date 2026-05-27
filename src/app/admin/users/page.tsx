@@ -1,27 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/app-layout";
-import { Button, Card, Input, Badge, EmptyState } from "@/components/ui";
-import { mockAdminUsers } from "@/components/mock-data";
+import { Badge, Button, Card, EmptyState, ErrorState, Input, SkeletonRows } from "@/components/ui";
+import { updateAdminUserStatus, useAdminUsers } from "@/lib/hooks";
 import type { AdminUser } from "@/types";
 
 export default function AdminUsersPage() {
-  const [users, setUsers] = useState<AdminUser[]>(mockAdminUsers);
+  const { data, loading, error, refetch } = useAdminUsers();
+  const [users, setUsers] = useState<AdminUser[]>([]);
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    if (data) setUsers(data.users);
+  }, [data]);
 
   const filtered = users.filter(
     (u) =>
       u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase())
+      u.email.toLowerCase().includes(search.toLowerCase()),
   );
 
-  function toggleStatus(userId: string) {
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.id === userId ? { ...u, status: u.status === "active" ? ("blocked" as const) : ("active" as const) } : u
-      )
-    );
+  async function toggleStatus(user: AdminUser) {
+    const next = user.status === "active" ? "blocked" : "active";
+    try {
+      const res = await updateAdminUserStatus(user.id, next);
+      setUsers((prev) => prev.map((u) => (u.id === user.id ? res.user : u)));
+    } catch (e) {
+      console.error("Falló actualizar usuario", e);
+    }
   }
 
   return (
@@ -32,9 +39,15 @@ export default function AdminUsersPage() {
         <Input placeholder="Buscar por nombre o email..." value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
 
-      {filtered.length === 0 ? (
+      {loading && <SkeletonRows count={6} />}
+
+      {!loading && error && <ErrorState message={error} onRetry={refetch} />}
+
+      {!loading && !error && filtered.length === 0 && (
         <EmptyState icon="👤" text="No se encontraron usuarios con ese criterio." />
-      ) : (
+      )}
+
+      {!loading && !error && filtered.length > 0 && (
         <Card className="overflow-x-auto p-0">
           <table className="w-full text-left text-[0.9rem]">
             <thead>
@@ -67,7 +80,7 @@ export default function AdminUsersPage() {
                     <Button
                       variant={u.status === "active" ? "danger" : "secondary"}
                       size="sm"
-                      onClick={() => toggleStatus(u.id)}
+                      onClick={() => toggleStatus(u)}
                     >
                       {u.status === "active" ? "Bloquear" : "Desbloquear"}
                     </Button>

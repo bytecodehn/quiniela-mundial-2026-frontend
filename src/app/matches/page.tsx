@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppLayout } from "@/components/app-layout";
-import { FilterBar, Select, Tabs, MatchCard, EmptyState } from "@/components/ui";
-import { allMatches } from "@/components/mock-data";
-import type { MatchStage, GroupName } from "@/types";
+import { EmptyState, ErrorState, FilterBar, MatchCard, Select, SkeletonRows, Tabs } from "@/components/ui";
+import { useMatches } from "@/lib/hooks";
+import type { GroupName } from "@/types";
 
 const stageOptions: { value: string; label: string }[] = [
   { value: "all", label: "Todos" },
@@ -26,11 +26,13 @@ const statusTabs = ["Todos", "Próximos", "Finalizados"];
 
 export default function MatchesPage() {
   const router = useRouter();
+  const { data, loading, error, refetch } = useMatches();
   const [stageFilter, setStageFilter] = useState("all");
   const [groupFilter, setGroupFilter] = useState("all");
   const [statusTab, setStatusTab] = useState("Todos");
 
-  const filtered = allMatches.filter((m) => {
+  const matches = data?.matches ?? [];
+  const filtered = matches.filter((m) => {
     if (stageFilter !== "all" && m.stage !== stageFilter) return false;
     if (groupFilter !== "all" && m.groupName !== groupFilter) return false;
     if (statusTab === "Próximos" && m.status !== "upcoming") return false;
@@ -52,9 +54,15 @@ export default function MatchesPage() {
 
       <Tabs tabs={statusTabs} active={statusTab} onChange={setStatusTab} />
 
-      {filtered.length === 0 ? (
+      {loading && <SkeletonRows count={6} />}
+
+      {!loading && error && <ErrorState message={error} onRetry={refetch} />}
+
+      {!loading && !error && filtered.length === 0 && (
         <EmptyState icon="⚽" text="No hay partidos que coincidan con los filtros seleccionados." />
-      ) : (
+      )}
+
+      {!loading && !error && filtered.length > 0 && (
         <div className="space-y-3">
           {filtered.map((match) => (
             <MatchCard

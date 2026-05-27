@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/app-layout";
-import { Button, Card, CardTitle, Input, Badge, Modal, FilterBar, Select } from "@/components/ui";
-import { mockAdminMatches } from "@/components/mock-data";
-import type { AdminMatch, MatchStatus, MatchStage, GroupName } from "@/types";
+import { Badge, Button, Card, ErrorState, FilterBar, Input, Modal, Select, SkeletonRows } from "@/components/ui";
+import { useAdminMatches } from "@/lib/hooks";
+import type { AdminMatch, GroupName, MatchStage, MatchStatus } from "@/types";
 
 const stageLabels: Record<MatchStage, string> = {
   group: "Grupos",
@@ -16,13 +16,18 @@ const stageLabels: Record<MatchStage, string> = {
 };
 
 export default function AdminMatchesPage() {
-  const [matches, setMatches] = useState<AdminMatch[]>(mockAdminMatches);
+  const { data, loading, error, refetch } = useAdminMatches();
+  const [matches, setMatches] = useState<AdminMatch[]>([]);
   const [filter, setFilter] = useState<string>("all");
   const [createOpen, setCreateOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<AdminMatch | null>(null);
 
   const [form, setForm] = useState({ homeTeam: "", awayTeam: "", stage: "group" as MatchStage, groupName: "A", stadium: "", date: "" });
   const [editForm, setEditForm] = useState({ homeScore: "", awayScore: "", status: "upcoming" as MatchStatus });
+
+  useEffect(() => {
+    if (data) setMatches(data.matches);
+  }, [data]);
 
   const filtered = filter === "all" ? matches : matches.filter((m) => m.status === filter);
 
@@ -56,8 +61,8 @@ export default function AdminMatchesPage() {
               awayScore: editForm.awayScore !== "" ? Number(editForm.awayScore) : null,
               status: editForm.status,
             }
-          : m
-      )
+          : m,
+      ),
     );
     setEditTarget(null);
     setEditForm({ homeScore: "", awayScore: "", status: "upcoming" });
@@ -86,7 +91,7 @@ export default function AdminMatchesPage() {
     <AdminLayout>
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <h1 className="text-[1.6rem] font-bold font-display">Partidos</h1>
-        <Button onClick={() => setCreateOpen(true)}>Crear partido</Button>
+        <Button onClick={() => setCreateOpen(true)} disabled={loading}>Crear partido</Button>
       </div>
 
       <FilterBar>
@@ -101,48 +106,54 @@ export default function AdminMatchesPage() {
         />
       </FilterBar>
 
-      <Card className="overflow-x-auto p-0">
-        <table className="w-full text-left text-[0.9rem]">
-          <thead>
-            <tr className="border-b border-border text-fg-muted text-[0.75rem] uppercase tracking-wider">
-              <th className="p-4 font-semibold">Equipo local</th>
-              <th className="p-4 font-semibold">Resultado</th>
-              <th className="p-4 font-semibold">Equipo visitante</th>
-              <th className="p-4 font-semibold">Fase</th>
-              <th className="p-4 font-semibold">Grupo</th>
-              <th className="p-4 font-semibold">Fecha</th>
-              <th className="p-4 font-semibold">Estado</th>
-              <th className="p-4 font-semibold">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((m) => (
-              <tr key={m.id} className="border-b border-border last:border-b-0 hover:bg-bg-primary/40 transition-colors">
-                <td className="p-4 whitespace-nowrap">
-                  <span className="mr-2">{m.homeTeam.flag}</span>
-                  {m.homeTeam.name}
-                </td>
-                <td className="p-4 whitespace-nowrap font-mono font-bold text-[1rem]">
-                  {m.homeScore !== null ? `${m.homeScore} – ${m.awayScore}` : "–"}
-                </td>
-                <td className="p-4 whitespace-nowrap">
-                  <span className="mr-2">{m.awayTeam.flag}</span>
-                  {m.awayTeam.name}
-                </td>
-                <td className="p-4 whitespace-nowrap">{stageLabels[m.stage]}</td>
-                <td className="p-4 whitespace-nowrap">{m.groupName ?? "–"}</td>
-                <td className="p-4 whitespace-nowrap">{m.date}</td>
-                <td className="p-4 whitespace-nowrap">{statusBadge(m.status)}</td>
-                <td className="p-4 whitespace-nowrap">
-                  <Button variant="ghost" size="sm" onClick={() => openEdit(m)}>
-                    Editar
-                  </Button>
-                </td>
+      {loading && <SkeletonRows count={6} />}
+
+      {!loading && error && <ErrorState message={error} onRetry={refetch} />}
+
+      {!loading && !error && (
+        <Card className="overflow-x-auto p-0">
+          <table className="w-full text-left text-[0.9rem]">
+            <thead>
+              <tr className="border-b border-border text-fg-muted text-[0.75rem] uppercase tracking-wider">
+                <th className="p-4 font-semibold">Equipo local</th>
+                <th className="p-4 font-semibold">Resultado</th>
+                <th className="p-4 font-semibold">Equipo visitante</th>
+                <th className="p-4 font-semibold">Fase</th>
+                <th className="p-4 font-semibold">Grupo</th>
+                <th className="p-4 font-semibold">Fecha</th>
+                <th className="p-4 font-semibold">Estado</th>
+                <th className="p-4 font-semibold">Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </Card>
+            </thead>
+            <tbody>
+              {filtered.map((m) => (
+                <tr key={m.id} className="border-b border-border last:border-b-0 hover:bg-bg-primary/40 transition-colors">
+                  <td className="p-4 whitespace-nowrap">
+                    <span className="mr-2">{m.homeTeam.flag}</span>
+                    {m.homeTeam.name}
+                  </td>
+                  <td className="p-4 whitespace-nowrap font-mono font-bold text-[1rem]">
+                    {m.homeScore !== null ? `${m.homeScore} – ${m.awayScore}` : "–"}
+                  </td>
+                  <td className="p-4 whitespace-nowrap">
+                    <span className="mr-2">{m.awayTeam.flag}</span>
+                    {m.awayTeam.name}
+                  </td>
+                  <td className="p-4 whitespace-nowrap">{stageLabels[m.stage]}</td>
+                  <td className="p-4 whitespace-nowrap">{m.groupName ?? "–"}</td>
+                  <td className="p-4 whitespace-nowrap">{m.date}</td>
+                  <td className="p-4 whitespace-nowrap">{statusBadge(m.status)}</td>
+                  <td className="p-4 whitespace-nowrap">
+                    <Button variant="ghost" size="sm" onClick={() => openEdit(m)}>
+                      Editar
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+      )}
 
       <Modal open={createOpen} onClose={() => setCreateOpen(false)} title="Crear partido">
         <Input label="Equipo local" value={form.homeTeam} onChange={(e) => setForm({ ...form, homeTeam: e.target.value })} />

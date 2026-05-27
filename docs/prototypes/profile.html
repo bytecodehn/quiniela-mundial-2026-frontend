@@ -1,10 +1,10 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Perfil — Quiniela Mundial 2026</title>
-  <link rel="stylesheet" href="css/tokens.css" />
+  <title>Perfil â€” Quiniela Mundial 2026</title>
+  <link rel="stylesheet" href="../../css/tokens.css" />
   <style>
     .profile-header {
       display: flex; align-items: center; gap: var(--space-6);
@@ -32,19 +32,19 @@
     <aside class="app-sidebar">
       <div class="sidebar-logo"><span class="sidebar-logo-icon">QM</span><span>Quiniela 2026</span></div>
       <nav class="sidebar-nav">
-        <a href="dashboard.html" class="sidebar-nav-item"><span class="nav-icon">📊</span> Dashboard</a>
-        <a href="matches.html" class="sidebar-nav-item"><span class="nav-icon">⚽</span> Partidos</a>
-        <a href="my-predictions.html" class="sidebar-nav-item"><span class="nav-icon">📋</span> Mis predicciones</a>
-        <a href="leaderboard.html" class="sidebar-nav-item"><span class="nav-icon">🏆</span> Ranking</a>
-        <a href="groups.html" class="sidebar-nav-item"><span class="nav-icon">👥</span> Grupos</a>
-        <a href="profile.html" class="sidebar-nav-item active"><span class="nav-icon">👤</span> Perfil</a>
+        <a href="dashboard.html" class="sidebar-nav-item"><span class="nav-icon">ðŸ“Š</span> Dashboard</a>
+        <a href="matches.html" class="sidebar-nav-item"><span class="nav-icon">âš½</span> Partidos</a>
+        <a href="my-predictions.html" class="sidebar-nav-item"><span class="nav-icon">ðŸ“‹</span> Mis predicciones</a>
+        <a href="leaderboard.html" class="sidebar-nav-item"><span class="nav-icon">ðŸ†</span> Ranking</a>
+        <a href="groups.html" class="sidebar-nav-item"><span class="nav-icon">ðŸ‘¥</span> Grupos</a>
+        <a href="profile.html" class="sidebar-nav-item active"><span class="nav-icon">ðŸ‘¤</span> Perfil</a>
       </nav>
       <div class="sidebar-footer">
         <div class="sidebar-user">
           <div class="sidebar-user-avatar">CA</div>
           <div class="sidebar-user-info">
-            <div class="sidebar-user-name">Carlos Andrés</div>
-            <div class="sidebar-user-role">📍 Argentina</div>
+            <div class="sidebar-user-name">Carlos AndrÃ©s</div>
+            <div class="sidebar-user-role">ðŸ“ Argentina</div>
           </div>
         </div>
       </div>
@@ -53,7 +53,7 @@
     <div class="app-main">
       <header class="app-header">
         <div class="header-left"><h2 style="font-size:1.2rem">Mi perfil</h2></div>
-        <div class="header-right"><div class="header-badge">🔔<span class="header-badge-dot"></span></div></div>
+        <div class="header-right"><div class="header-badge">ðŸ””<span class="header-badge-dot"></span></div></div>
       </header>
 
       <div class="app-content">
@@ -61,9 +61,9 @@
         <div class="profile-header">
           <div class="profile-avatar-large">CA</div>
           <div class="profile-info">
-            <h2>Carlos Andrés</h2>
+            <h2>Carlos AndrÃ©s</h2>
             <div class="meta">carlos.andres@email.com</div>
-            <div class="meta">📍 Argentina · 🇦🇷 Selección favorita: Argentina</div>
+            <div class="meta">ðŸ“ Argentina Â· ðŸ‡¦ðŸ‡· SelecciÃ³n favorita: Argentina</div>
             <div class="profile-stats">
               <div class="stat-card"><span class="stat-label">Puntos</span><span class="stat-value" style="font-size:1.3rem">1,247</span></div>
               <div class="stat-card"><span class="stat-label">Ranking global</span><span class="stat-value" style="font-size:1.3rem">#42</span></div>
@@ -78,34 +78,34 @@
           <div class="card-header">
             <span class="card-title">Editar perfil</span>
           </div>
-          <form onsubmit="event.preventDefault();this.querySelector('.btn-primary').textContent='Guardado ✓'">
+          <form onsubmit="event.preventDefault();this.querySelector('.btn-primary').textContent='Guardado âœ“'">
             <div class="form-group">
               <label class="form-label">Nombre completo</label>
-              <input type="text" class="form-input" value="Carlos Andrés" />
+              <input type="text" class="form-input" value="Carlos AndrÃ©s" />
             </div>
             <div class="form-group">
-              <label class="form-label">Correo electrónico</label>
+              <label class="form-label">Correo electrÃ³nico</label>
               <input type="email" class="form-input" value="carlos.andres@email.com" />
             </div>
             <div class="form-group">
-              <label class="form-label">País</label>
+              <label class="form-label">PaÃ­s</label>
               <select class="form-input">
                 <option value="AR" selected>Argentina</option>
                 <option value="BR">Brasil</option>
-                <option value="MX">México</option>
-                <option value="ES">España</option>
+                <option value="MX">MÃ©xico</option>
+                <option value="ES">EspaÃ±a</option>
                 <option value="US">Estados Unidos</option>
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">Selección favorita</label>
+              <label class="form-label">SelecciÃ³n favorita</label>
               <select class="form-input">
-                <option value="AR" selected>Argentina 🇦🇷</option>
-                <option value="BR">Brasil 🇧🇷</option>
-                <option value="FR">Francia 🇫🇷</option>
-                <option value="ES">España 🇪🇸</option>
-                <option value="DE">Alemania 🇩🇪</option>
-                <option value="MX">México 🇲🇽</option>
+                <option value="AR" selected>Argentina ðŸ‡¦ðŸ‡·</option>
+                <option value="BR">Brasil ðŸ‡§ðŸ‡·</option>
+                <option value="FR">Francia ðŸ‡«ðŸ‡·</option>
+                <option value="ES">EspaÃ±a ðŸ‡ªðŸ‡¸</option>
+                <option value="DE">Alemania ðŸ‡©ðŸ‡ª</option>
+                <option value="MX">MÃ©xico ðŸ‡²ðŸ‡½</option>
               </select>
             </div>
             <div class="form-group">
@@ -115,12 +115,12 @@
             </div>
             <div class="form-group">
               <label class="form-checkbox">
-                <input type="checkbox" checked /> Mostrar mi posición en rankings públicos
+                <input type="checkbox" checked /> Mostrar mi posiciÃ³n en rankings pÃºblicos
               </label>
             </div>
             <div style="display:flex;gap:var(--space-3);margin-top:var(--space-6)">
               <button type="submit" class="btn btn-primary">Guardar cambios</button>
-              <button type="button" class="btn btn-secondary">Cambiar contraseña</button>
+              <button type="button" class="btn btn-secondary">Cambiar contraseÃ±a</button>
             </div>
           </form>
         </div>
@@ -129,11 +129,11 @@
   </div>
 
   <nav class="mobile-nav">
-    <a href="dashboard.html" class="mobile-nav-item"><span class="mn-icon">📊</span> Dashboard</a>
-    <a href="matches.html" class="mobile-nav-item"><span class="mn-icon">⚽</span> Partidos</a>
-    <a href="my-predictions.html" class="mobile-nav-item"><span class="mn-icon">📋</span> Predicciones</a>
-    <a href="leaderboard.html" class="mobile-nav-item"><span class="mn-icon">🏆</span> Ranking</a>
-    <a href="groups.html" class="mobile-nav-item"><span class="mn-icon">👥</span> Grupos</a>
+    <a href="dashboard.html" class="mobile-nav-item"><span class="mn-icon">ðŸ“Š</span> Dashboard</a>
+    <a href="matches.html" class="mobile-nav-item"><span class="mn-icon">âš½</span> Partidos</a>
+    <a href="my-predictions.html" class="mobile-nav-item"><span class="mn-icon">ðŸ“‹</span> Predicciones</a>
+    <a href="leaderboard.html" class="mobile-nav-item"><span class="mn-icon">ðŸ†</span> Ranking</a>
+    <a href="groups.html" class="mobile-nav-item"><span class="mn-icon">ðŸ‘¥</span> Grupos</a>
   </nav>
 </body>
 </html>

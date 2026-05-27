@@ -3,25 +3,47 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AppLayout } from "@/components/app-layout";
-import { Button, Card, CardTitle, CardHeader, Badge, Modal, Input, EmptyState } from "@/components/ui";
-import { mockGroups } from "@/components/mock-data";
+import { Badge, Button, Card, CardHeader, CardTitle, EmptyState, ErrorState, Input, Modal, SkeletonRows } from "@/components/ui";
+import { createGroup, joinGroup, useGroups } from "@/lib/hooks";
 
 export default function GroupsPage() {
+  const { data, loading, error, refetch } = useGroups();
   const [showCreate, setShowCreate] = useState(false);
   const [showJoin, setShowJoin] = useState(false);
   const [createName, setCreateName] = useState("");
   const [joinCode, setJoinCode] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleCreate = () => {
+  const groups = data?.groups ?? [];
+
+  const handleCreate = async () => {
     if (!createName.trim()) return;
-    setShowCreate(false);
-    setCreateName("");
+    setSubmitting(true);
+    try {
+      await createGroup({ name: createName.trim() });
+      await refetch();
+      setShowCreate(false);
+      setCreateName("");
+    } catch (e) {
+      console.error("Falló crear grupo", e);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleJoin = () => {
+  const handleJoin = async () => {
     if (!joinCode.trim()) return;
-    setShowJoin(false);
-    setJoinCode("");
+    setSubmitting(true);
+    try {
+      await joinGroup({ inviteCode: joinCode.trim() });
+      await refetch();
+      setShowJoin(false);
+      setJoinCode("");
+    } catch (e) {
+      console.error("Falló unirse al grupo", e);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -39,7 +61,11 @@ export default function GroupsPage() {
         </div>
       </div>
 
-      {mockGroups.length === 0 ? (
+      {loading && <SkeletonRows count={3} />}
+
+      {!loading && error && <ErrorState message={error} onRetry={refetch} />}
+
+      {!loading && !error && groups.length === 0 && (
         <EmptyState
           icon="👥"
           text="No estás en ningún grupo todavía. Crea uno nuevo o únete con un código de invitación."
@@ -50,9 +76,11 @@ export default function GroupsPage() {
             </div>
           }
         />
-      ) : (
+      )}
+
+      {!loading && !error && groups.length > 0 && (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {mockGroups.map((g) => (
+          {groups.map((g) => (
             <Link key={g.id} href={`/groups/${g.id}`} className="no-underline">
               <Card className="h-full hover:bg-bg-elevated hover:border-green transition-all duration-150 cursor-pointer">
                 <CardHeader>
@@ -60,7 +88,7 @@ export default function GroupsPage() {
                     <span className="text-[1.3rem]">👥</span>
                     <CardTitle>{g.name}</CardTitle>
                   </div>
-                  <Badge variant="gold" className="tabular-nums">#{g.myRank}</Badge>
+                  {g.myRank !== null && <Badge variant="gold" className="tabular-nums">#{g.myRank}</Badge>}
                 </CardHeader>
                 <div className="space-y-2 text-[0.9rem]">
                   <div className="flex justify-between text-fg-secondary">
@@ -69,7 +97,7 @@ export default function GroupsPage() {
                   </div>
                   <div className="flex justify-between text-fg-secondary">
                     <span>Mis puntos</span>
-                    <span className="font-semibold text-fg">{g.myPoints}</span>
+                    <span className="font-semibold text-fg">{g.myPoints ?? 0}</span>
                   </div>
                   <div className="flex justify-between text-fg-secondary">
                     <span>Código</span>
@@ -91,7 +119,9 @@ export default function GroupsPage() {
         />
         <div className="flex justify-end gap-3 mt-2">
           <Button variant="ghost" onClick={() => setShowCreate(false)}>Cancelar</Button>
-          <Button onClick={handleCreate} disabled={!createName.trim()}>Crear</Button>
+          <Button onClick={handleCreate} disabled={!createName.trim() || submitting}>
+            {submitting ? "Creando..." : "Crear"}
+          </Button>
         </div>
       </Modal>
 
@@ -104,7 +134,9 @@ export default function GroupsPage() {
         />
         <div className="flex justify-end gap-3 mt-2">
           <Button variant="ghost" onClick={() => setShowJoin(false)}>Cancelar</Button>
-          <Button onClick={handleJoin} disabled={!joinCode.trim()}>Unirse</Button>
+          <Button onClick={handleJoin} disabled={!joinCode.trim() || submitting}>
+            {submitting ? "Uniéndote..." : "Unirse"}
+          </Button>
         </div>
       </Modal>
     </AppLayout>

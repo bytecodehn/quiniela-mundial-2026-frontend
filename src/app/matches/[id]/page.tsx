@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { AppLayout } from "@/components/app-layout";
-import { Card, Button, Badge } from "@/components/ui";
-import { allMatches } from "@/components/mock-data";
+import { Badge, Button, Card, ErrorState, SkeletonRows } from "@/components/ui";
+import { submitPrediction, useMatch } from "@/lib/hooks";
 
 function Countdown({ target }: { target: string }) {
   const calcRemaining = useCallback(() => {
@@ -53,29 +53,49 @@ const statusLabels: Record<string, { label: string; variant: "gold" | "green" | 
 
 export default function MatchDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const match = allMatches.find((m) => m.id === id);
-
+  const { data, loading, error, refetch } = useMatch(id);
   const [homeScore, setHomeScore] = useState("");
   const [awayScore, setAwayScore] = useState("");
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  if (!match) {
+  if (loading) {
     return (
       <AppLayout>
-        <div className="text-center py-20 text-fg-muted">
-          <p className="text-[1.2rem]">Partido no encontrado</p>
-        </div>
+        <SkeletonRows count={3} />
       </AppLayout>
     );
   }
 
+  if (error || !data?.match) {
+    return (
+      <AppLayout>
+        <ErrorState message={error ?? "Partido no encontrado"} onRetry={refetch} />
+      </AppLayout>
+    );
+  }
+
+  const match = data.match;
   const isFinished = match.status === "finished";
   const isLocked = !match.isPredictionOpen && !isFinished;
   const prediction = match.userPrediction;
 
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  const handleSave = async () => {
+    if (homeScore === "" || awayScore === "") return;
+    setSaving(true);
+    try {
+      await submitPrediction({
+        matchId: match.id,
+        homeScore: Number(homeScore),
+        awayScore: Number(awayScore),
+      });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch (e) {
+      console.error("Falló guardar predicción", e);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -144,8 +164,8 @@ export default function MatchDetailPage() {
               {isLocked ? (
                 <p className="text-orange font-semibold">⏰ La predicción para este partido está cerrada</p>
               ) : (
-                <Button size="lg" onClick={handleSave}>
-                  {saved ? "✓ Guardado" : "Guardar predicción"}
+                <Button size="lg" onClick={handleSave} disabled={saving || homeScore === "" || awayScore === ""}>
+                  {saving ? "Guardando..." : saved ? "✓ Guardado" : "Guardar predicción"}
                 </Button>
               )}
             </div>

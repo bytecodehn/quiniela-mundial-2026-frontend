@@ -2,16 +2,18 @@
 
 import { useState } from "react";
 import { AdminLayout } from "@/components/app-layout";
-import { Card, Input, EmptyState } from "@/components/ui";
-import { mockAdminGroups } from "@/components/mock-data";
+import { Card, EmptyState, ErrorState, Input, SkeletonRows } from "@/components/ui";
+import { useAdminGroups } from "@/lib/hooks";
 
 export default function AdminGroupsPage() {
   const [search, setSearch] = useState("");
+  const { data, loading, error, refetch } = useAdminGroups();
 
-  const filtered = mockAdminGroups.filter(
+  const groups = data?.groups ?? [];
+  const filtered = groups.filter(
     (g) =>
       g.name.toLowerCase().includes(search.toLowerCase()) ||
-      g.inviteCode.toLowerCase().includes(search.toLowerCase())
+      g.inviteCode.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -22,9 +24,15 @@ export default function AdminGroupsPage() {
         <Input placeholder="Buscar por nombre o código..." value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
 
-      {filtered.length === 0 ? (
+      {loading && <SkeletonRows count={6} />}
+
+      {!loading && error && <ErrorState message={error} onRetry={refetch} />}
+
+      {!loading && !error && filtered.length === 0 && (
         <EmptyState icon="👥" text="No se encontraron grupos con ese criterio." />
-      ) : (
+      )}
+
+      {!loading && !error && filtered.length > 0 && (
         <Card className="overflow-x-auto p-0">
           <table className="w-full text-left text-[0.9rem]">
             <thead>

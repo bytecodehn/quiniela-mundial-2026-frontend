@@ -1,10 +1,10 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mis predicciones — Quiniela Mundial 2026</title>
-  <link rel="stylesheet" href="css/tokens.css" />
+  <title>Mis predicciones â€” Quiniela Mundial 2026</title>
+  <link rel="stylesheet" href="../../css/tokens.css" />
   <style>
     .prediction-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); margin-bottom: var(--space-8); }
     @media (max-width: 768px) {
@@ -17,19 +17,19 @@
     <aside class="app-sidebar">
       <div class="sidebar-logo"><span class="sidebar-logo-icon">QM</span><span>Quiniela 2026</span></div>
       <nav class="sidebar-nav">
-        <a href="dashboard.html" class="sidebar-nav-item"><span class="nav-icon">📊</span> Dashboard</a>
-        <a href="matches.html" class="sidebar-nav-item"><span class="nav-icon">⚽</span> Partidos</a>
-        <a href="my-predictions.html" class="sidebar-nav-item active"><span class="nav-icon">📋</span> Mis predicciones</a>
-        <a href="leaderboard.html" class="sidebar-nav-item"><span class="nav-icon">🏆</span> Ranking</a>
-        <a href="groups.html" class="sidebar-nav-item"><span class="nav-icon">👥</span> Grupos</a>
-        <a href="profile.html" class="sidebar-nav-item"><span class="nav-icon">👤</span> Perfil</a>
+        <a href="dashboard.html" class="sidebar-nav-item"><span class="nav-icon">ðŸ“Š</span> Dashboard</a>
+        <a href="matches.html" class="sidebar-nav-item"><span class="nav-icon">âš½</span> Partidos</a>
+        <a href="my-predictions.html" class="sidebar-nav-item active"><span class="nav-icon">ðŸ“‹</span> Mis predicciones</a>
+        <a href="leaderboard.html" class="sidebar-nav-item"><span class="nav-icon">ðŸ†</span> Ranking</a>
+        <a href="groups.html" class="sidebar-nav-item"><span class="nav-icon">ðŸ‘¥</span> Grupos</a>
+        <a href="profile.html" class="sidebar-nav-item"><span class="nav-icon">ðŸ‘¤</span> Perfil</a>
       </nav>
       <div class="sidebar-footer">
         <div class="sidebar-user">
           <div class="sidebar-user-avatar">CA</div>
           <div class="sidebar-user-info">
-            <div class="sidebar-user-name">Carlos Andrés</div>
-            <div class="sidebar-user-role">📍 Argentina</div>
+            <div class="sidebar-user-name">Carlos AndrÃ©s</div>
+            <div class="sidebar-user-role">ðŸ“ Argentina</div>
           </div>
         </div>
       </div>
@@ -39,8 +39,8 @@
       <header class="app-header">
         <div class="header-left"><h2 style="font-size:1.2rem">Mis predicciones</h2></div>
         <div class="header-right">
-          <div class="header-search"><span>🔍</span><input type="text" placeholder="Buscar predicciones..." /></div>
-          <div class="header-badge">🔔<span class="header-badge-dot"></span></div>
+          <div class="header-search"><span>ðŸ”</span><input type="text" placeholder="Buscar predicciones..." /></div>
+          <div class="header-badge">ðŸ””<span class="header-badge-dot"></span></div>
         </div>
       </header>
 
@@ -65,7 +65,7 @@
             <button class="tab">Fallidas</button>
           </div>
           <select class="filter-select"><option value="all">Todas las fases</option><option>Fase de grupos</option><option>Octavos</option><option>Cuartos</option><option>Semifinales</option><option>Final</option></select>
-          <select class="filter-select"><option value="all">Todas las fechas</option><option>Última semana</option><option>Último mes</option></select>
+          <select class="filter-select"><option value="all">Todas las fechas</option><option>Ãšltima semana</option><option>Ãšltimo mes</option></select>
         </div>
 
         <!-- Predictions list -->
@@ -73,13 +73,13 @@
           <!-- Pending -->
           <div class="prediction-card" style="background:var(--bg-elevated);border-color:oklch(32% 0.04 260)">
             <div class="prediction-teams">
-              <div class="team"><span>🇦🇷</span> Argentina <span style="color:var(--fg-muted);font-size:0.8rem">vs</span></div>
-              <div class="team"><span>🇪🇸</span> España</div>
+              <div class="team"><span>ðŸ‡¦ðŸ‡·</span> Argentina <span style="color:var(--fg-muted);font-size:0.8rem">vs</span></div>
+              <div class="team"><span>ðŸ‡ªðŸ‡¸</span> EspaÃ±a</div>
             </div>
-            <div class="prediction-score">2 — 1</div>
+            <div class="prediction-score">2 â€” 1</div>
             <div class="prediction-result">
               <span class="badge badge-orange">Pendiente</span>
-              <span class="prediction-points text-muted">—</span>
+              <span class="prediction-points text-muted">â€”</span>
               <span style="font-size:0.7rem;color:var(--fg-muted)">14 Jun 16:00</span>
             </div>
             <a href="prediction.html" class="btn btn-primary btn-sm">Editar</a>
@@ -88,7 +88,7 @@
           <!-- Exacta -->
           <div class="prediction-card" style="border-color:oklch(32% 0.08 145 / 0.4)">
             <div class="prediction-teams">
-              <div class="team"><span>🇦🇷</span> Argentina 2 – 1 Nigeria</div>
+              <div class="team"><span>ðŸ‡¦ðŸ‡·</span> Argentina 2 â€“ 1 Nigeria</div>
             </div>
             <div class="prediction-score">2-1</div>
             <div class="prediction-result">
@@ -100,7 +100,7 @@
           <!-- Acertada -->
           <div class="prediction-card">
             <div class="prediction-teams">
-              <div class="team"><span>🇫🇷</span> Francia 3 – 0 Polonia</div>
+              <div class="team"><span>ðŸ‡«ðŸ‡·</span> Francia 3 â€“ 0 Polonia</div>
             </div>
             <div class="prediction-score">2-0</div>
             <div class="prediction-result">
@@ -112,7 +112,7 @@
           <!-- Fallida -->
           <div class="prediction-card">
             <div class="prediction-teams">
-              <div class="team"><span>🇧🇷</span> Brasil 1 – 1 Suiza</div>
+              <div class="team"><span>ðŸ‡§ðŸ‡·</span> Brasil 1 â€“ 1 Suiza</div>
             </div>
             <div class="prediction-score">2-0</div>
             <div class="prediction-result">
@@ -124,7 +124,7 @@
           <!-- Exacta -->
           <div class="prediction-card" style="border-color:oklch(32% 0.08 145 / 0.4)">
             <div class="prediction-teams">
-              <div class="team"><span>🇲🇽</span> México 0 – 0 Uruguay</div>
+              <div class="team"><span>ðŸ‡²ðŸ‡½</span> MÃ©xico 0 â€“ 0 Uruguay</div>
             </div>
             <div class="prediction-score">0-0</div>
             <div class="prediction-result">
@@ -136,7 +136,7 @@
           <!-- Acertada -->
           <div class="prediction-card">
             <div class="prediction-teams">
-              <div class="team"><span>🇩🇪</span> Alemania 1 – 0 Japón</div>
+              <div class="team"><span>ðŸ‡©ðŸ‡ª</span> Alemania 1 â€“ 0 JapÃ³n</div>
             </div>
             <div class="prediction-score">2-0</div>
             <div class="prediction-result">
@@ -148,13 +148,13 @@
           <!-- Pending -->
           <div class="prediction-card" style="background:var(--bg-elevated);border-color:oklch(32% 0.04 260)">
             <div class="prediction-teams">
-              <div class="team"><span>🇫🇷</span> Francia <span style="color:var(--fg-muted);font-size:0.8rem">vs</span></div>
-              <div class="team"><span>🇧🇷</span> Brasil</div>
+              <div class="team"><span>ðŸ‡«ðŸ‡·</span> Francia <span style="color:var(--fg-muted);font-size:0.8rem">vs</span></div>
+              <div class="team"><span>ðŸ‡§ðŸ‡·</span> Brasil</div>
             </div>
-            <div class="prediction-score">2 — 1</div>
+            <div class="prediction-score">2 â€” 1</div>
             <div class="prediction-result">
               <span class="badge badge-orange">Pendiente</span>
-              <span class="prediction-points text-muted">—</span>
+              <span class="prediction-points text-muted">â€”</span>
               <span style="font-size:0.7rem;color:var(--fg-muted)">15 Jun 21:00</span>
             </div>
             <a href="prediction.html" class="btn btn-primary btn-sm">Editar</a>
@@ -165,11 +165,11 @@
   </div>
 
   <nav class="mobile-nav">
-    <a href="dashboard.html" class="mobile-nav-item"><span class="mn-icon">📊</span> Dashboard</a>
-    <a href="matches.html" class="mobile-nav-item"><span class="mn-icon">⚽</span> Partidos</a>
-    <a href="my-predictions.html" class="mobile-nav-item active"><span class="mn-icon">📋</span> Predicciones</a>
-    <a href="leaderboard.html" class="mobile-nav-item"><span class="mn-icon">🏆</span> Ranking</a>
-    <a href="groups.html" class="mobile-nav-item"><span class="mn-icon">👥</span> Grupos</a>
+    <a href="dashboard.html" class="mobile-nav-item"><span class="mn-icon">ðŸ“Š</span> Dashboard</a>
+    <a href="matches.html" class="mobile-nav-item"><span class="mn-icon">âš½</span> Partidos</a>
+    <a href="my-predictions.html" class="mobile-nav-item active"><span class="mn-icon">ðŸ“‹</span> Predicciones</a>
+    <a href="leaderboard.html" class="mobile-nav-item"><span class="mn-icon">ðŸ†</span> Ranking</a>
+    <a href="groups.html" class="mobile-nav-item"><span class="mn-icon">ðŸ‘¥</span> Grupos</a>
   </nav>
 </body>
 </html>

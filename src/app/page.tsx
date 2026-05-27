@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Button, Card, MatchCard } from "@/components/ui";
-import { mockMatches, mockLeaderboard, mockAdminStats } from "@/components/mock-data";
+import { Button, Card, MatchCard, SkeletonRows } from "@/components/ui";
+import { useGlobalLeaderboard, useMatches } from "@/lib/hooks";
 
 const navLinks = [
   { href: "#como-funciona", label: "Cómo funciona" },
@@ -24,17 +24,15 @@ const steps = [
   { number: "03", title: "Ganá puntos", desc: "Acumulá puntos por cada predicción correcta. Competí en el ranking global y en grupos." },
 ];
 
-const countries = [
-  { name: "Argentina", flag: "🇦🇷" },
-  { name: "Brasil", flag: "🇧🇷" },
-  { name: "Francia", flag: "🇫🇷" },
-  { name: "Alemania", flag: "🇩🇪" },
-];
-
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const top3 = mockLeaderboard.slice(0, 3);
-  const upcoming = mockMatches.filter((m) => m.status === "upcoming").slice(0, 4);
+  const { data: matchesData, loading: matchesLoading } = useMatches();
+  const { data: leaderboardData, loading: leaderboardLoading } = useGlobalLeaderboard();
+
+  const upcoming =
+    matchesData?.matches.filter((m) => m.status === "upcoming").slice(0, 4) ?? [];
+  const top3 = leaderboardData?.leaderboard.slice(0, 3) ?? [];
+  const recordPoints = top3[0]?.points;
 
   return (
     <div className="min-h-screen bg-bg-primary">
@@ -134,7 +132,9 @@ export default function LandingPage() {
               <div className="text-[0.8rem] text-fg-muted font-medium uppercase tracking-wider">Partidos</div>
             </div>
             <div>
-              <div className="text-[2.2rem] max-md:text-[1.8rem] font-extrabold font-display text-gold">{mockLeaderboard[0].points}</div>
+              <div className="text-[2.2rem] max-md:text-[1.8rem] font-extrabold font-display text-gold">
+                {recordPoints ?? "—"}
+              </div>
               <div className="text-[0.8rem] text-fg-muted font-medium uppercase tracking-wider">Puntos récord</div>
             </div>
           </div>
@@ -196,11 +196,15 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          <div className="grid gap-3">
-            {upcoming.map((match) => (
-              <MatchCard key={match.id} match={match} variant="dark" />
-            ))}
-          </div>
+          {matchesLoading ? (
+            <SkeletonRows count={4} />
+          ) : (
+            <div className="grid gap-3">
+              {upcoming.map((match) => (
+                <MatchCard key={match.id} match={match} variant="dark" />
+              ))}
+            </div>
+          )}
 
           <Link href="/matches" className="md:hidden mt-6 block text-center">
             <Button variant="secondary" className="w-full">Ver todos los partidos</Button>
@@ -209,69 +213,71 @@ export default function LandingPage() {
       </section>
 
       {/* Rankings Preview */}
-      <section id="ranking" className="border-t border-border bg-bg-surface/50">
-        <div className="max-w-[1280px] mx-auto px-6 py-20 max-md:py-12">
-          <div className="text-center mb-14">
-            <span className="text-[0.8rem] text-green font-semibold uppercase tracking-widest">Ranking global</span>
-            <h2 className="text-[2.5rem] max-md:text-[1.8rem] font-bold font-display mt-3">Los mejores del mundo</h2>
-          </div>
-
-          {/* Podium */}
-          <div className="flex items-end justify-center gap-4 max-md:gap-2 max-w-[700px] mx-auto">
-            {/* 2nd place */}
-            <div className="flex flex-col items-center flex-1">
-              <div className="w-14 h-14 max-md:w-10 max-md:h-10 rounded-radius-full bg-gradient-to-br from-fg-muted to-border grid place-items-center font-bold text-[1rem] max-md:text-[0.8rem] text-fg mb-2">
-                {top3[1].avatar}
-              </div>
-              <div className="text-[0.85rem] max-md:text-[0.75rem] font-semibold text-fg text-center truncate max-w-[120px]">{top3[1].name}</div>
-              <div className="text-[0.75rem] text-fg-muted font-medium">{top3[1].points} pts</div>
-              <div className="mt-2 w-full h-[100px] max-md:h-[70px] bg-bg-surface border border-border rounded-t-radius-lg flex items-center justify-center">
-                <span className="text-[1.8rem] max-md:text-[1.3rem] font-extrabold text-fg-muted">2</span>
-              </div>
+      {!leaderboardLoading && top3.length === 3 && (
+        <section id="ranking" className="border-t border-border bg-bg-surface/50">
+          <div className="max-w-[1280px] mx-auto px-6 py-20 max-md:py-12">
+            <div className="text-center mb-14">
+              <span className="text-[0.8rem] text-green font-semibold uppercase tracking-widest">Ranking global</span>
+              <h2 className="text-[2.5rem] max-md:text-[1.8rem] font-bold font-display mt-3">Los mejores del mundo</h2>
             </div>
 
-            {/* 1st place */}
-            <div className="flex flex-col items-center flex-1">
-              <div className="relative">
-                <div className="w-16 h-16 max-md:w-12 max-md:h-12 rounded-radius-full bg-gradient-to-br from-gold to-yellow-400 grid place-items-center font-bold text-[1.1rem] max-md:text-[0.9rem] text-black mb-2 ring-2 ring-gold/30">
-                  {top3[0].avatar}
+            {/* Podium */}
+            <div className="flex items-end justify-center gap-4 max-md:gap-2 max-w-[700px] mx-auto">
+              {/* 2nd place */}
+              <div className="flex flex-col items-center flex-1">
+                <div className="w-14 h-14 max-md:w-10 max-md:h-10 rounded-radius-full bg-gradient-to-br from-fg-muted to-border grid place-items-center font-bold text-[1rem] max-md:text-[0.8rem] text-fg mb-2">
+                  {top3[1].avatar}
                 </div>
-                <div className="absolute -top-1 -right-1 text-[1.2rem]">👑</div>
+                <div className="text-[0.85rem] max-md:text-[0.75rem] font-semibold text-fg text-center truncate max-w-[120px]">{top3[1].name}</div>
+                <div className="text-[0.75rem] text-fg-muted font-medium">{top3[1].points} pts</div>
+                <div className="mt-2 w-full h-[100px] max-md:h-[70px] bg-bg-surface border border-border rounded-t-radius-lg flex items-center justify-center">
+                  <span className="text-[1.8rem] max-md:text-[1.3rem] font-extrabold text-fg-muted">2</span>
+                </div>
               </div>
-              <div className="text-[0.9rem] max-md:text-[0.8rem] font-bold text-fg text-center truncate max-w-[120px]">{top3[0].name}</div>
-              <div className="text-[0.8rem] max-md:text-[0.7rem] text-gold font-bold">{top3[0].points} pts</div>
-              <div className="mt-2 w-full h-[130px] max-md:h-[90px] bg-gold-bg/20 border border-gold/30 rounded-t-radius-lg flex items-center justify-center">
-                <span className="text-[2.2rem] max-md:text-[1.6rem] font-extrabold text-gold">1</span>
+
+              {/* 1st place */}
+              <div className="flex flex-col items-center flex-1">
+                <div className="relative">
+                  <div className="w-16 h-16 max-md:w-12 max-md:h-12 rounded-radius-full bg-gradient-to-br from-gold to-yellow-400 grid place-items-center font-bold text-[1.1rem] max-md:text-[0.9rem] text-black mb-2 ring-2 ring-gold/30">
+                    {top3[0].avatar}
+                  </div>
+                  <div className="absolute -top-1 -right-1 text-[1.2rem]">👑</div>
+                </div>
+                <div className="text-[0.9rem] max-md:text-[0.8rem] font-bold text-fg text-center truncate max-w-[120px]">{top3[0].name}</div>
+                <div className="text-[0.8rem] max-md:text-[0.7rem] text-gold font-bold">{top3[0].points} pts</div>
+                <div className="mt-2 w-full h-[130px] max-md:h-[90px] bg-gold-bg/20 border border-gold/30 rounded-t-radius-lg flex items-center justify-center">
+                  <span className="text-[2.2rem] max-md:text-[1.6rem] font-extrabold text-gold">1</span>
+                </div>
+              </div>
+
+              {/* 3rd place */}
+              <div className="flex flex-col items-center flex-1">
+                <div className="w-14 h-14 max-md:w-10 max-md:h-10 rounded-radius-full bg-gradient-to-br from-orange/40 to-border grid place-items-center font-bold text-[1rem] max-md:text-[0.8rem] text-fg mb-2">
+                  {top3[2].avatar}
+                </div>
+                <div className="text-[0.85rem] max-md:text-[0.75rem] font-semibold text-fg text-center truncate max-w-[120px]">{top3[2].name}</div>
+                <div className="text-[0.75rem] text-fg-muted font-medium">{top3[2].points} pts</div>
+                <div className="mt-2 w-full h-[80px] max-md:h-[55px] bg-bg-surface border border-border rounded-t-radius-lg flex items-center justify-center">
+                  <span className="text-[1.5rem] max-md:text-[1.1rem] font-extrabold text-fg-muted">3</span>
+                </div>
               </div>
             </div>
 
-            {/* 3rd place */}
-            <div className="flex flex-col items-center flex-1">
-              <div className="w-14 h-14 max-md:w-10 max-md:h-10 rounded-radius-full bg-gradient-to-br from-orange/40 to-border grid place-items-center font-bold text-[1rem] max-md:text-[0.8rem] text-fg mb-2">
-                {top3[2].avatar}
-              </div>
-              <div className="text-[0.85rem] max-md:text-[0.75rem] font-semibold text-fg text-center truncate max-w-[120px]">{top3[2].name}</div>
-              <div className="text-[0.75rem] text-fg-muted font-medium">{top3[2].points} pts</div>
-              <div className="mt-2 w-full h-[80px] max-md:h-[55px] bg-bg-surface border border-border rounded-t-radius-lg flex items-center justify-center">
-                <span className="text-[1.5rem] max-md:text-[1.1rem] font-extrabold text-fg-muted">3</span>
-              </div>
+            <div className="text-center mt-10">
+              <Link href="/register">
+                <Button variant="secondary">Ver ranking completo</Button>
+              </Link>
             </div>
           </div>
-
-          <div className="text-center mt-10">
-            <Link href="/register">
-              <Button variant="secondary">Ver ranking completo</Button>
-            </Link>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* CTA Final */}
       <section className="border-t border-border">
         <div className="max-w-[1280px] mx-auto px-6 py-20 max-md:py-12 text-center">
           <h2 className="text-[2.5rem] max-md:text-[1.8rem] font-bold font-display mb-4">¿Listo para el desafío?</h2>
           <p className="text-[1.1rem] text-fg-secondary max-w-[500px] mx-auto mb-8">
-            Unite a <strong className="text-fg">{mockAdminStats.totalUsers.toLocaleString()}</strong> usuarios que ya están pronosticando.
+            Unite a <strong className="text-fg">miles de</strong> usuarios que ya están pronosticando.
           </p>
           <Link href="/register">
             <Button size="lg" className="text-[1.1rem] px-10">Comenzá ahora</Button>
