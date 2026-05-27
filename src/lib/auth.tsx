@@ -111,7 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const updateUser = async (data: ProfileUpdate) => {
     if (USE_MOCKS) {
-      setUser((prev) => (prev ? { ...prev, ...data } : prev));
+      setUser((prev) => (prev ? { ...prev, ...data, avatar: data.avatar ?? prev.avatar } : prev));
       return;
     }
     const res = await api.updateMe(data);
