@@ -6,3 +6,6 @@ build
 next-env.d.ts
 package-lock.json
 docs/prototypes
+test-results
+playwright-report
+playwright/.cache

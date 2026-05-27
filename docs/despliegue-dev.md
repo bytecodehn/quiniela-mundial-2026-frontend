@@ -133,6 +133,30 @@ Respuesta esperada:
 HTTP/1.1 200 OK
 ```
 
+## 13. Tests E2E (opcional)
+
+Suite Playwright que corre contra mocks; no requiere backend.
+
+Primera vez en el servidor:
+
+```bash
+npm run test:e2e:install
+```
+
+Despues:
+
+```bash
+npm run test:e2e
+```
+
+Playwright auto-arranca un dev server con `NEXT_PUBLIC_USE_MOCKS=true`. Para correr contra un server ya levantado en otra URL:
+
+```bash
+PLAYWRIGHT_BASE_URL=http://192.168.74.128:3000 npm run test:e2e
+```
+
+Nota: la suite asume mocks. Una suite separada con tag `@backend` se agregara cuando exista backend.
+
 ## Checklist rapido
 
 - SSH exitoso.
@@ -144,6 +168,7 @@ HTTP/1.1 200 OK
 - Servicio reiniciado.
 - `systemctl --user status quiniela-frontend.service` en estado saludable.
 - `curl -I http://127.0.0.1:3000/` responde `200 OK`.
+- (Opcional) `npm run test:e2e` en verde.
 
 ## Troubleshooting
 
