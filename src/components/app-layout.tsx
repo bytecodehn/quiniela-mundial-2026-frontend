@@ -4,26 +4,26 @@ import { type ReactNode, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth";
+import { useT } from "@/lib/i18n";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: "📊" },
-  { href: "/matches", label: "Partidos", icon: "⚽" },
-  { href: "/predictions", label: "Predicciones", icon: "🎯" },
-  { href: "/leaderboard", label: "Ranking", icon: "🏆" },
-  { href: "/groups", label: "Grupos", icon: "👥" },
-];
-
-const mobileNavItems = [
-  { href: "/dashboard", label: "Dashboard", icon: "📊" },
-  { href: "/matches", label: "Partidos", icon: "⚽" },
-  { href: "/predictions", label: "Pronósticos", icon: "🎯" },
-  { href: "/leaderboard", label: "Ranking", icon: "🏆" },
-  { href: "/groups", label: "Grupos", icon: "👥" },
-];
+function useNavItems() {
+  const t = useT();
+  const items = [
+    { href: "/dashboard", label: t.nav.dashboard, icon: "📊" },
+    { href: "/matches", label: t.nav.matches, icon: "⚽" },
+    { href: "/predictions", label: t.nav.predictions, icon: "🎯" },
+    { href: "/leaderboard", label: t.nav.leaderboard, icon: "🏆" },
+    { href: "/groups", label: t.nav.groups, icon: "👥" },
+  ];
+  return items;
+}
 
 function Sidebar() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const t = useT();
+  const navItems = useNavItems();
 
   return (
     <aside className="w-[260px] bg-bg-primary border-r border-border flex flex-col fixed top-0 left-0 bottom-0 z-[100] overflow-y-auto max-md:hidden">
@@ -69,8 +69,11 @@ function Sidebar() {
           onClick={logout}
           className="mt-2 w-full text-left px-3 py-2 text-[0.85rem] text-fg-muted hover:text-red transition-colors rounded-radius-md hover:bg-bg-surface border-none cursor-pointer"
         >
-          Cerrar sesión
+          {t.nav.logout}
         </button>
+        <div className="mt-3 pt-3 border-t border-border">
+          <LanguageSwitcher className="w-full" />
+        </div>
       </div>
     </aside>
   );
@@ -78,6 +81,7 @@ function Sidebar() {
 
 function MobileNav() {
   const pathname = usePathname();
+  const mobileNavItems = useNavItems();
   return (
     <nav className="hidden max-md:flex fixed bottom-0 left-0 right-0 h-16 bg-bg-primary border-t border-border z-[100] px-2 justify-around items-center">
       {mobileNavItems.map((item) => {
@@ -102,6 +106,8 @@ function MobileNav() {
 export function AppLayout({ children }: { children: ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user } = useAuth();
+  const t = useT();
+  const navItems = useNavItems();
 
   return (
     <div className="flex min-h-screen">
@@ -120,7 +126,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             </button>
             {user && (
               <span className="text-[0.95rem] text-fg-secondary">
-                Bienvenido, <strong className="text-fg">{user.name.split(" ")[0]}</strong>
+                {t.auth.welcome}, <strong className="text-fg">{user.name.split(" ")[0]}</strong>
               </span>
             )}
           </div>
