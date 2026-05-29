@@ -42,6 +42,9 @@ if ($exists.Trim() -ne "yes") {
     Invoke-Remote "mkdir -p ~/apps && git clone $RepoUrl $RepoDir"
 }
 
+Write-Host "[deploy] Sync remoto del repo (fetch + reset)..." -ForegroundColor Cyan
+Invoke-Remote "cd $RepoDir && git fetch --quiet origin $Branch && git reset --hard origin/$Branch && git log --oneline -1"
+
 Write-Host "[deploy] Ejecutando scripts/deploy.sh (branch=$Branch, port=$HostPort) en el servidor..." -ForegroundColor Cyan
 Invoke-Remote "BRANCH=$Branch HOST_PORT=$HostPort bash $RepoDir/scripts/deploy.sh"
 
