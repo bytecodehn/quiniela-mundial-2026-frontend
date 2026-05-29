@@ -8,6 +8,7 @@ import type { AdminMatch, GroupName, MatchStage, MatchStatus } from "@/types";
 
 const stageLabels: Record<MatchStage, string> = {
   group: "Grupos",
+  round_of_32: "Dieciseisavos",
   round_of_16: "Octavos",
   quarterfinal: "Cuartos",
   semifinal: "Semifinal",
