@@ -36,10 +36,11 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left visual panel */}
-      <div className="flex-1 max-md:hidden bg-gradient-to-br from-green/20 via-bg-primary to-gold/10 relative overflow-hidden grid place-items-center p-12">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,oklch(60%_0.18_145/0.08),transparent_70%)]" />
+      <div className="flex-1 max-md:hidden bg-gradient-to-br from-green/25 via-violet/15 to-magenta/15 relative overflow-hidden grid place-items-center p-12">
+        <div className="absolute -top-32 -right-32 w-[480px] h-[480px] rounded-full pointer-events-none bg-[radial-gradient(circle,rgba(255,184,0,0.18),transparent_70%)]" />
+        <div className="absolute -bottom-24 -left-24 w-[420px] h-[420px] rounded-full pointer-events-none bg-[radial-gradient(circle,rgba(0,200,150,0.18),transparent_70%)]" />
         <div className="relative text-center max-w-[420px]">
-          <div className="w-16 h-16 mx-auto mb-8 bg-gradient-to-br from-green to-cyan rounded-radius-xl grid place-items-center">
+          <div className="w-16 h-16 mx-auto mb-8 bg-gradient-to-br from-green to-blue rounded-radius-xl grid place-items-center shadow-[0_12px_28px_rgba(77,124,255,0.35)]">
             <span className="text-[2rem] font-extrabold text-white">Q</span>
           </div>
           <h2 className="text-[2rem] font-bold font-display mb-4">Bienvenido de vuelta</h2>

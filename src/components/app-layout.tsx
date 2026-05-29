@@ -42,7 +42,9 @@ function Sidebar() {
               key={item.href}
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-radius-md text-[0.95rem] font-medium transition-all duration-150 mb-0.5 ${
-                active ? "bg-green text-white" : "text-fg-secondary hover:bg-bg-surface hover:text-fg"
+                active
+                  ? "bg-gradient-to-r from-green to-blue text-white shadow-[0_6px_16px_rgba(77,124,255,0.30)]"
+                  : "text-fg-secondary hover:bg-bg-surface hover:text-fg"
               }`}
             >
               <span className="w-5 text-center text-[1.1rem]">{item.icon}</span>
@@ -57,7 +59,7 @@ function Sidebar() {
           href="/profile"
           className="flex items-center gap-3 p-3 rounded-radius-md cursor-pointer transition-colors duration-150 hover:bg-bg-surface"
         >
-          <div className="w-9 h-9 rounded-radius-full bg-gradient-to-br from-green to-cyan grid place-items-center font-bold text-[0.9rem] text-white shrink-0">
+          <div className="w-9 h-9 rounded-radius-full bg-gradient-to-br from-violet to-magenta grid place-items-center font-bold text-[0.9rem] text-white shrink-0">
             {user?.avatar || "U"}
           </div>
           <div className="flex-1 min-w-0">
@@ -209,7 +211,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen">
       <aside className="w-[260px] bg-bg-primary border-r border-border flex flex-col fixed top-0 left-0 bottom-0 z-[100] overflow-y-auto max-md:hidden">
         <div className="p-6 flex items-center gap-3 border-b border-border">
-          <div className="w-9 h-9 bg-gradient-to-br from-green to-cyan rounded-radius-md grid place-items-center text-[1.2rem] font-extrabold text-white shrink-0">
+          <div className="w-9 h-9 bg-gradient-to-br from-violet to-magenta rounded-radius-md grid place-items-center text-[1.2rem] font-extrabold text-white shrink-0">
             A
           </div>
           <div>
@@ -225,7 +227,9 @@ export function AdminLayout({ children }: { children: ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 rounded-radius-md text-[0.95rem] font-medium transition-all duration-150 mb-0.5 ${
-                  active ? "bg-green text-white" : "text-fg-secondary hover:bg-bg-surface hover:text-fg"
+                  active
+                    ? "bg-gradient-to-r from-violet to-magenta text-white shadow-[0_6px_16px_rgba(255,61,127,0.30)]"
+                    : "text-fg-secondary hover:bg-bg-surface hover:text-fg"
                 }`}
               >
                 <span className="w-5 text-center text-[1.1rem]">{item.icon}</span>

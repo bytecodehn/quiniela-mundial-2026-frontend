@@ -1,6 +1,14 @@
 import { type ReactNode } from "react";
 
-export type BadgeVariant = "green" | "gold" | "red" | "blue" | "orange" | "muted";
+export type BadgeVariant =
+  | "green"
+  | "gold"
+  | "red"
+  | "blue"
+  | "orange"
+  | "violet"
+  | "magenta"
+  | "muted";
 
 const colors: Record<BadgeVariant, string> = {
   green: "bg-green-bg text-green",
@@ -8,6 +16,8 @@ const colors: Record<BadgeVariant, string> = {
   red: "bg-red-bg text-red",
   blue: "bg-blue-bg text-blue",
   orange: "bg-orange-bg text-orange",
+  violet: "bg-violet-bg text-violet",
+  magenta: "bg-magenta-bg text-magenta",
   muted: "bg-border text-fg-muted",
 };
 

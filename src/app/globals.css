@@ -1,41 +1,50 @@
 @import "tailwindcss";
 
 @theme {
-  /* Surface hierarchy */
-  --color-bg-primary: oklch(12% 0.02 260);
-  --color-bg-surface: oklch(18% 0.018 260);
-  --color-bg-elevated: oklch(22% 0.018 260);
-  --color-bg-white: oklch(98% 0.003 260);
-  --color-bg-accent-soft: oklch(25% 0.04 260);
+  /* ----------------------------------------------------------------
+     Stadium Vibrant DARK — paleta global de la app autenticada.
+     (El landing público se mantiene marfil con su propio scoping.)
+     ---------------------------------------------------------------- */
+
+  /* Surface hierarchy — indigo profundo, NO negro */
+  --color-bg-primary:     #14122E;   /* indigo profundo (base) */
+  --color-bg-surface:     #1F1B3D;   /* card surface */
+  --color-bg-elevated:    #2A2552;   /* hover / modales */
+  --color-bg-white:       #FFFFFF;   /* superficies blancas (auth-visual) */
+  --color-bg-accent-soft: #2A2552;   /* subtle accent bg */
 
   /* Text hierarchy */
-  --color-fg: oklch(93% 0.005 260);
-  --color-fg-secondary: oklch(65% 0.015 260);
-  --color-fg-muted: oklch(45% 0.015 260);
-  --color-fg-dark: oklch(15% 0.015 260);
-  --color-fg-dark-secondary: oklch(45% 0.015 260);
+  --color-fg:                  #FFFFFF;   /* texto principal sobre dark */
+  --color-fg-secondary:        #B4B0D6;   /* texto secundario */
+  --color-fg-muted:            #7A759C;   /* muted / placeholder */
+  --color-fg-dark:             #1A1A2E;   /* texto sobre superficies blancas */
+  --color-fg-dark-secondary:   #4A5568;
 
   /* Borders */
-  --color-border: oklch(28% 0.02 260);
-  --color-border-light: oklch(88% 0.005 260);
+  --color-border:        #322B5F;   /* subtle borders on dark */
+  --color-border-light:  #EDE5D6;   /* borders en superficies marfil/blancas */
 
-  /* Accent colors */
-  --color-green: oklch(60% 0.18 145);
-  --color-green-bg: oklch(28% 0.08 145);
-  --color-gold: oklch(75% 0.15 85);
-  --color-gold-bg: oklch(35% 0.1 85);
-  --color-red: oklch(55% 0.18 30);
-  --color-red-bg: oklch(30% 0.1 30);
-  --color-blue: oklch(60% 0.15 240);
-  --color-blue-bg: oklch(28% 0.08 240);
-  --color-cyan: oklch(65% 0.1 200);
-  --color-orange: oklch(65% 0.15 70);
-  --color-orange-bg: oklch(32% 0.1 70);
+  /* Accent colors — paleta Stadium Vibrant */
+  --color-green:      #00C896;   /* esmeralda — CTA primario, success */
+  --color-green-bg:   #003D2E;   /* esmeralda bg sutil */
+  --color-gold:       #FFB800;   /* dorado — rank #1, highlight */
+  --color-gold-bg:    #3A2A00;
+  --color-red:        #FF5470;   /* error/danger */
+  --color-red-bg:     #3D0E1A;
+  --color-blue:       #4D7CFF;   /* cobalto — links / info (antes blue) */
+  --color-blue-bg:    #0F1F4D;
+  --color-cyan:       #4D7CFF;   /* alias de cobalto para compat con gradients existentes */
+  --color-violet:     #A855F7;   /* violeta — categoría/accent */
+  --color-violet-bg:  #2E1A4D;
+  --color-magenta:    #FF3D7F;   /* magenta — alertas suaves, "cierra pronto" */
+  --color-magenta-bg: #3D0E2A;
+  --color-orange:     #FF8A3D;   /* warning / pending */
+  --color-orange-bg:  #3D1F0E;
 
   /* Fonts */
   --font-display: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  --font-body: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  --font-mono: 'SF Mono', ui-monospace, 'JetBrains Mono', 'Cascadia Code', monospace;
+  --font-body:    'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono:    'SF Mono', ui-monospace, 'JetBrains Mono', 'Cascadia Code', monospace;
 
   /* Spacing */
   --space-1: 4px;
@@ -57,10 +66,10 @@
   --radius-xl: 20px;
 
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0,0,0,.3);
-  --shadow-md: 0 4px 12px rgba(0,0,0,.4);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,.5);
-  --shadow-glow: 0 0 20px oklch(60% 0.18 145 / 0.2);
+  --shadow-sm:   0 1px 3px rgba(0,0,0,.3);
+  --shadow-md:   0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,.5);
+  --shadow-glow: 0 0 20px rgba(0, 200, 150, 0.25);
 
   /* Layout */
   --sidebar-width: 260px;
@@ -79,7 +88,7 @@ body {
 
 /* Selection */
 ::selection {
-  background: oklch(60% 0.18 145 / 0.3);
+  background: rgba(0, 200, 150, 0.35);
   color: #fff;
 }
 
