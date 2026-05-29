@@ -17,8 +17,11 @@
 set -euo pipefail
 
 BRANCH="${BRANCH:-main}"
-IMAGE_TAG="${IMAGE_TAG:-latest}"
 CONTAINER="${CONTAINER:-quiniela_frontend}"
+# El tag por defecto coincide con el nombre del contenedor para que cada
+# despliegue (mainline / branch de validación / etc.) tenga su propia imagen
+# y no se pisen entre ellos.
+IMAGE_TAG="${IMAGE_TAG:-${CONTAINER}}"
 HOST_PORT="${HOST_PORT:-8090}"
 DOCKER_NET="${DOCKER_NET:-quiniela_net}"
 API_URL="${API_URL:-http://192.168.244.128:8888/api/v1}"
