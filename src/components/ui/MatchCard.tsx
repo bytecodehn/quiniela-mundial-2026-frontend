@@ -70,7 +70,12 @@ export function MatchCard({
           <span className="font-mono text-[0.8rem] text-fg-secondary tabular-nums">{match.time}</span>
         </div>
 
-        {match.status === "live" && <span className="match-status live">EN VIVO</span>}
+        {match.status === "live" && (
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-green-bg text-green text-[0.7rem] font-bold uppercase tracking-wider animate-pulse">
+            <span className="w-1.5 h-1.5 rounded-full bg-green" />
+            EN VIVO
+          </span>
+        )}
 
         {match.status === "finished" && match.homeScore !== null && (
           <span className="font-display text-[1.3rem] font-bold tracking-wider">

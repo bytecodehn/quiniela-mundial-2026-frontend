@@ -49,8 +49,8 @@ export default function LoginPage() {
           </p>
           <div className="mt-10 flex flex-col gap-3 text-left">
             {[
-              { stat: "64", label: "Partidos del torneo" },
-              { stat: "8", label: "Grupos · 32 selecciones" },
+              { stat: "104", label: "Partidos del torneo" },
+              { stat: "12", label: "Grupos · 48 selecciones" },
               { stat: "Live", label: "Ranking en tiempo real" },
             ].map((item) => (
               <div key={item.label} className="flex items-center gap-4 p-3 rounded-radius-lg bg-bg-white/5 border border-white/10">
