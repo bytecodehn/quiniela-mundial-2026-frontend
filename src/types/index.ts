@@ -1,7 +1,7 @@
 export type UserRole = "user" | "admin";
 export type UserStatus = "active" | "blocked";
 export type MatchStatus = "upcoming" | "live" | "finished";
-export type MatchStage = "group" | "round_of_16" | "quarterfinal" | "semifinal" | "final" | "third_place";
+export type MatchStage = "group" | "round_of_32" | "round_of_16" | "quarterfinal" | "semifinal" | "final" | "third_place";
 export type PredictionStatus = "pending" | "correct" | "incorrect" | "exact";
 export type GroupName = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H";
 

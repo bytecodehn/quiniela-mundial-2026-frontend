@@ -19,6 +19,15 @@ function moduleMock(value: string | undefined): boolean {
 // no define el de auth → auth cae a mock y el demo-login sigue funcionando).
 export const USE_MOCKS_AUTH = moduleMock(process.env.NEXT_PUBLIC_USE_MOCKS_AUTH);
 
+// Flags por-módulo para la integración incremental (F2–F6). Cada uno cae al
+// global USE_MOCKS si no se define; se pone su env en "false" para activar el
+// backend real de ese módulo. La suite e2e no los define → todo cae a mock.
+export const USE_MOCKS_TOURNAMENT = moduleMock(process.env.NEXT_PUBLIC_USE_MOCKS_TOURNAMENT);
+export const USE_MOCKS_GROUPS = moduleMock(process.env.NEXT_PUBLIC_USE_MOCKS_GROUPS);
+export const USE_MOCKS_LEADERBOARD = moduleMock(process.env.NEXT_PUBLIC_USE_MOCKS_LEADERBOARD);
+export const USE_MOCKS_PREDICTIONS = moduleMock(process.env.NEXT_PUBLIC_USE_MOCKS_PREDICTIONS);
+export const USE_MOCKS_ADMIN = moduleMock(process.env.NEXT_PUBLIC_USE_MOCKS_ADMIN);
+
 export interface FetchState<T> {
   data: T | null;
   loading: boolean;
