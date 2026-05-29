@@ -4,6 +4,21 @@ import { useCallback, useEffect, useState } from "react";
 
 export const USE_MOCKS = process.env.NEXT_PUBLIC_USE_MOCKS === "true";
 
+// Flags de mock por-módulo: permiten integrar el backend real un módulo a la
+// vez sin volverse all-or-nothing. Cada flag cae al global USE_MOCKS si no se
+// define. Next.js inlinea NEXT_PUBLIC_* solo con referencias literales, por eso
+// cada flag se lee explícitamente (no por clave dinámica).
+function moduleMock(value: string | undefined): boolean {
+  if (value === "true") return true;
+  if (value === "false") return false;
+  return USE_MOCKS;
+}
+
+// Auth ya está integrado al backend real (F1). Default: false salvo que el
+// entorno fuerce mocks (p.ej. la suite e2e setea NEXT_PUBLIC_USE_MOCKS=true y
+// no define el de auth → auth cae a mock y el demo-login sigue funcionando).
+export const USE_MOCKS_AUTH = moduleMock(process.env.NEXT_PUBLIC_USE_MOCKS_AUTH);
+
 export interface FetchState<T> {
   data: T | null;
   loading: boolean;

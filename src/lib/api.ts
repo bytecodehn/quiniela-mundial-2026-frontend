@@ -1,41 +1,203 @@
-const BASE = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+// Base URL del backend Go (montado en la raíz, sin prefijo /api/v1).
+// Se configura por entorno: NEXT_PUBLIC_API_URL=http://192.168.244.128:8888 (dev server).
+const BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8888";
+
+// El access token se guarda bajo "token" (compat con auth.tsx, que lo lee
+// directo como check de sesión). El refresh token va aparte.
+const ACCESS_KEY = "token";
+const REFRESH_KEY = "refresh_token";
+
+function getAccess(): string | null {
+  return typeof window !== "undefined" ? localStorage.getItem(ACCESS_KEY) : null;
+}
+function getRefresh(): string | null {
+  return typeof window !== "undefined" ? localStorage.getItem(REFRESH_KEY) : null;
+}
+export function setTokens(access: string, refresh?: string) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(ACCESS_KEY, access);
+  if (refresh) localStorage.setItem(REFRESH_KEY, refresh);
+}
+export function clearTokens() {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(ACCESS_KEY);
+  localStorage.removeItem(REFRESH_KEY);
+}
+
+async function rawRequest(path: string, options?: RequestInit, withAuth = true): Promise<Response> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...((options?.headers as Record<string, string>) ?? {}),
+  };
+  if (withAuth) {
+    const token = getAccess();
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+  }
+  return fetch(`${BASE}${path}`, { ...options, headers });
+}
+
+// Un único refresh en vuelo a la vez: si varios requests dan 401 en paralelo,
+// comparten la misma promesa de refresh en lugar de dispararlo N veces.
+let refreshInflight: Promise<boolean> | null = null;
+async function tryRefresh(): Promise<boolean> {
+  const rt = getRefresh();
+  if (!rt) return false;
+  if (!refreshInflight) {
+    refreshInflight = (async () => {
+      try {
+        const res = await rawRequest(
+          "/auth/refresh",
+          { method: "POST", body: JSON.stringify({ refresh_token: rt }) },
+          false,
+        );
+        if (!res.ok) {
+          clearTokens();
+          return false;
+        }
+        const data = await res.json();
+        setTokens(data.access_token, data.refresh_token);
+        return true;
+      } catch {
+        return false;
+      } finally {
+        refreshInflight = null;
+      }
+    })();
+  }
+  return refreshInflight;
+}
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (token) headers["Authorization"] = `Bearer ${token}`;
+  let res = await rawRequest(path, options);
 
-  const res = await fetch(`${BASE}${path}`, { ...options, headers });
+  // Access token vencido (15 min): intenta refresh una vez y reintenta.
+  if (res.status === 401 && getRefresh()) {
+    const ok = await tryRefresh();
+    if (ok) res = await rawRequest(path, options);
+  }
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: "Network error" }));
     throw new Error(err.error || `HTTP ${res.status}`);
   }
 
+  if (res.status === 204) return undefined as T;
   return res.json();
+}
+
+// ---- Mapeo de DTOs del backend (snake_case) al modelo del frontend ----
+
+interface BackendUser {
+  id: string;
+  email: string;
+  is_admin?: boolean;
+  name?: string | null;
+  avatar?: string | null;
+  country?: string | null;
+  favorite_team?: string | null;
+  created_at?: string;
+}
+
+interface BackendAuthResult {
+  access_token: string;
+  refresh_token: string;
+  user: BackendUser;
+}
+
+function initials(name: string): string {
+  return name
+    .split(" ")
+    .map((p) => p[0])
+    .filter(Boolean)
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+function mapUser(u: BackendUser): import("@/types").User {
+  const name = u.name ?? "";
+  return {
+    id: u.id,
+    name,
+    email: u.email,
+    avatar: u.avatar ?? (name ? initials(name) : ""),
+    favoriteTeam: u.favorite_team ?? "",
+    country: u.country ?? "",
+    status: "active",
+    role: u.is_admin ? "admin" : "user",
+    // Stats per-grupo: el modelo del backend no las trae en el usuario;
+    // se completan vía leaderboard/stats del grupo activo (F4/F5).
+    points: 0,
+    globalRank: 0,
+    predictionsCount: 0,
+    createdAt: u.created_at ?? "",
+  };
 }
 
 export const api = {
   /* Auth */
-  register: (data: {
+  register: async (data: {
     name: string;
     email: string;
     password: string;
     passwordConfirm: string;
     favoriteTeam?: string;
     country?: string;
-  }) => request<{ user: import("@/types").User; token: string }>("/auth/register", { method: "POST", body: JSON.stringify(data) }),
+  }) => {
+    const res = await request<BackendAuthResult>("/auth/signup", {
+      method: "POST",
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password,
+        name: data.name || undefined,
+        country: data.country || undefined,
+        favorite_team: data.favoriteTeam || undefined,
+      }),
+    });
+    setTokens(res.access_token, res.refresh_token);
+    return { user: mapUser(res.user), token: res.access_token };
+  },
 
-  login: (data: { email: string; password: string }) =>
-    request<{ user: import("@/types").User; token: string }>("/auth/login", { method: "POST", body: JSON.stringify(data) }),
+  login: async (data: { email: string; password: string }) => {
+    const res = await request<BackendAuthResult>("/auth/login", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    setTokens(res.access_token, res.refresh_token);
+    return { user: mapUser(res.user), token: res.access_token };
+  },
+
+  logout: async () => {
+    const rt = getRefresh();
+    if (rt) {
+      // Revoca el refresh token en el backend (rotación absoluta). No bloquea
+      // el logout local si falla.
+      try {
+        await rawRequest("/auth/logout", { method: "POST", body: JSON.stringify({ refresh_token: rt }) }, false);
+      } catch {
+        /* ignore */
+      }
+    }
+    clearTokens();
+  },
 
   forgotPassword: (data: { email: string }) =>
     request<{ message: string }>("/auth/forgot-password", { method: "POST", body: JSON.stringify(data) }),
 
-  me: () => request<{ user: import("@/types").User }>("/auth/me"),
+  me: async () => {
+    const res = await request<{ user: BackendUser }>("/auth/me");
+    return { user: mapUser(res.user) };
+  },
 
-  updateMe: (data: Partial<{ name: string; favoriteTeam: string; country: string; avatar: string | null }>) =>
-    request<{ user: import("@/types").User }>("/auth/me", { method: "PATCH", body: JSON.stringify(data) }),
+  updateMe: async (data: Partial<{ name: string; favoriteTeam: string; country: string; avatar: string | null }>) => {
+    const body: Record<string, unknown> = {};
+    if (data.name !== undefined) body.name = data.name;
+    if (data.avatar !== undefined) body.avatar = data.avatar;
+    if (data.country !== undefined) body.country = data.country;
+    if (data.favoriteTeam !== undefined) body.favorite_team = data.favoriteTeam;
+    const res = await request<{ user: BackendUser }>("/auth/me", { method: "PATCH", body: JSON.stringify(body) });
+    return { user: mapUser(res.user) };
+  },
 
   /* Matches */
   getMatches: (params?: Record<string, string>) => {
