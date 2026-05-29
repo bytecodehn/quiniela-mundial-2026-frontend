@@ -4,11 +4,11 @@ import { api } from "../api";
 import { mockGroupDetail } from "../fixtures";
 import { mockStore } from "../fixtures/store";
 import type { Group, GroupDetail } from "@/types";
-import { USE_MOCKS, mockDelay, useFetch } from "./useFetch";
+import { USE_MOCKS_GROUPS, mockDelay, useFetch } from "./useFetch";
 
 export function useGroups() {
   return useFetch<{ groups: Group[] }>(async () => {
-    if (USE_MOCKS) {
+    if (USE_MOCKS_GROUPS) {
       await mockDelay();
       return { groups: mockStore.listGroups() };
     }
@@ -20,7 +20,7 @@ export function useGroup(id: string | undefined) {
   const key = `group:${id ?? ""}`;
   return useFetch<{ group: GroupDetail } | null>(async () => {
     if (!id) return null;
-    if (USE_MOCKS) {
+    if (USE_MOCKS_GROUPS) {
       await mockDelay();
       return { group: mockGroupDetail as GroupDetail };
     }
@@ -29,7 +29,7 @@ export function useGroup(id: string | undefined) {
 }
 
 export async function createGroup(input: { name: string }): Promise<{ group: Group }> {
-  if (USE_MOCKS) {
+  if (USE_MOCKS_GROUPS) {
     await mockDelay(200);
     const group: Group = {
       id: `mock-${Date.now()}`,
@@ -48,7 +48,7 @@ export async function createGroup(input: { name: string }): Promise<{ group: Gro
 }
 
 export async function joinGroup(input: { inviteCode: string }): Promise<{ group: Group }> {
-  if (USE_MOCKS) {
+  if (USE_MOCKS_GROUPS) {
     await mockDelay(200);
     const group: Group = {
       id: `mock-${Date.now()}`,

@@ -6,6 +6,23 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { useT } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ActiveGroupProvider, useActiveGroup } from "@/lib/active-group";
+import { Select } from "@/components/ui";
+
+// Selector de "grupo activo" para el header. Solo aparece si el usuario tiene
+// al menos un grupo; cambia el contexto global que consumen predicciones /
+// leaderboard per-grupo (F4/F5).
+function GroupSwitcher() {
+  const { activeGroupId, setActiveGroupId, groups, loading } = useActiveGroup();
+  if (loading || groups.length === 0) return null;
+  return (
+    <Select
+      value={activeGroupId ?? groups[0].id}
+      onChange={setActiveGroupId}
+      options={groups.map((g) => ({ value: g.id, label: g.name }))}
+    />
+  );
+}
 
 function useNavItems() {
   const t = useT();
@@ -112,6 +129,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const navItems = useNavItems();
 
   return (
+    <ActiveGroupProvider>
     <div className="flex min-h-screen">
       <Sidebar />
       <div className="flex-1 ml-[260px] max-md:ml-0 flex flex-col min-h-screen">
@@ -133,6 +151,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             )}
           </div>
           <div className="flex items-center gap-3 max-md:hidden">
+            <GroupSwitcher />
             <div className="flex items-center gap-2 bg-bg-primary border border-border rounded-radius-md px-4 py-2 min-w-[240px]">
               <span className="text-fg-muted text-[0.85rem]" aria-hidden="true">🔍</span>
               <input
@@ -194,6 +213,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       </div>
       <MobileNav />
     </div>
+    </ActiveGroupProvider>
   );
 }
 
