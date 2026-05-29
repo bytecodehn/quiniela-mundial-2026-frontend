@@ -4,7 +4,7 @@ import { api } from "../api";
 import { allMatches, mockAdminMatches } from "../fixtures";
 import { mockStore } from "../fixtures/store";
 import type { Match, AdminMatch, Pagination } from "@/types";
-import { USE_MOCKS, USE_MOCKS_TOURNAMENT, mockDelay, useFetch } from "./useFetch";
+import { USE_MOCKS_ADMIN, USE_MOCKS_TOURNAMENT, mockDelay, useFetch } from "./useFetch";
 
 export interface MatchesResponse {
   matches: Match[];
@@ -73,7 +73,7 @@ export function useMatch(id: string | undefined) {
 export function useAdminMatches(params?: Record<string, string>) {
   const key = `admin-matches:${params ? JSON.stringify(params) : ""}`;
   return useFetch<AdminMatchesResponse>(async () => {
-    if (USE_MOCKS) {
+    if (USE_MOCKS_ADMIN) {
       await mockDelay();
       return { matches: mockAdminMatches as AdminMatch[], pagination: paginate(mockAdminMatches) };
     }
