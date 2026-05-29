@@ -3,7 +3,7 @@
 import { api } from "../api";
 import { mockLeaderboard, mockUser } from "../fixtures";
 import type { LeaderboardEntry, LeaderboardResponse } from "@/types";
-import { USE_MOCKS, mockDelay, useFetch } from "./useFetch";
+import { USE_MOCKS_LEADERBOARD, mockDelay, useFetch } from "./useFetch";
 
 function mockResponse(): LeaderboardResponse {
   const top = mockLeaderboard[0];
@@ -26,10 +26,11 @@ function mockResponse(): LeaderboardResponse {
 
 export function useGlobalLeaderboard() {
   return useFetch<LeaderboardResponse>(async () => {
-    if (USE_MOCKS) {
+    if (USE_MOCKS_LEADERBOARD) {
       await mockDelay();
       return mockResponse();
     }
+    // El backend no tiene ranking global; en real esto lanza (la página no lo usa).
     return api.getGlobalLeaderboard();
   }, "leaderboard:global");
 }
@@ -38,7 +39,7 @@ export function useGroupLeaderboard(groupId: string | undefined) {
   const key = `leaderboard:group:${groupId ?? ""}`;
   return useFetch<LeaderboardResponse | null>(async () => {
     if (!groupId) return null;
-    if (USE_MOCKS) {
+    if (USE_MOCKS_LEADERBOARD) {
       await mockDelay();
       return mockResponse();
     }

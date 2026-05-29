@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { AppLayout } from "@/components/app-layout";
-import { Badge, Card, EmptyState, ErrorState, Select, SkeletonRows, Tabs } from "@/components/ui";
+import { Badge, Card, EmptyState, ErrorState, Select, SkeletonRows } from "@/components/ui";
 import { track } from "@/lib/analytics";
-import { useGlobalLeaderboard, useGroupLeaderboard, useGroups } from "@/lib/hooks";
+import { useActiveGroup } from "@/lib/active-group";
+import { useGroupLeaderboard } from "@/lib/hooks";
 import type { LeaderboardEntry } from "@/types";
 
 function Podium({ entries }: { entries: LeaderboardEntry[] }) {
@@ -37,74 +38,57 @@ function Podium({ entries }: { entries: LeaderboardEntry[] }) {
   );
 }
 
-const TABS = ["Ranking Global", "Por grupo"];
+// El contenido vive en un componente interno porque consume useActiveGroup(),
+// cuyo provider (ActiveGroupProvider) está DENTRO de AppLayout. Se monta como
+// hijo de <AppLayout> para quedar bajo el provider.
+function LeaderboardContent() {
+  // El backend es per-grupo (no hay ranking global): el leaderboard se lee
+  // respecto al grupo activo compartido (useActiveGroup). Se mantiene un
+  // selector para cambiar de grupo, sincronizado con el id activo.
+  const { activeGroupId, setActiveGroupId, groups, loading: groupsLoading } = useActiveGroup();
 
-export default function LeaderboardPage() {
-  const [activeTab, setActiveTab] = useState(TABS[0]);
-  const { data: groupsData, loading: groupsLoading } = useGroups();
-  const [selectedGroupId, setSelectedGroupId] = useState<string | undefined>();
-
-  const groups = groupsData?.groups ?? [];
-
-  useEffect(() => {
-    if (!selectedGroupId && groups.length > 0) {
-      setSelectedGroupId(groups[0].id);
-    }
-  }, [groups, selectedGroupId]);
-
-  const isGroupTab = activeTab === TABS[1];
-  const globalRes = useGlobalLeaderboard();
-  const groupRes = useGroupLeaderboard(isGroupTab ? selectedGroupId : undefined);
+  const { data, loading: boardLoading, error, refetch } = useGroupLeaderboard(activeGroupId ?? undefined);
 
   useEffect(() => {
-    track("leaderboard_viewed", {
-      scope: isGroupTab ? "group" : "global",
-      group_id: isGroupTab ? selectedGroupId : undefined,
-    });
-  }, [isGroupTab, selectedGroupId]);
+    track("leaderboard_viewed", { scope: "group", group_id: activeGroupId ?? undefined });
+  }, [activeGroupId]);
 
-  const data = isGroupTab ? groupRes.data : globalRes.data;
-  const loading = isGroupTab ? groupRes.loading || groupsLoading : globalRes.loading;
-  const error = isGroupTab ? groupRes.error : globalRes.error;
-  const refetch = isGroupTab ? groupRes.refetch : globalRes.refetch;
-
+  const loading = groupsLoading || boardLoading;
   const leaderboard = data?.leaderboard ?? [];
   const currentUserId = data?.currentUser.userId;
-  const noGroupsToShow = isGroupTab && !groupsLoading && groups.length === 0;
+  const noActiveGroup = !groupsLoading && !activeGroupId;
 
   return (
-    <AppLayout>
+    <>
       <div className="mb-6">
         <h1 className="text-[1.8rem] font-display font-bold text-fg">Leaderboard</h1>
         <p className="text-fg-secondary text-[0.95rem] mt-1">
-          {isGroupTab ? "Ranking dentro de tus grupos privados" : "Clasificación global de todos los participantes"}
+          Ranking dentro de tus grupos privados
         </p>
       </div>
 
-      <Tabs tabs={TABS} active={activeTab} onChange={setActiveTab} label="Tipo de ranking" />
-
-      {isGroupTab && groups.length > 0 && (
+      {groups.length > 0 && (
         <div className="mb-6 max-w-xs">
           <Select
             options={groups.map((g) => ({ value: g.id, label: g.name }))}
-            value={selectedGroupId ?? ""}
-            onChange={setSelectedGroupId}
+            value={activeGroupId ?? ""}
+            onChange={setActiveGroupId}
           />
         </div>
       )}
 
-      {noGroupsToShow && (
+      {noActiveGroup && (
         <EmptyState
           icon="👥"
-          text="Todavía no estás en ningún grupo. Crea uno o únete con un código de invitación para ver el ranking grupal."
+          text="Unite a un grupo para ver el ranking. Creá uno o entrá con un código de invitación."
         />
       )}
 
-      {!noGroupsToShow && loading && <SkeletonRows count={6} />}
+      {!noActiveGroup && loading && <SkeletonRows count={6} />}
 
-      {!noGroupsToShow && !loading && error && <ErrorState message={error} onRetry={refetch} />}
+      {!noActiveGroup && !loading && error && <ErrorState message={error} onRetry={refetch} />}
 
-      {!noGroupsToShow && !loading && !error && data && (
+      {!noActiveGroup && !loading && !error && data && (
         <>
           <Podium entries={leaderboard.slice(0, 3)} />
 
@@ -161,6 +145,14 @@ export default function LeaderboardPage() {
           </Card>
         </>
       )}
+    </>
+  );
+}
+
+export default function LeaderboardPage() {
+  return (
+    <AppLayout>
+      <LeaderboardContent />
     </AppLayout>
   );
 }
