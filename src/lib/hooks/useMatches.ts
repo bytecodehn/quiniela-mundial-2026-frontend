@@ -4,7 +4,7 @@ import { api } from "../api";
 import { allMatches, mockAdminMatches } from "../fixtures";
 import { mockStore } from "../fixtures/store";
 import type { Match, AdminMatch, Pagination } from "@/types";
-import { USE_MOCKS, mockDelay, useFetch } from "./useFetch";
+import { USE_MOCKS, USE_MOCKS_TOURNAMENT, mockDelay, useFetch } from "./useFetch";
 
 export interface MatchesResponse {
   matches: Match[];
@@ -46,7 +46,7 @@ function overlayPredictions(matches: Match[]): Match[] {
 export function useMatches(params?: Record<string, string>) {
   const key = `matches:${params ? JSON.stringify(params) : ""}`;
   return useFetch<MatchesResponse>(async () => {
-    if (USE_MOCKS) {
+    if (USE_MOCKS_TOURNAMENT) {
       await mockDelay();
       const matches = overlayPredictions(allMatches as Match[]);
       return { matches, pagination: paginate(matches) };
@@ -59,7 +59,7 @@ export function useMatch(id: string | undefined) {
   const key = `match:${id ?? ""}`;
   return useFetch<{ match: Match } | null>(async () => {
     if (!id) return null;
-    if (USE_MOCKS) {
+    if (USE_MOCKS_TOURNAMENT) {
       await mockDelay();
       const found = (allMatches as Match[]).find((m) => m.id === id);
       if (!found) return null;
