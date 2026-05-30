@@ -16,10 +16,9 @@ function isLocale(value: string | null): value is Locale {
 }
 
 function detectInitialLocale(): Locale {
-  if (typeof navigator === "undefined") return DEFAULT_LOCALE;
-  const browser = navigator.language ?? DEFAULT_LOCALE;
-  if (browser.toLowerCase().startsWith("pt")) return "pt-BR";
-  if (browser.toLowerCase().startsWith("en")) return "en";
+  // Requisito del sponsor: la app se maneja en español latinoamericano por
+  // defecto. NO autodetectamos a inglés/portugués según el navegador. El
+  // usuario puede cambiarlo manualmente con el selector (queda persistido).
   return "es";
 }
 
