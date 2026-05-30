@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import type { Match } from "@/types";
 import { Button } from "./Button";
+import { Flag } from "./Flag";
 
 export function MatchCard({
   match,
@@ -55,12 +56,12 @@ export function MatchCard({
         href={`/matches/${match.id}`}
         className="flex items-center gap-3 flex-1 min-w-0 no-underline text-inherit hover:opacity-90"
       >
-        <span title={match.homeTeam.name}>{match.homeTeam.flag}</span>
+        <Flag code={match.homeTeam.code} name={match.homeTeam.name} className="h-6 w-auto" />
         <span className="font-semibold text-[0.95rem] truncate">{match.homeTeam.name}</span>
         <span className="text-fg-muted text-[0.75rem] font-semibold uppercase tracking-wider hidden md:inline">
           vs
         </span>
-        <span title={match.awayTeam.name}>{match.awayTeam.flag}</span>
+        <Flag code={match.awayTeam.code} name={match.awayTeam.name} className="h-6 w-auto" />
         <span className="font-semibold text-[0.95rem] truncate">{match.awayTeam.name}</span>
       </Link>
 

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { AppLayout } from "@/components/app-layout";
-import { Badge, Button, Card, ErrorState, SkeletonRows, useToast } from "@/components/ui";
+import { Badge, Button, Card, ErrorState, Flag, SkeletonRows, useToast } from "@/components/ui";
 import { track } from "@/lib/analytics";
 import { submitPrediction, useMatch } from "@/lib/hooks";
 
@@ -131,12 +131,12 @@ export default function MatchDetailPage() {
         <Card className="text-center">
           <div className="flex items-center justify-center gap-6 mb-6">
             <div className="flex flex-col items-center gap-2 flex-1">
-              <span className="text-[3.5rem] leading-none">{match.homeTeam.flag}</span>
+              <Flag code={match.homeTeam.code} name={match.homeTeam.name} className="h-12 w-auto" />
               <span className="text-[1.1rem] font-bold">{match.homeTeam.name}</span>
             </div>
             <div className="text-fg-muted text-[1.5rem] font-display font-bold">VS</div>
             <div className="flex flex-col items-center gap-2 flex-1">
-              <span className="text-[3.5rem] leading-none">{match.awayTeam.flag}</span>
+              <Flag code={match.awayTeam.code} name={match.awayTeam.name} className="h-12 w-auto" />
               <span className="text-[1.1rem] font-bold">{match.awayTeam.name}</span>
             </div>
           </div>

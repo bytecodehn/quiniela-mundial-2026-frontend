@@ -46,3 +46,23 @@ export function flagForFifaCode(code: string | undefined | null): string {
   const iso2 = FIFA_TO_ISO2[c];
   return iso2 ? iso2ToEmoji(iso2) : "";
 }
+
+// Códigos de subdivisión de flagcdn (Reino Unido) para las banderas-imagen.
+const FIFA_TO_FLAGCDN_SUB: Record<string, string> = {
+  ENG: "gb-eng",
+  SCO: "gb-sct",
+  WAL: "gb-wls",
+  NIR: "gb-nir",
+};
+
+// URL de la bandera como IMAGEN (SVG vía flagcdn / Flagpedia). Se usa en vez de
+// emojis porque los emojis de bandera NO se renderizan en Windows (muestra las
+// dos letras). SVG escala a cualquier tamaño. "" si el código no se conoce
+// (p.ej. equipos "Por definir" en eliminatorias sin resolver).
+export function flagImageUrl(code?: string | null): string {
+  if (!code) return "";
+  const c = code.toUpperCase();
+  if (FIFA_TO_FLAGCDN_SUB[c]) return `https://flagcdn.com/${FIFA_TO_FLAGCDN_SUB[c]}.svg`;
+  const iso2 = FIFA_TO_ISO2[c];
+  return iso2 ? `https://flagcdn.com/${iso2.toLowerCase()}.svg` : "";
+}

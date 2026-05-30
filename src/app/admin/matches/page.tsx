@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/app-layout";
-import { Badge, Button, Card, ErrorState, FilterBar, Input, Modal, Select, SkeletonRows } from "@/components/ui";
+import { Badge, Button, Card, ErrorState, FilterBar, Flag, Input, Modal, Select, SkeletonRows } from "@/components/ui";
 import { useAdminMatches } from "@/lib/hooks";
 import type { AdminMatch, GroupName, MatchStage, MatchStatus } from "@/types";
 
@@ -130,14 +130,14 @@ export default function AdminMatchesPage() {
               {filtered.map((m) => (
                 <tr key={m.id} className="border-b border-border last:border-b-0 hover:bg-bg-primary/40 transition-colors">
                   <td className="p-4 whitespace-nowrap">
-                    <span className="mr-2">{m.homeTeam.flag}</span>
+                    <Flag code={m.homeTeam.code} name={m.homeTeam.name} className="mr-2 h-4 w-auto" />
                     {m.homeTeam.name}
                   </td>
                   <td className="p-4 whitespace-nowrap font-mono font-bold text-[1rem]">
                     {m.homeScore !== null ? `${m.homeScore} – ${m.awayScore}` : "–"}
                   </td>
                   <td className="p-4 whitespace-nowrap">
-                    <span className="mr-2">{m.awayTeam.flag}</span>
+                    <Flag code={m.awayTeam.code} name={m.awayTeam.name} className="mr-2 h-4 w-auto" />
                     {m.awayTeam.name}
                   </td>
                   <td className="p-4 whitespace-nowrap">{stageLabels[m.stage]}</td>
