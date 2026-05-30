@@ -15,6 +15,7 @@
 // este módulo sintetiza los wrappers `{predictions, stats, pagination}` /
 // `{prediction}` y el `PredictionStats` que esperan los hooks.
 import type { GroupName, Pagination, Prediction, PredictionStats, Team } from "@/types";
+import { flagForFifaCode } from "@/lib/flags";
 import { request } from "./client";
 
 // --- Contrato del backend (snake_case, tal cual lo emite Go) ---
@@ -87,7 +88,7 @@ function mapTeam(team: BackendTeam, group: GroupName): Team {
     id: String(team.id),
     name: team.name_es || team.name_en,
     code: team.fifa_code,
-    flag: team.flag_emoji ?? "",
+    flag: team.flag_emoji || flagForFifaCode(team.fifa_code),
     group,
     rank: team.fifa_rank ?? 0,
   };

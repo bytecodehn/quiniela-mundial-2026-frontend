@@ -28,6 +28,7 @@ import type {
   Team,
   UserStatus,
 } from "@/types";
+import { flagForFifaCode } from "@/lib/flags";
 import { request } from "./client";
 
 // ---------------------------------------------------------------------------
@@ -197,7 +198,7 @@ function mapTeam(team: BackendTeam | undefined, placeholder: string | undefined,
     id: String(team.id),
     name: team.name_es || team.name_en,
     code: team.fifa_code,
-    flag: team.flag_emoji ?? "",
+    flag: team.flag_emoji || flagForFifaCode(team.fifa_code),
     group,
     rank: team.fifa_rank ?? 0,
   };

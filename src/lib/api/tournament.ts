@@ -4,6 +4,7 @@
 // (arrays/objetos sin envoltorio), así que este módulo sintetiza los wrappers
 // `{teams}` / `{matches, pagination}` / `{match}` que esperan los hooks.
 import type { GroupName, Match, MatchStage, MatchStatus, Pagination, Team } from "@/types";
+import { flagForFifaCode } from "@/lib/flags";
 import { request } from "./client";
 
 // --- Contrato del backend (snake_case, tal cual lo emite Go) ---
@@ -73,7 +74,7 @@ function mapTeam(team: BackendTeam, group: GroupName = "A"): Team {
     id: String(team.id),
     name: team.name_es || team.name_en,
     code: team.fifa_code,
-    flag: team.flag_emoji ?? "",
+    flag: team.flag_emoji || flagForFifaCode(team.fifa_code),
     group,
     rank: team.fifa_rank ?? 0,
   };
