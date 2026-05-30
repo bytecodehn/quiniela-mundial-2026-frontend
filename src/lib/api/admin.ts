@@ -29,6 +29,7 @@ import type {
   UserStatus,
 } from "@/types";
 import { flagForFifaCode } from "@/lib/flags";
+import { venueLocal } from "@/lib/match-time";
 import { request } from "./client";
 
 // ---------------------------------------------------------------------------
@@ -207,12 +208,8 @@ function mapTeam(team: BackendTeam | undefined, placeholder: string | undefined,
 function mapMatchToAdmin(m: BackendMatch): AdminMatch {
   const stage = mapStage(m.stage);
   const group = toGroupName(m.group);
-  const dt = new Date(m.kickoff_utc);
-  const validDate = !Number.isNaN(dt.getTime());
-  // ISO -> "YYYY-MM-DD" / "HH:MM" sin depender del locale.
-  const iso = validDate ? dt.toISOString() : "";
-  const date = validDate ? iso.slice(0, 10) : m.kickoff_utc;
-  const time = validDate ? iso.slice(11, 16) : "";
+  // Hora local de la sede (coincide con el calendario oficial de FIFA).
+  const { date, time } = venueLocal(m.kickoff_utc, m.venue_city);
 
   return {
     id: String(m.id),
