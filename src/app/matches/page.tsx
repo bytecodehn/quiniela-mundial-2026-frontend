@@ -28,7 +28,7 @@ const stageOptions: { value: string; label: string }[] = [
 
 const groupOptions: { value: string; label: string }[] = [
   { value: "all", label: "Todos los grupos" },
-  ...(["A", "B", "C", "D", "E", "F", "G", "H"] as GroupName[]).map((g) => ({ value: g, label: `Grupo ${g}` })),
+  ...(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"] as GroupName[]).map((g) => ({ value: g, label: `Grupo ${g}` })),
 ];
 
 const statusTabs = ["Todos", "Próximos", "Finalizados"];
