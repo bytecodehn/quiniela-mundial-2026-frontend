@@ -10,7 +10,10 @@ import type { Group, Prediction, ScoringRule, User } from "@/types";
 
 export type UserPatch = Partial<{ name: string; favoriteTeam: string; country: string; avatar: string | null }>;
 
-const STORAGE_KEY = "qm26-mock-store-v1";
+// v2: se bumpeó la versión al cargar el fixture real del Mundial 2026. Esto
+// descarta cualquier estado demo viejo persistido en el navegador (predicciones
+// y grupos de la data de ejemplo anterior) para que se tomen los nuevos defaults.
+const STORAGE_KEY = "qm26-mock-store-v2";
 
 interface StoreState {
   groups: Group[];
