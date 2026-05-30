@@ -111,7 +111,7 @@ interface BackendPreset {
 // Helpers de mapeo backend -> tipos frontend.
 // ---------------------------------------------------------------------------
 
-const VALID_GROUPS: GroupName[] = ["A", "B", "C", "D", "E", "F", "G", "H"];
+const VALID_GROUPS: GroupName[] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
 
 function toGroupName(g?: string | null): GroupName {
   if (g && (VALID_GROUPS as string[]).includes(g)) return g as GroupName;
