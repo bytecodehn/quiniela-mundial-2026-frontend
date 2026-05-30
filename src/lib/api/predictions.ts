@@ -16,6 +16,7 @@
 // `{prediction}` y el `PredictionStats` que esperan los hooks.
 import type { GroupName, Pagination, Prediction, PredictionStats, Team } from "@/types";
 import { flagForFifaCode } from "@/lib/flags";
+import { venueLocal } from "@/lib/match-time";
 import { request } from "./client";
 
 // --- Contrato del backend (snake_case, tal cual lo emite Go) ---
@@ -108,8 +109,7 @@ function mapMatch(match: BackendMatch): EmbeddedMatch {
     id: String(match.id),
     homeTeam,
     awayTeam,
-    date: kickoff.slice(0, 10),
-    time: kickoff.slice(11, 16),
+    ...venueLocal(kickoff, match.venue_city),
     status: STATUS_MAP[match.status] ?? "upcoming",
     homeScore: match.score?.home ?? null,
     awayScore: match.score?.away ?? null,
