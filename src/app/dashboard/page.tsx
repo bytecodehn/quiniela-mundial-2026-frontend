@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AppLayout } from "@/components/app-layout";
-import { SkeletonStats, ErrorState } from "@/components/ui";
+import { SkeletonStats, ErrorState, Flag } from "@/components/ui";
 import { useAuth } from "@/lib/auth";
 import { useMatches, useStats } from "@/lib/hooks";
 
@@ -308,7 +308,7 @@ export default function DashboardPage() {
                       e.currentTarget.style.borderColor = COLORS.border;
                     }}
                   >
-                    <span className="text-[1.3rem]">{match.homeTeam.flag}</span>
+                    <Flag code={match.homeTeam.code} name={match.homeTeam.name} className="h-5 w-auto" />
                     <div className="flex-1 min-w-0">
                       <div className="text-[0.9rem] font-semibold truncate" style={{ color: COLORS.textPrimary }}>
                         {match.homeTeam.name} vs {match.awayTeam.name}
@@ -370,7 +370,7 @@ export default function DashboardPage() {
                       className="flex items-center gap-3 px-4 py-3 rounded-[12px]"
                       style={{ background: COLORS.bgPage, border: `1px solid ${COLORS.border}` }}
                     >
-                      <span className="text-[1.3rem]">{r.match.homeTeam.flag}</span>
+                      <Flag code={r.match.homeTeam.code} name={r.match.homeTeam.name} className="h-5 w-auto" />
                       <div className="flex-1 min-w-0">
                         <div className="text-[0.9rem] font-semibold truncate" style={{ color: COLORS.textPrimary }}>
                           {r.match.homeTeam.name} vs {r.match.awayTeam.name}

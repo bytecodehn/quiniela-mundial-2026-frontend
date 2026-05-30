@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AppLayout } from "@/components/app-layout";
-import { Badge, Card, EmptyState, ErrorState, FilterBar, Select, SkeletonRows, SkeletonStats } from "@/components/ui";
+import { Badge, Card, EmptyState, ErrorState, FilterBar, Flag, Select, SkeletonRows, SkeletonStats } from "@/components/ui";
 import { useMatches, usePredictions } from "@/lib/hooks";
 
 const statusOptions: { value: string; label: string }[] = [
@@ -102,7 +102,7 @@ export default function PredictionsPage() {
             return (
               <Card key={prediction.id} className="flex items-center gap-4 py-4 px-5">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <span className="text-[1.5rem]">{prediction.match.homeTeam.flag}</span>
+                  <Flag code={prediction.match.homeTeam.code} name={prediction.match.homeTeam.name} className="h-6 w-auto" />
                   <div className="flex-1 min-w-0">
                     <div className="text-[0.95rem] font-semibold truncate">
                       {prediction.match.homeTeam.name} vs {prediction.match.awayTeam.name}
@@ -111,7 +111,7 @@ export default function PredictionsPage() {
                       {prediction.match.date} · {prediction.match.time}
                     </div>
                   </div>
-                  <span className="text-[1.5rem]">{prediction.match.awayTeam.flag}</span>
+                  <Flag code={prediction.match.awayTeam.code} name={prediction.match.awayTeam.name} className="h-6 w-auto" />
                 </div>
                 <div className="flex flex-col items-end gap-1 shrink-0">
                   <div className="flex items-center gap-2">

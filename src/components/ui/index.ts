@@ -7,6 +7,7 @@ export { Tabs } from "./Tabs";
 export { StatCard } from "./StatCard";
 export { EmptyState } from "./EmptyState";
 export { MatchCard } from "./MatchCard";
+export { Flag } from "./Flag";
 export { FilterBar } from "./FilterBar";
 export { Select } from "./Select";
 export { Skeleton, SkeletonRows, SkeletonStats } from "./Skeleton";
