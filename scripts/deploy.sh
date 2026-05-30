@@ -10,9 +10,16 @@
 #   CONTAINER     nombre del contenedor           (default: quiniela_frontend)
 #   HOST_PORT     puerto host a publicar          (default: 8090)
 #   DOCKER_NET    red docker a la que se conecta  (default: quiniela_net)
-#   API_URL       NEXT_PUBLIC_API_URL             (default: http://192.168.244.128:8888/api/v1)
+#   API_URL       NEXT_PUBLIC_API_URL             (default: http://192.168.244.128:8888)
 #   SITE_URL      NEXT_PUBLIC_SITE_URL            (default: http://192.168.244.128:8090)
-#   USE_MOCKS     NEXT_PUBLIC_USE_MOCKS           (default: true)
+#   USE_MOCKS     NEXT_PUBLIC_USE_MOCKS           (default: false)
+#
+# IMPORTANTE: el backend Go monta sus rutas en la RAÍZ (sin prefijo /api/v1).
+# API_URL debe ser la URL del backend SIN /api/v1, y debe ser alcanzable desde
+# el NAVEGADOR del usuario (no un hostname interno de docker), porque el cliente
+# hace fetch client-side. En prod, pasá API_URL=https://api.tu-dominio y
+# SITE_URL=https://tu-dominio, y asegurá que ese SITE_URL esté en FRONTEND_ORIGIN
+# del backend (CORS). USE_MOCKS=false sirve la app real; true es solo demo/offline.
 
 set -euo pipefail
 
@@ -24,9 +31,9 @@ CONTAINER="${CONTAINER:-quiniela_frontend}"
 IMAGE_TAG="${IMAGE_TAG:-${CONTAINER}}"
 HOST_PORT="${HOST_PORT:-8090}"
 DOCKER_NET="${DOCKER_NET:-quiniela_net}"
-API_URL="${API_URL:-http://192.168.244.128:8888/api/v1}"
+API_URL="${API_URL:-http://192.168.244.128:8888}"
 SITE_URL="${SITE_URL:-http://192.168.244.128:${HOST_PORT}}"
-USE_MOCKS="${USE_MOCKS:-true}"
+USE_MOCKS="${USE_MOCKS:-false}"
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 IMAGE="quiniela_frontend:${IMAGE_TAG}"
